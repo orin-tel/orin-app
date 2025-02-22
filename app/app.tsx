@@ -32,8 +32,11 @@ import { customFontsToLoad } from "./theme"
 import Config from "./config"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 import { loadDateFnsLocale } from "./utils/formatDate"
+import { ClerkLoaded, ClerkProvider } from "@clerk/clerk-expo"
+import { tokenCache } from "@/cache"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
+const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
 
 // Web linking configuration
 const prefix = Linking.createURL("/")
@@ -104,18 +107,25 @@ export function App() {
     prefixes: [prefix],
     config,
   }
+  if (!CLERK_PUBLISHABLE_KEY) {
+    throw new Error("Add EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY to your .env file")
+  }
 
   // otherwise, we're ready to render the app
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <ErrorBoundary catchErrors={Config.catchErrors}>
-        <KeyboardProvider>
-          <AppNavigator
-            linking={linking}
-            initialState={initialNavigationState}
-            onStateChange={onNavigationStateChange}
-          />
-        </KeyboardProvider>
+        <ClerkProvider tokenCache={tokenCache} publishableKey={CLERK_PUBLISHABLE_KEY}>
+          <ClerkLoaded>
+            <KeyboardProvider>
+              <AppNavigator
+                linking={linking}
+                initialState={initialNavigationState}
+                onStateChange={onNavigationStateChange}
+              />
+            </KeyboardProvider>
+          </ClerkLoaded>
+        </ClerkProvider>
       </ErrorBoundary>
     </SafeAreaProvider>
   )

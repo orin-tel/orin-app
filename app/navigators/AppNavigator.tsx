@@ -8,12 +8,12 @@ import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/na
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import { observer } from "mobx-react-lite"
 import * as Screens from "@/screens"
-import Config from "../config"
-import { useStores } from "../models"
+import Config from "@/config"
 import { DemoNavigator, DemoTabParamList } from "./DemoNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { useAppTheme, useThemeProvider } from "@/utils/useAppTheme"
 import { ComponentProps } from "react"
+import { useAuth } from "@clerk/clerk-expo"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -33,6 +33,7 @@ export type AppStackParamList = {
   Login: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
   // 🔥 Your screens go here
+  SignIn: undefined
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -51,9 +52,7 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = observer(function AppStack() {
-  const {
-    authenticationStore: { isAuthenticated },
-  } = useStores()
+  const { isSignedIn: isAuthenticated } = useAuth()
 
   const {
     theme: { colors },
@@ -78,11 +77,13 @@ const AppStack = observer(function AppStack() {
         </>
       ) : (
         <>
-          <Stack.Screen name="Login" component={Screens.LoginScreen} />
+          <Stack.Screen name="Login" component={Screens.SignUpScreen} />
+          <Stack.Screen name="SignIn" component={Screens.SignInScreen} />
         </>
       )}
 
       {/** 🔥 Your screens go here */}
+
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

@@ -16,6 +16,8 @@ import { $styles } from "../theme"
 import { isRTL } from "@/i18n"
 import { useStores } from "../models"
 import { useAppTheme } from "@/utils/useAppTheme"
+import { useClerk } from "@clerk/clerk-expo"
+import reactotron from "reactotron-react-native"
 
 /**
  * @param {string} url - The URL to open in the browser.
@@ -34,6 +36,21 @@ export const DemoDebugScreen: FC<DemoTabScreenProps<"DemoDebug">> = function Dem
   const {
     authenticationStore: { logout },
   } = useStores()
+
+  const { signOut } = useClerk()
+
+  const handleSignOut = async () => {
+    try {
+      reactotron.log("PRESSED")
+      await signOut()
+      reactotron.log("SIGNED OUT")
+      // Redirect to your desired page
+    } catch (err) {
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
+      console.error(JSON.stringify(err, null, 2))
+    }
+  }
 
   // @ts-expect-error
   const usingFabric = global.nativeFabricUIManager != null
@@ -144,7 +161,7 @@ export const DemoDebugScreen: FC<DemoTabScreenProps<"DemoDebug">> = function Dem
         <Text style={themed($hint)} tx={`demoDebugScreen:${Platform.OS}ReactotronHint` as const} />
       </View>
       <View style={themed($buttonContainer)}>
-        <Button style={themed($button)} tx="common:logOut" onPress={logout} />
+        <Button style={themed($button)} tx="common:logOut" onPress={handleSignOut} />
       </View>
     </Screen>
   )

@@ -30,7 +30,7 @@ import { useAuth } from "@clerk/clerk-expo"
  */
 export type AppStackParamList = {
   Welcome: undefined
-  Login: undefined
+  SignUp: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
   // 🔥 Your screens go here
   SignIn: undefined
@@ -67,17 +67,16 @@ const AppStack = observer(function AppStack() {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={isAuthenticated ? "Welcome" : "Login"}
+      initialRouteName={isAuthenticated ? "Welcome" : "SignUp"}
     >
       {isAuthenticated ? (
         <>
           <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
-
           <Stack.Screen name="Demo" component={DemoNavigator} />
         </>
       ) : (
         <>
-          <Stack.Screen name="Login" component={Screens.SignUpScreen} />
+          <Stack.Screen name="SignUp" component={Screens.SignUpScreen} />
           <Stack.Screen name="SignIn" component={Screens.SignInScreen} />
         </>
       )}

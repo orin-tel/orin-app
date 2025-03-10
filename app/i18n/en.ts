@@ -122,6 +122,16 @@ const en = {
     },
   },
 
+  /** ORIN APP TRANSLATIONS */
+  signUpScreen: {
+    welcome: "Welcome To",
+    title: "ORiN",
+    intro_one: "Enjoy unlimited 24 x 7",
+    intro_two: "call assistance",
+    google_oauth: "Login with Google",
+  },
+  /** ORIN APP TRANSLATIONS */
+
   ...demoEn,
 }
 

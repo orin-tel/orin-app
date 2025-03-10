@@ -52,7 +52,7 @@ interface IconProps extends TouchableOpacityProps {
  * @param {IconProps} props - The props for the `Icon` component.
  * @returns {JSX.Element} The rendered `Icon` component.
  */
-export function Icon(props: IconProps) {
+export function Icon(props: IconProps): JSX.Element {
   const {
     icon,
     color,
@@ -110,6 +110,7 @@ export const iconRegistry = {
   slack: require("../../assets/icons/demo/slack.png"),
   view: require("../../assets/icons/view.png"),
   x: require("../../assets/icons/x.png"),
+  google: require("../../assets/icons/google.svg"),
 }
 
 const $imageStyleBase: ImageStyle = {

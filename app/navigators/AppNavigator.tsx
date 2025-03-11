@@ -29,7 +29,7 @@ import { OnboardingNavigator, OnboardingNavigatorParamList } from "./OnboardingN
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  *   https://reactnavigation.org/docs/typescript/#organizing-types
  */
-console.log(DemoNavigator);
+console.log(DemoNavigator)
 export type AppStackParamList = {
   Welcome: undefined
   SignUp: undefined
@@ -70,14 +70,14 @@ const AppStack = observer(function AppStack() {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={isAuthenticated ? "Welcome" : "SignUp"}
+      initialRouteName={isAuthenticated ? "Onboarding" : "SignUp"}
     >
-      {!isAuthenticated ? (
+      {isAuthenticated ? (
         <>
           {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
-          {/* <Stack.Screen name="Demo" component={DemoNavigator} /> */}
           {/* <Stack.Screen name="OnboardingCountry" component={Screens.OnboardingCountryScreen} /> */}
           <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
+          {/* <Stack.Screen name="Demo" component={DemoNavigator} /> */}
         </>
       ) : (
         <>
@@ -88,17 +88,17 @@ const AppStack = observer(function AppStack() {
 
       {/** 🔥 Your screens go here */}
 
-
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
 })
 
-export interface NavigationProps extends Partial<ComponentProps<typeof NavigationContainer>> { }
+export interface NavigationProps extends Partial<ComponentProps<typeof NavigationContainer>> {}
 
 export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
   const { themeScheme, navigationTheme, setThemeContextOverride, ThemeProvider } =
     useThemeProvider()
+  console.log("PROPS", props)
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 

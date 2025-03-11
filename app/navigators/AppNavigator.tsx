@@ -14,6 +14,7 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { useAppTheme, useThemeProvider } from "@/utils/useAppTheme"
 import { ComponentProps } from "react"
 import { useAuth } from "@clerk/clerk-expo"
+import { OnboardingNavigator, OnboardingNavigatorParamList } from "./OnboardingNavigator"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -28,12 +29,14 @@ import { useAuth } from "@clerk/clerk-expo"
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  *   https://reactnavigation.org/docs/typescript/#organizing-types
  */
+console.log(DemoNavigator);
 export type AppStackParamList = {
   Welcome: undefined
   SignUp: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
   // 🔥 Your screens go here
   SignIn: undefined
+  Onboarding: NavigatorScreenParams<OnboardingNavigatorParamList>
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -69,10 +72,12 @@ const AppStack = observer(function AppStack() {
       }}
       initialRouteName={isAuthenticated ? "Welcome" : "SignUp"}
     >
-      {isAuthenticated ? (
+      {!isAuthenticated ? (
         <>
-          <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
-          <Stack.Screen name="Demo" component={DemoNavigator} />
+          {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
+          {/* <Stack.Screen name="Demo" component={DemoNavigator} /> */}
+          {/* <Stack.Screen name="OnboardingCountry" component={Screens.OnboardingCountryScreen} /> */}
+          <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
         </>
       ) : (
         <>
@@ -83,12 +88,13 @@ const AppStack = observer(function AppStack() {
 
       {/** 🔥 Your screens go here */}
 
+
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
 })
 
-export interface NavigationProps extends Partial<ComponentProps<typeof NavigationContainer>> {}
+export interface NavigationProps extends Partial<ComponentProps<typeof NavigationContainer>> { }
 
 export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
   const { themeScheme, navigationTheme, setThemeContextOverride, ThemeProvider } =

@@ -9,3 +9,4 @@ export * from "./ErrorScreen/ErrorBoundary"
 // export other screens here
 export * from "./SignUpScreen"
 export * from "./OnboardingScreens/OnboardingCountryScreen"
+export * from "./OnboardingScreens/OnboardingNumberScreen"

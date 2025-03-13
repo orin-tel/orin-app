@@ -1,20 +1,20 @@
 const palette = {
   neutral100: "#FFFFFF",
-  neutral200: "#F4F2F1",
-  neutral300: "#D7CEC9",
+  neutral200: "#F7F7F7",// Added from Figma
+  neutral300: "#D0D0D0",// Added from Figma
   neutral400: "#B6ACA6",
   neutral500: "#978F8A",
-  neutral600: "#564E4A",
+  neutral600: "#525252",// Added from Figma
   neutral700: "#3C3836",
-  neutral800: "#191015",
+  neutral800: "#242424",// Added from Figma
   neutral900: "#000000",
 
-  primary100: "#F4E0D9",
+  primary100: "#27263E14",
   primary200: "#E8C1B4",
   primary300: "#DDA28E",
   primary400: "#D28468",
   primary500: "#C76542",
-  primary600: "#A54F31",
+  primary600: "#27263E",// Added from Figma
 
   secondary100: "#DCDDE9",
   secondary200: "#BCC0D6",
@@ -34,7 +34,6 @@ const palette = {
   overlay20: "rgba(25, 16, 21, 0.2)",
   overlay50: "rgba(25, 16, 21, 0.5)",
 
-  dullGrey: "#525252",
 } as const
 
 export const colors = {
@@ -57,9 +56,21 @@ export const colors = {
    */
   textDim: palette.neutral600,
   /**
+   * Default background for input fields.
+   */
+  inputBackground: palette.neutral200,
+  /**
+   * Default colour for placeholder text.
+   */
+  textPlaceholder: palette.neutral300,
+  /**
+   * Default primary colour.
+   */
+  defaultPrimary: palette.primary600,
+  /**
    * The default color of the screen background.
    */
-  background: palette.neutral200,
+  background: palette.neutral100,
   /**
    * The default border color.
    */

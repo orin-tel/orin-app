@@ -37,7 +37,8 @@ export type AppStackParamList = {
   // 🔥 Your screens go here
   SignIn: undefined
   Onboarding: NavigatorScreenParams<OnboardingNavigatorParamList>
-  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  OnboardingNumber: undefined
+	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
 /**
@@ -70,13 +71,15 @@ const AppStack = observer(function AppStack() {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={isAuthenticated ? "Onboarding" : "SignUp"}
+      initialRouteName={"Onboarding"}
+      // initialRouteName={"Demo"}
     >
-      {isAuthenticated ? (
+      {!isAuthenticated ? (
         <>
           {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
           {/* <Stack.Screen name="OnboardingCountry" component={Screens.OnboardingCountryScreen} /> */}
           <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
+          
           {/* <Stack.Screen name="Demo" component={DemoNavigator} /> */}
         </>
       ) : (
@@ -88,7 +91,8 @@ const AppStack = observer(function AppStack() {
 
       {/** 🔥 Your screens go here */}
 
-      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
+      
+			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
 })

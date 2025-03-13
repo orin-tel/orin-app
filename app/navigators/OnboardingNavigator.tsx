@@ -1,12 +1,13 @@
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
-import { OnboardingCountryScreen } from "@/screens"
+import { OnboardingCountryScreen, OnboardingNumberScreen } from "@/screens"
 import { colors } from "@/theme"
 import { AppStackParamList, AppStackScreenProps } from "."
 import { CompositeScreenProps } from "@react-navigation/native"
 
 console.log(OnboardingCountryScreen)
 export type OnboardingNavigatorParamList = {
-  OnboardingCountry: undefined
+  OnboardingCountry: undefined,
+  OnboardingNumber: undefined,
 }
 
 export type OnboardingStackScreenProps<T extends keyof OnboardingNavigatorParamList> =
@@ -27,9 +28,10 @@ export const OnboardingNavigator = () => {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName="OnboardingCountry"
+      initialRouteName="OnboardingNumber"
     >
-      <Stack.Screen name="OnboardingCountry" component={OnboardingCountryScreen} />
+      {/* <Stack.Screen name="OnboardingCountry" component={OnboardingCountryScreen} /> */}
+      <Stack.Screen name="OnboardingNumber" component={OnboardingNumberScreen} />
     </Stack.Navigator>
   )
 }

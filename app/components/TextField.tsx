@@ -210,9 +210,10 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
         <TextInput
           ref={input}
           underlineColorAndroid={colors.transparent}
-          textAlignVertical="top"
+          // textAlignVertical="top"
+          textAlignVertical="center"
           placeholder={placeholderContent}
-          placeholderTextColor={colors.textDim}
+          placeholderTextColor={colors.textPlaceholder}
           {...TextInputProps}
           editable={!disabled}
           style={themed($inputStyles)}
@@ -247,9 +248,10 @@ const $labelStyle: ThemedStyle<TextStyle> = ({ spacing }) => ({
 })
 
 const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  alignItems: "flex-start",
-  borderWidth: 1,
-  borderRadius: 4,
+  // alignItems: "flex-start",
+  alignItems: "center",
+  borderWidth: 0, // changed
+  borderRadius: 100, // changed
   backgroundColor: colors.palette.neutral200,
   borderColor: colors.palette.neutral400,
   overflow: "hidden",
@@ -258,10 +260,11 @@ const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
 const $inputStyle: ThemedStyle<ViewStyle> = ({ colors, typography, spacing }) => ({
   flex: 1,
   alignSelf: "stretch",
+  // alignSelf: "center",
   fontFamily: typography.primary.normal,
   color: colors.text,
   fontSize: 16,
-  height: 24,
+  height: spacing.lg + spacing.xxs,
   // https://github.com/facebook/react-native/issues/21720#issuecomment-532642093
   paddingVertical: 0,
   paddingHorizontal: 0,
@@ -278,6 +281,7 @@ const $rightAccessoryStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   height: 40,
   justifyContent: "center",
   alignItems: "center",
+  paddingRight: 10,
 })
 
 const $leftAccessoryStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
@@ -285,4 +289,5 @@ const $leftAccessoryStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   height: 40,
   justifyContent: "center",
   alignItems: "center",
+  paddingLeft: 10,
 })

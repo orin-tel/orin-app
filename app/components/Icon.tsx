@@ -111,6 +111,9 @@ export const iconRegistry = {
   view: require("../../assets/icons/view.png"),
   x: require("../../assets/icons/x.png"),
   google: require("../../assets/icons/google.svg"),
+  world: require("../../assets/icons/world.png"),
+  dropdown: require("../../assets/icons/dropdown.png"),
+   
 }
 
 const $imageStyleBase: ImageStyle = {

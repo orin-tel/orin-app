@@ -34,6 +34,8 @@ import { KeyboardProvider } from "react-native-keyboard-controller"
 import { loadDateFnsLocale } from "./utils/formatDate"
 import { ClerkLoaded, ClerkProvider } from "@clerk/clerk-expo"
 import { tokenCache } from "@/cache"
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
@@ -117,13 +119,17 @@ export function App() {
       <ErrorBoundary catchErrors={Config.catchErrors}>
         <ClerkProvider tokenCache={tokenCache} publishableKey={CLERK_PUBLISHABLE_KEY}>
           <ClerkLoaded>
-            <KeyboardProvider>
-              <AppNavigator
-                linking={linking}
-                initialState={initialNavigationState}
-                onStateChange={onNavigationStateChange}
-              />
-            </KeyboardProvider>
+            <GestureHandlerRootView>
+              <BottomSheetModalProvider>
+                <KeyboardProvider>
+                  <AppNavigator
+                    linking={linking}
+                    initialState={initialNavigationState}
+                    onStateChange={onNavigationStateChange}
+                  />
+                </KeyboardProvider>
+              </BottomSheetModalProvider>
+            </GestureHandlerRootView>
           </ClerkLoaded>
         </ClerkProvider>
       </ErrorBoundary>

@@ -130,6 +130,17 @@ const en = {
     intro_two: "call assistance",
     google_oauth: "Login with Google",
   },
+  onboardingCountryScreen: {
+    title: "Choose country",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+    select_country: "Select a country",
+  },
+  onboardingNumberScreen: {
+    title: "Choose an option",
+    description: "Select how you want to forward your calls",
+    select_country: "Select a country",
+  },
+
   /** ORIN APP TRANSLATIONS */
 
   ...demoEn,

@@ -38,7 +38,7 @@ export type AppStackParamList = {
   SignIn: undefined
   Onboarding: NavigatorScreenParams<OnboardingNavigatorParamList>
   OnboardingNumber: undefined
-	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
 /**
@@ -79,7 +79,7 @@ const AppStack = observer(function AppStack() {
           {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
           {/* <Stack.Screen name="OnboardingCountry" component={Screens.OnboardingCountryScreen} /> */}
           <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
-          
+
           {/* <Stack.Screen name="Demo" component={DemoNavigator} /> */}
         </>
       ) : (
@@ -91,8 +91,7 @@ const AppStack = observer(function AppStack() {
 
       {/** 🔥 Your screens go here */}
 
-      
-			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
+      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
 })

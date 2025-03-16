@@ -75,7 +75,7 @@ export const PhoneTextField = observer(
             placeholder={placeholder}
             LeftAccessory={(props) => (
               <View style={[props.style, themed($leftAccessoryStyle)]}>
-                <Icon icon="phone" />
+                <Icon icon="phone" size={20} />
                 <TouchableOpacity activeOpacity={1} onPress={presentOptions}>
                   <Button
                     preset="default"

@@ -75,6 +75,10 @@ export const colors = {
    */
   border: palette.neutral400,
   /**
+   * shadow color 1
+   */
+  shadowPrimary: palette.neutral200,
+  /**
    * The main tinting color.
    */
   tint: palette.primary500,

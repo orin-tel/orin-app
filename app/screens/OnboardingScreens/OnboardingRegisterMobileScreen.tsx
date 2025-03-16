@@ -51,7 +51,7 @@ export const OnboardingRegisterMobileScreen: FC<
         <PhoneTextField
           value={userPhoneNumber ?? ""}
           setValue={setUserPhoneNumber}
-          countryPhoneCode={userCountryPhoneCode ?? countryPhoneCode ?? ""}
+          countryPhoneCode={userCountryPhoneCode ?? countryPhoneCode ?? "+91"}
           setCountryPhoneCode={setUserCountryPhoneCode}
           placeholder="000-000-000"
         />
@@ -81,6 +81,7 @@ const $registration: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   // alignItems: "center",
   // width: "100%",
   gap: spacing.lg,
+  marginTop: spacing.xxxl * 2,
 })
 
 const $getOtpBtn: ThemedStyle<ViewStyle> = ({ spacing }) => ({
@@ -89,11 +90,10 @@ const $getOtpBtn: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xxxl,
 })
 
-const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $contentContainer: ThemedStyle<ViewStyle> = ({}) => ({
   // alignItems: "center",
   // justifyContent: "center",
   alignItems: "stretch",
-  justifyContent: "center",
+  justifyContent: "flex-start",
   height: "100%",
-  gap: spacing.xxxl * 2,
 })

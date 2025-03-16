@@ -55,6 +55,37 @@ const config = {
       },
     },
     Welcome: "welcome",
+    Core: {
+      path: "core",
+      screens: {
+        CallLogs: {
+          path: "call-logs",
+          screens: {
+            CallList: "list",
+            Call: "detail",
+          },
+        },
+        Dialer: {
+          path: "dialer",
+          screens: {
+            Dialer: "",
+          },
+        },
+        Contacts: {
+          path: "contacts",
+          screens: {
+            ContactList: "list",
+            Contact: "detail",
+          },
+        },
+        Settings: {
+          path: "settings",
+          screens: {
+            Settings: "",
+          },
+        },
+      },
+    },
     Demo: {
       screens: {
         DemoShowroom: {

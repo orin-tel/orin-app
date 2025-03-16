@@ -1,8 +1,8 @@
 /**
- * The app navigator (formerly "AppNavigator" and "MainNavigator") is used for the primary
+ * The app navigator is used for the primary
  * navigation flows of your app.
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
- * and a "main" flow which the user will use once logged in.
+ * and a "core" flow which the user will use once logged in.
  */
 import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native"
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
@@ -16,6 +16,7 @@ import { ComponentProps, useEffect } from "react"
 import { useAuth } from "@clerk/clerk-expo"
 import { OnboardingNavigator, OnboardingNavigatorParamList } from "./OnboardingNavigator"
 import { useStores } from "@/models"
+import { CoreNavigator, CoreTabNavigatorParamList } from "./CoreNavigator"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -38,6 +39,7 @@ export type AppStackParamList = {
   // 🔥 Your screens go here
   SignIn: undefined
   Onboarding: NavigatorScreenParams<OnboardingNavigatorParamList>
+  Core: NavigatorScreenParams<CoreTabNavigatorParamList>
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 /**
@@ -78,15 +80,16 @@ const AppStack = observer(function AppStack() {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={isAuthenticated ? "Onboarding" : "SignUp"}
+      initialRouteName={isAuthenticated ? "Core" : "SignUp"}
       // initialRouteName={"Demo"}
     >
       {isAuthenticated ? (
         <>
           {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
           {/* <Stack.Screen name="OnboardingCountry" component={Screens.OnboardingCountryScreen} /> */}
-          <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
+          <Stack.Screen name="Core" component={CoreNavigator} />
           <Stack.Screen name="Demo" component={DemoNavigator} />
+          <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
         </>
       ) : (
         <>
@@ -106,7 +109,6 @@ export interface NavigationProps extends Partial<ComponentProps<typeof Navigatio
 export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
   const { themeScheme, navigationTheme, setThemeContextOverride, ThemeProvider } =
     useThemeProvider()
-  console.log("PROPS", props)
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 

@@ -25,7 +25,7 @@ export const OnboardingVerifyOtpScreen: FC<OnboardingStackScreenProps<"Onboardin
     } = useAppTheme()
     const [_otp, setOtp] = useState<string>()
 
-    const [initialResendShow, setInitialResendShow] = useState(true)
+    const [initialResendShow, setInitialResendShow] = useState(false)
     const [countdown, setCountdown] = useState(60)
     const [isResendDisabled, setIsResendDisabled] = useState(true)
 
@@ -47,8 +47,11 @@ export const OnboardingVerifyOtpScreen: FC<OnboardingStackScreenProps<"Onboardin
     }
 
     const handleOtpVerify = () => {
-      _props.navigation.navigate("Onboarding", {
-        screen: "OnboardingCountry",
+      _props.navigation.navigate("Core", {
+        screen: "CallLogs",
+        params: {
+          screen: "CallList",
+        },
       })
     }
     // using methods

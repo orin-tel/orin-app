@@ -44,6 +44,7 @@ export const colors = {
   textPlaceholder: palette.neutral300,
   defaultPrimary: palette.primary600,
   background: palette.neutral100,
+  shadowPrimary: palette.neutral200,
   border: palette.neutral400,
   tint: palette.primary500,
   tintInactive: palette.neutral300,

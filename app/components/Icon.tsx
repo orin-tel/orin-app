@@ -110,11 +110,13 @@ export const iconRegistry = {
   slack: require("../../assets/icons/demo/slack.png"),
   view: require("../../assets/icons/view.png"),
   x: require("../../assets/icons/x.png"),
-  google: require("../../assets/icons/google.svg"),
   world: require("../../assets/icons/world.png"),
   dropdown: require("../../assets/icons/dropdown.png"),
   phone: require("../../assets/icons/phone.png"),
   refresh: require("../../assets/icons/refresh.png"),
+  call: require("../../assets/icons/call.png"),
+  dialer: require("../../assets/icons/dialer.png"),
+  contacts: require("../../assets/icons/contacts.png"),
 }
 
 const $imageStyleBase: ImageStyle = {

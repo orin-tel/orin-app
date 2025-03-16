@@ -178,7 +178,7 @@ export function Button(props: ButtonProps) {
 
 const $baseViewStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   minHeight: 56,
-  borderRadius: 4,
+  borderRadius: 100,
   justifyContent: "center",
   alignItems: "center",
   paddingVertical: spacing.sm,
@@ -189,7 +189,7 @@ const $baseViewStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 const $baseTextStyle: ThemedStyle<TextStyle> = ({ typography }) => ({
   fontSize: 16,
   lineHeight: 20,
-  fontFamily: typography.primary.medium,
+  fontFamily: typography.primary.semiBold,
   textAlign: "center",
   flexShrink: 1,
   flexGrow: 0,
@@ -210,9 +210,7 @@ const $viewPresets: Record<Presets, ThemedStyleArray<ViewStyle>> = {
     $styles.row,
     $baseViewStyle,
     ({ colors }) => ({
-      borderWidth: 1,
-      borderColor: colors.palette.neutral400,
-      backgroundColor: colors.palette.neutral100,
+      backgroundColor: colors.defaultPrimary,
     }),
   ],
   filled: [
@@ -228,13 +226,18 @@ const $viewPresets: Record<Presets, ThemedStyleArray<ViewStyle>> = {
 }
 
 const $textPresets: Record<Presets, ThemedStyleArray<TextStyle>> = {
-  default: [$baseTextStyle],
+  default: [
+    $baseTextStyle,
+    ({ colors }) => ({
+      color: colors.palette.neutral200,
+    }),
+  ],
   filled: [$baseTextStyle],
   reversed: [$baseTextStyle, ({ colors }) => ({ color: colors.palette.neutral100 })],
 }
 
 const $pressedViewPresets: Record<Presets, ThemedStyle<ViewStyle>> = {
-  default: ({ colors }) => ({ backgroundColor: colors.palette.neutral200 }),
+  default: () => ({ opacity: 0.9 }),
   filled: ({ colors }) => ({ backgroundColor: colors.palette.neutral400 }),
   reversed: ({ colors }) => ({ backgroundColor: colors.palette.neutral700 }),
 }

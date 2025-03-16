@@ -130,6 +130,17 @@ const en = {
     intro_two: "call assistance",
     google_oauth: "Login with Google",
   },
+  onboardingRegisterMobileScreen: {
+    register: "REGISTER",
+    enter_your_mobile_number: "Enter your mobile number",
+    get_otp: "Get OTP",
+  },
+  onboardingVerifyOtpScreen: {
+    otp_verification: "OTP Verification",
+    otp_successfully_sent_to: "OTP successfully sent to",
+    resend_otp: "Resend OTP",
+    confirm_otp: "Confirm OTP",
+  },
   onboardingCountryScreen: {
     title: "Choose country",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",

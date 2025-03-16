@@ -252,8 +252,8 @@ const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   alignItems: "center",
   borderWidth: 0, // changed
   borderRadius: 100, // changed
-  backgroundColor: colors.palette.neutral200,
-  borderColor: colors.palette.neutral400,
+  backgroundColor: colors.inputBackground,
+  borderColor: colors.border,
   overflow: "hidden",
 })
 
@@ -264,7 +264,7 @@ const $inputStyle: ThemedStyle<ViewStyle> = ({ colors, typography, spacing }) =>
   fontFamily: typography.primary.normal,
   color: colors.text,
   fontSize: 16,
-  height: spacing.lg + spacing.xxs,
+  height: spacing.lg + spacing.md,
   // https://github.com/facebook/react-native/issues/21720#issuecomment-532642093
   paddingVertical: 0,
   paddingHorizontal: 0,

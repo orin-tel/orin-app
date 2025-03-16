@@ -44,8 +44,15 @@ const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
 const prefix = Linking.createURL("/")
 const config = {
   screens: {
-    Login: {
-      path: "",
+    Signup: "signup",
+    Onboarding: {
+      path: "onboarding",
+      screens: {
+        OnboardingRegisterMobileScreen: "register-mobile",
+        OnboardingVerifyOtpScreen: "onboarding-verify-otp",
+        OnboardingCountryScreen: "country",
+        OnboardingNumberScreen: "number",
+      },
     },
     Welcome: "welcome",
     Demo: {

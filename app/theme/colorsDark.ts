@@ -43,7 +43,7 @@ export const colors = {
   inputBackground: palette.neutral200,
   textPlaceholder: palette.neutral300,
   defaultPrimary: palette.primary600,
-  background: palette.neutral200,
+  background: palette.neutral100,
   border: palette.neutral400,
   tint: palette.primary500,
   tintInactive: palette.neutral300,

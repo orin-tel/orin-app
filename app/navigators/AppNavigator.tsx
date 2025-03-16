@@ -12,9 +12,10 @@ import Config from "@/config"
 import { DemoNavigator, DemoTabParamList } from "./DemoNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { useAppTheme, useThemeProvider } from "@/utils/useAppTheme"
-import { ComponentProps } from "react"
+import { ComponentProps, useEffect } from "react"
 import { useAuth } from "@clerk/clerk-expo"
 import { OnboardingNavigator, OnboardingNavigatorParamList } from "./OnboardingNavigator"
+import { useStores } from "@/models"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -37,10 +38,8 @@ export type AppStackParamList = {
   // 🔥 Your screens go here
   SignIn: undefined
   Onboarding: NavigatorScreenParams<OnboardingNavigatorParamList>
-  OnboardingNumber: undefined
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
-
 /**
  * This is a list of all the route names that will exit the app if the back button
  * is pressed while in that screen. Only affects Android.
@@ -62,6 +61,14 @@ const AppStack = observer(function AppStack() {
     theme: { colors },
   } = useAppTheme()
 
+  const {
+    locationStore: { fetchLocation },
+  } = useStores()
+
+  useEffect(() => {
+    fetchLocation()
+  }, [fetchLocation])
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -71,16 +78,15 @@ const AppStack = observer(function AppStack() {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={"Onboarding"}
+      initialRouteName={isAuthenticated ? "Onboarding" : "SignUp"}
       // initialRouteName={"Demo"}
     >
-      {!isAuthenticated ? (
+      {isAuthenticated ? (
         <>
           {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
           {/* <Stack.Screen name="OnboardingCountry" component={Screens.OnboardingCountryScreen} /> */}
           <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
-
-          {/* <Stack.Screen name="Demo" component={DemoNavigator} /> */}
+          <Stack.Screen name="Demo" component={DemoNavigator} />
         </>
       ) : (
         <>
@@ -90,7 +96,6 @@ const AppStack = observer(function AppStack() {
       )}
 
       {/** 🔥 Your screens go here */}
-
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

@@ -7,7 +7,7 @@ import { AppStackScreenProps } from "@/navigators"
 import { useAppTheme } from "@/utils/useAppTheme"
 import * as WebBrowser from "expo-web-browser"
 import * as AuthSession from "expo-auth-session"
-import { useSSO, useClerk } from "@clerk/clerk-expo"
+import { useSSO } from "@clerk/clerk-expo"
 import { useWarmUpBrowser } from "@/utils/useWarmupBrowser"
 
 // Handle any pending authentication sessions
@@ -22,16 +22,21 @@ export const SignUpScreen: FC<AppStackScreenProps<"SignUp">> = function SignUpSc
   const onPress = useCallback(async () => {
     try {
       // Start the authentication process by calling `startSSOFlow()`
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
         strategy: "oauth_google",
         // Defaults to current path
-        redirectUrl: AuthSession.makeRedirectUri(),
+        redirectUrl: AuthSession.makeRedirectUri({
+          native: "orinapp://onboarding/country",
+        }),
       })
 
       // If sign in was successful, set the active session
       if (createdSessionId) {
+        console.log("CREATE SESSION ID", createdSessionId)
         setActive!({ session: createdSessionId })
       } else {
+        console.log("NO CREATE SESSION ID")
         // If there is no `createdSessionId`,
         // there are missing requirements, such as MFA
         // Use the `signIn` or `signUp` returned from `startSSOFlow`
@@ -70,7 +75,6 @@ const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   alignItems: "center",
   justifyContent: "center",
   display: "flex",
-  flexDirection: "column",
   height: "100%",
   gap: spacing.sm,
 })

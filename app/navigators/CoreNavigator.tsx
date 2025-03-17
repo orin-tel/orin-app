@@ -27,28 +27,28 @@ type CoreTabNavigatorTab = {
 }
 
 const AVAILABLE_TABS: CoreTabNavigatorTab[] = [
-  // {
-  //   name: "CallLogs",
-  //   component: CallLogNavigator,
-  //   label: "tabs:call_logs",
-  //   icon: "call",
-  // },
-  // {
-  //   name: "Dialing",
-  //   component: DialingNavigator,
-  //   label: "tabs:dialer",
-  //   icon: "dialer",
-  // },
-  // {
-  //   name: "Contacts",
-  //   component: ContactsNavigator,
-  //   label: "tabs:contacts",
-  //   icon: "contacts",
-  // },
+  {
+    name: "CallLogs",
+    component: CallLogNavigator,
+    label: "tabs:call_logs.tab",
+    icon: "call",
+  },
+  {
+    name: "Dialing",
+    component: DialingNavigator,
+    label: "tabs:dialer.tab",
+    icon: "dialer",
+  },
+  {
+    name: "Contacts",
+    component: ContactsNavigator,
+    label: "tabs:contacts.tab",
+    icon: "contacts",
+  },
   {
     name: "Settings",
     component: SettingsNavigator,
-    label: "tabs:settings",
+    label: "tabs:settings.tab",
     icon: "settings",
   },
 ]
@@ -75,7 +75,6 @@ export const CoreNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerShown: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: themed([$tabBar, { height: bottom + 60 }]),
         tabBarActiveTintColor: colors.text,
@@ -90,7 +89,7 @@ export const CoreNavigator = () => {
           name={tab.name}
           component={tab.component}
           options={{
-            // tabBarLabel: translate(tab.label),
+            headerShown: false,
             tabBarAccessibilityLabel: translate(tab.label),
             tabBarShowLabel: false,
             tabBarIcon: ({ focused }) => (

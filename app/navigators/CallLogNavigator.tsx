@@ -3,6 +3,7 @@ import { CallListScreen, CallScreen } from "@/screens"
 import { CompositeScreenProps } from "@react-navigation/native"
 import { CoreTabNavigatorParamList, CoreTabScreenProps } from "."
 import { useAppTheme } from "@/utils/useAppTheme"
+import { translate } from "@/i18n"
 
 export type CallLogNavigatorParamList = {
   CallList: undefined
@@ -27,12 +28,14 @@ export const CallLogNavigator = () => {
   } = useAppTheme()
   return (
     <Stack.Navigator
-      screenOptions={{
+      screenOptions={(props) => ({
+        headerShown: props.route.name === "CallList",
+        title: translate("tabs:call_logs.call_list"),
         navigationBarColor: colors.background,
         contentStyle: {
           backgroundColor: colors.background,
         },
-      }}
+      })}
       initialRouteName="CallList"
     >
       <Stack.Screen name="CallList" component={CallListScreen} />

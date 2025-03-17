@@ -8,10 +8,20 @@ const en = {
     logOut: "Log Out",
   },
   tabs: {
-    call_logs: "Call Logs",
-    dialer: "Dialer",
-    contacts: "Contacts",
-    settings: "Settings",
+    call_logs: {
+      tab: "Call Logs",
+      call_list: "Call Logs",
+      call: "Call",
+    },
+    dialer: {
+      tab: "Dialer",
+    },
+    contacts: {
+      tab: "Contacts",
+    },
+    settings: {
+      tab: "Settings",
+    },
   },
   welcomeScreen: {
     postscript:

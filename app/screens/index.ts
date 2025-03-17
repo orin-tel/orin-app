@@ -10,6 +10,8 @@ export * from "./ErrorScreen/ErrorBoundary"
 export * from "./SignUpScreen"
 export * from "./OnboardingScreens/OnboardingCountryScreen"
 export * from "./OnboardingScreens/OnboardingNumberScreen"
+export * from "./OnboardingScreens/OnboardingValidateScreen"
+export * from "./OnboardingScreens/OnboardingCongratulationsScreen"
 export * from "./OnboardingScreens/OnboardingRegisterMobileScreen"
 export * from "./OnboardingScreens/OnboardingVerifyOtpScreen"
 /**
@@ -42,3 +44,5 @@ export * from "./SettingScreens/OverviewScreen"
 /**
  * Settings
  */
+
+

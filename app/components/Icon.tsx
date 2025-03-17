@@ -117,6 +117,9 @@ export const iconRegistry = {
   call: require("../../assets/icons/call.png"),
   dialer: require("../../assets/icons/dialer.png"),
   contacts: require("../../assets/icons/contacts.png"),
+  infoCircle: require("../../assets/icons/infoCircle.png"),
+  copy: require("../../assets/icons/copy.png"),
+  checkInverse: require("../../assets/icons/checkInverse.png"),
 }
 
 const $imageStyleBase: ImageStyle = {

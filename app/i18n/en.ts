@@ -156,6 +156,26 @@ const en = {
     title: "Choose an option",
     description: "Select how you want to forward your calls",
     select_country: "Select a country",
+    number: "+91 8716239872",
+    forward_to_ours: "Forward calls to our number",
+    info: "This is our secure, server-protected number to which all your calls will be initially forwarded.",
+    choose_yours: "Choose your own number",
+    next: "Next",
+  },
+  onboardingValidateScreen: {
+    title: "Forward and Validate",
+    description: "You must complete the forwarding process first and then validate it to confirm the successful setup of call forwarding",
+    number: "*#21# +91 8716239872", 
+    info_one: "If you have an Android phone, simply copy and paste this into your dialer and call to complete the process",
+    info_two: "If you have an iOS phone, go to Settings > Phone > Call Forwarding, enter the number, and enable forwarding.", 
+    validate:"Validate",
+  },
+  onboardingCongratulationsScreen: {
+    title: "Congratulations!",
+    description: "Your validation has been done successfully. All your calls will be forwarded to our number.",
+    label: "Number",
+    number: "+91 8716239872", 
+    next:"Next",
   },
 
   /** ORIN APP TRANSLATIONS */

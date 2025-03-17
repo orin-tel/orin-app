@@ -4,6 +4,8 @@ import {
   OnboardingNumberScreen,
   OnboardingRegisterMobileScreen,
   OnboardingVerifyOtpScreen,
+  OnboardingValidateScreen,
+  OnboardingCongratulationsScreen,
 } from "@/screens"
 import { AppStackParamList, AppStackScreenProps } from "."
 import { CompositeScreenProps } from "@react-navigation/native"
@@ -13,11 +15,12 @@ import { View, ViewStyle } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { ThemedStyle } from "@/theme"
 
-console.log(OnboardingCountryScreen)
 export type OnboardingNavigatorParamList = {
   OnboardingRegisterMobile: undefined
   OnboardingCountry: undefined
   OnboardingNumber: undefined
+  OnboardingValidate: undefined
+  OnboardingCongratulations: undefined
   OnboardingVerifyOtp: undefined
 }
 
@@ -51,11 +54,15 @@ export const OnboardingNavigator = () => {
         },
       }}
       // initialRouteName="OnboardingRegisterMobile"
-      initialRouteName="OnboardingCountry"
+      // initialRouteName="OnboardingValidate"
+      // initialRouteName="OnboardingCongratulations"
+    initialRouteName="OnboardingNumber"
     >
       {/* <Stack.Screen name="OnboardingRegisterMobile" component={OnboardingRegisterMobileScreen} /> */}
-      {/* <Stack.Screen name="OnboardingCo untry" component={OnboardingCountryScreen} /> */}
+      {/* <Stack.Screen name="OnboardingCountry" component={OnboardingCountryScreen} /> */}
       <Stack.Screen name="OnboardingNumber" component={OnboardingNumberScreen} />
+      {/* <Stack.Screen name="OnboardingValidate" component={OnboardingValidateScreen} /> */}
+      {/* <Stack.Screen name="OnboardingCongratulations" component={OnboardingCongratulationsScreen} /> */}
       {/* <Stack.Screen name="OnboardingVerifyOtp" component={OnboardingVerifyOtpScreen} /> */}
     </Stack.Navigator>
   )

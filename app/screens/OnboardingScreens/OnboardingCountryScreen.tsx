@@ -25,8 +25,8 @@ export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingC
         <View style={themed($container)}>
           <View style={themed($sectionContainer)}>
             <View style={themed($textContainer)}>
-              <Text tx="onboardingCountryScreen:title" style={themed($sectionTitle)} />
-              <Text tx="onboardingCountryScreen:description" style={themed($sectionText)} />
+              <Text tx="onboardingCountryScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
+              <Text tx="onboardingCountryScreen:description" style={themed($sectionText)} size="sm" weight="normal" />
             </View>
             {/* <Button
               tx="onboardingCountryScreen:selector_text" style={themed($btnSelect)} textStyle={themed($btnSelectText)}
@@ -67,7 +67,6 @@ export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingC
 const $root: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
   backgroundColor: colors.background,
-  // backgroundColor: "white",
 })
 
 const $contentContainer: ThemedStyle<ViewStyle> = () => ({
@@ -77,9 +76,9 @@ const $contentContainer: ThemedStyle<ViewStyle> = () => ({
 
 const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   width: "100%",
+  // height: "75%", // originally no height was specified here
   alignItems: "center",
   gap: spacing.xxxl,
-  // gap: 60,
 })
 
 const $sectionContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
@@ -91,15 +90,11 @@ const $textContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
   gap: spacing.sm,
 })
 
-const $sectionTitle: ThemedStyle<TextStyle> = ({ spacing, typography }) => ({
-  fontSize: spacing.lg,
-  fontFamily: typography.primary.bold,
+const $sectionTitle: ThemedStyle<TextStyle> = () => ({
   textAlign: "center",
 })
 
-const $sectionText: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  fontSize: spacing.md,
-  fontWeight: "400",
+const $sectionText: ThemedStyle<TextStyle> = () => ({
   textAlign: "center",
 })
 
@@ -110,7 +105,7 @@ const $btnNext: ThemedStyle<TextStyle> = ({ colors }) => ({
   borderRadius: 100,
 })
 
-const $selectField: ThemedStyle<TextStyle> = ({}) => ({
+const $selectField: ThemedStyle<TextStyle> = ({ }) => ({
   width: 345,
   borderRadius: 100,
   borderWidth: 0,

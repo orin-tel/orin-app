@@ -21,42 +21,42 @@ export const OnboardingNumberScreen: FC<OnboardingStackScreenProps<"OnboardingNu
         <View style={themed($container)}>
           <View style={themed($sectionContainer)}>
             <View style={themed($textContainer)}>
-              <Text tx="onboardingNumberScreen:title" style={themed($sectionTitle)} />
-              <Text tx="onboardingNumberScreen:description" style={themed($sectionText)} />
+              <Text tx="onboardingNumberScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
+              <Text tx="onboardingNumberScreen:description" style={themed($sectionText)} size="sm" weight="normal" />
             </View>
-            <View style={themed($container)}>
+            <View style={themed($outerOptionContainer)}>
               {/* Forward to ours----------------------*/}
               <TouchableOpacity
                 onPress={() => setSelectedOption("ours")}
                 style={themed([$optionContainer, selectedOption === "ours" && $selectedOptionOne])}
               >
-                <Text style={themed($optionTitle)}>Forward calls to our number</Text>
-                <Radio value={selectedOption === "ours"} />
+                <View style={themed($optionTitle)}>
+                  <Radio value={selectedOption === "ours"} />
+                  <Text weight={selectedOption === "ours" ? "semiBold" : "normal"}>Forward calls to our number</Text>
+                </View>
+                <View style={selectedOption === "ours" ? themed($infoBox) : { display: "none" }}>
+                  <Text text="+91 8716239872" size="md" weight="bold" />
+                  <View>
+                    <Icon icon="info-circle" />
+                    <Text text="+91 8716239872" size="sm" weight="normal" />
+                  </View>
+
+                </View>
               </TouchableOpacity>
               {/* Choose Your Own Number-------------*/}
               <TouchableOpacity
                 onPress={() => setSelectedOption("yours")}
                 style={themed([$optionContainer, selectedOption === "yours" && $selectedOptionTwo])}
               >
-                <Text style={themed($optionTitle)}>Choose your own number</Text>
-                <Radio value={selectedOption === "yours"} />
+                <View style={themed($optionTitle)}>
+                  <Radio value={selectedOption === "yours"} />
+                  <Text weight={selectedOption === "yours" ? "semiBold" : "normal"}>Choose your own number</Text>
+                </View>
               </TouchableOpacity>
             </View>
-            {/*
-              <Text text="Forward calls to our number" style={themed($btnSelectText)}/>
-              <View >
-              
-                <View style={themed($infoContainer)}>
-                  <Text text="+91 8716239872" style={themed($btnSelectText)} />
-                  <Text
-                    text="This is our secure, server-protected number to which all your calls will be initially forwarded."
-                  />
-                </View>
-              </View>
-             */}
           </View>
 
-          <Button text="Next" style={themed($btnNext)} textStyle={themed($btnNextText)} />
+          <Button text="Next" style={themed($btnNext)} />
         </View>
       </Screen>
     )
@@ -65,8 +65,7 @@ export const OnboardingNumberScreen: FC<OnboardingStackScreenProps<"OnboardingNu
 
 const $root: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
-  // backgroundColor: colors.background,
-  backgroundColor: "white",
+  backgroundColor: colors.background,
 })
 
 const $contentContainer: ThemedStyle<ViewStyle> = () => ({
@@ -74,73 +73,87 @@ const $contentContainer: ThemedStyle<ViewStyle> = () => ({
   justifyContent: "center",
 })
 
-const $container: ThemedStyle<ViewStyle> = () => ({
+const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   width: "100%",
   alignItems: "center",
-  gap: 60,
+  gap: spacing.xxxl,
 })
 
-const $sectionContainer: ThemedStyle<TextStyle> = ({}) => ({
-  gap: 40,
+const $sectionContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  gap: spacing.xxl - spacing.xs,
 })
-const $optionContainer: ThemedStyle<TextStyle> = ({ colors }) => ({
+
+const $outerOptionContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  gap: spacing.md,
+})
+
+const $optionContainer: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.transparent,
+  width: 321,
+  padding: spacing.md,
+  paddingVertical: spacing.sm,
+  gap: spacing.md,
 })
-const $optionTitle: ThemedStyle<TextStyle> = ({}) => ({})
 
-const $selectedOptionOne: ThemedStyle<TextStyle> = ({}) => ({
+const $optionTitle: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  gap: spacing.md,
+  alignItems: "center",
+})
+
+const $selectedOptionOne: ThemedStyle<TextStyle> = ({ colors }) => ({
   width: 321,
   height: 205,
-  backgroundColor: "white",
+  backgroundColor: colors.background,
   borderRadius: 20,
   borderWidth: 1,
-  borderColor: "#525252",
+  borderColor: colors.textDim,
   alignItems: "flex-start",
-  gap: 8,
+
+  shadowColor: colors.shadowPrimary,
+  shadowOpacity: 0.1,
+  shadowRadius: 12,
+  elevation: 4,
 })
-const $selectedOptionTwo: ThemedStyle<TextStyle> = ({}) => ({
-  backgroundColor: "white",
-  borderRadius: 20,
-  borderWidth: 1,
-  borderColor: "#525252",
-  alignItems: "flex-start",
-  gap: 8,
+const $infoBox: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  width: 289,
+  height: 133,
+  borderRadius: 16,
+  backgroundColor: colors.infoBackground,
+  padding: spacing.md,
+  paddingVertical: spacing.sm,
 })
 
-const $textContainer: ThemedStyle<TextStyle> = ({}) => ({
-  gap: 12,
+
+const $selectedOptionTwo: ThemedStyle<TextStyle> = ({ colors }) => ({
+  width: 321,
+  backgroundColor: colors.background,
+  borderRadius: 53,
+  borderWidth: 1,
+  borderColor: colors.textDim,
+  alignItems: "flex-start",
+  shadowColor: colors.shadowPrimary,
+  shadowOpacity: 0.1,
+  shadowRadius: 12,
+  elevation: 4,
+
+})
+
+const $textContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  gap: spacing.sm,
 })
 
 const $sectionTitle: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  fontSize: spacing.lg,
-  fontWeight: "bold",
   textAlign: "center",
 })
 
 const $sectionText: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  fontSize: spacing.md,
-  fontWeight: "400",
+
   textAlign: "center",
-})
-const $infoContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  fontSize: spacing.md,
-  fontWeight: "400",
-  textAlign: "center",
-  color: "#3572E114",
 })
 
 const $btnNext: ThemedStyle<TextStyle> = () => ({
   width: 260,
-  backgroundColor: "#27263E",
-  borderRadius: 100,
 })
 
-const $btnSelectText: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  fontSize: spacing.md,
-  color: "#242424",
-  fontWeight: "bold",
-})
 
-const $btnNextText: ThemedStyle<TextStyle> = ({}) => ({
-  color: "white",
-})

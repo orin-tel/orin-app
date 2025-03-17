@@ -33,6 +33,27 @@ const palette = {
 
   overlay20: "rgba(25, 16, 21, 0.2)",
   overlay50: "rgba(25, 16, 21, 0.5)",
+
+  info100: "#3572E114",
+  info200: "#3572E150",
+  info300: "#3572E180",
+  info400: "#3572E1BF",
+  info500: "#3572E1",
+  
+  success100: "#4DAE4D14",
+  success200: "#4DAE4D50",
+  success300: "#4DAE4D80",
+  success400: "#4DAE4DBF",
+  success500: "#4DAE4D",
+
+  error100: "#FF635614",
+  error200: "#FF635650",
+  error300: "#FF635680",
+  error400: "#FF6356BF",
+  error500: "#FF6356",
+
+  shadow: "#000"
+
 } as const
 
 export const colors = {
@@ -77,7 +98,7 @@ export const colors = {
   /**
    * shadow color 1
    */
-  shadowPrimary: palette.neutral200,
+  shadowPrimary: palette.shadow,
   /**
    * The main tinting color.
    */
@@ -91,11 +112,27 @@ export const colors = {
    */
   separator: palette.neutral300,
   /**
+   * Info messages.
+   */
+  info:  palette.info500,
+  /**
+   * Info Background.
+   */
+  infoBackground: palette.info100,
+  /**
+   * Success messages.
+   */
+  success:  palette.success500,
+  /**
+   * Success Background.
+   */
+  successBackground:  palette.success100,
+  /**
    * Error messages.
    */
-  error: palette.angry500,
+  error: palette.error500,
   /**
    * Error Background.
    */
-  errorBackground: palette.angry100,
+  errorBackground: palette.error100,
 } as const

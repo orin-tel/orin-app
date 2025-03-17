@@ -50,12 +50,13 @@ export const OnboardingNavigator = () => {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName="OnboardingRegisterMobile"
+      // initialRouteName="OnboardingRegisterMobile"
+      initialRouteName="OnboardingCountry"
     >
-      <Stack.Screen name="OnboardingRegisterMobile" component={OnboardingRegisterMobileScreen} />
-      <Stack.Screen name="OnboardingCountry" component={OnboardingCountryScreen} />
+      {/* <Stack.Screen name="OnboardingRegisterMobile" component={OnboardingRegisterMobileScreen} /> */}
+      {/* <Stack.Screen name="OnboardingCo untry" component={OnboardingCountryScreen} /> */}
       <Stack.Screen name="OnboardingNumber" component={OnboardingNumberScreen} />
-      <Stack.Screen name="OnboardingVerifyOtp" component={OnboardingVerifyOtpScreen} />
+      {/* <Stack.Screen name="OnboardingVerifyOtp" component={OnboardingVerifyOtpScreen} /> */}
     </Stack.Navigator>
   )
 }

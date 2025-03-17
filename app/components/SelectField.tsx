@@ -88,7 +88,7 @@ export const SelectField = forwardRef(function SelectField(
           <TextField
             {...TextFieldProps}
             value={valueString}
-            // style={}
+          // style={}
           />
         </View>
       </TouchableOpacity>
@@ -102,23 +102,19 @@ export const SelectField = forwardRef(function SelectField(
         backdropComponent={(props) => (
           <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
         )}
-        backgroundStyle={{
-          borderTopLeftRadius: 20, // Adjust this for more/less rounding
-          borderTopRightRadius: 20,
-          backgroundColor: colors.background, // Maintain theme color
-        }}
+        backgroundStyle={themed($modalBgStyle)}
         footerComponent={
           !multiple
             ? undefined
             : (props) => (
-                <BottomSheetFooter
-                  {...props}
-                  style={themed($bottomSheetFooter)}
-                  bottomInset={bottom}
-                >
-                  <Button text="Dismiss" preset="reversed" onPress={dismissOptions} />
-                </BottomSheetFooter>
-              )
+              <BottomSheetFooter
+                {...props}
+                style={themed($bottomSheetFooter)}
+                bottomInset={bottom}
+              >
+                <Button text="Dismiss" preset="reversed" onPress={dismissOptions} />
+              </BottomSheetFooter>
+            )
         }
       >
         <BottomSheetFlatList
@@ -164,6 +160,11 @@ const $bottomSheetFooter: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingBottom: spacing.xs,
 })
 
+const $modalBgStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  borderTopLeftRadius: 20,
+  borderTopRightRadius: 20,
+  backgroundColor: colors.background,
+})
 const $listItem: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.sm,
   marginHorizontal: 12,

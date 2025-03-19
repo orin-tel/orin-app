@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useCallback, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, ViewStyle } from "react-native"
 import { Button, Icon, Screen, Text } from "@/components"
@@ -9,10 +9,28 @@ import { $styles, spacing, ThemedStyle } from "@/theme"
 import { SelectField } from "@/components/SelectField"
 import { colors } from "./../../theme/colors"
 import { COUNTRY_MAP } from "@/constants"
+import { useProgress } from "@/context/ProgressProvider"
+import ProgressBar from "@/components/ProgressBar"
+import { useFocusEffect } from "@react-navigation/native"
 
 export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingCountry">> =
   observer(function OnboardingCountryScreen(_props) {
-    const [selectedTeam, setSelectedTeam] = useState<string[]>([])
+    const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
+
+    // page indicator
+    const { navigation } = _props;
+
+    const { setProgress } = useProgress();
+    useFocusEffect(
+      useCallback(() => {
+        setProgress(0.2);
+      }, [])
+    );
+
+    const handleNext = () => {
+      navigation.navigate("OnboardingNumber");
+    }
+    //
 
     const { themed } = useAppTheme()
     return (
@@ -23,21 +41,17 @@ export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingC
         preset="scroll"
       >
         <View style={themed($container)}>
+
           <View style={themed($sectionContainer)}>
             <View style={themed($textContainer)}>
               <Text tx="onboardingCountryScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
               <Text tx="onboardingCountryScreen:description" style={themed($sectionText)} size="sm" weight="normal" />
             </View>
-            {/* <Button
-              tx="onboardingCountryScreen:selector_text" style={themed($btnSelect)} textStyle={themed($btnSelectText)}
-              LeftAccessory={() => <Icon icon="world" size={20} />}
-              RightAccessory={() => <Icon icon="dropdown" size={20} color="#DC7793" />}
-            /> */}
             <SelectField
               style={themed($selectField)}
               placeholderTx="onboardingCountryScreen:select_country"
-              value={selectedTeam}
-              onSelect={setSelectedTeam}
+              value={selectedCountry}
+              onSelect={setSelectedCountry}
               options={COUNTRY_MAP}
               multiple={false}
               containerStyle={{ marginBottom: spacing.lg }}
@@ -53,11 +67,12 @@ export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingC
             text="Next"
             style={themed($btnNext)}
             textStyle={themed($btnNextText)}
-            onPress={() => {
-              _props.navigation.navigate("Onboarding", {
-                screen: "OnboardingRegisterMobile",
-              })
-            }}
+            // onPress={() => {
+            // _props.navigation.navigate("Onboarding", {
+            //   screen: "OnboardingRegisterMobile",
+            // })
+            // }}
+            onPress={handleNext}
           />
         </View>
       </Screen>
@@ -67,18 +82,25 @@ export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingC
 const $root: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
   backgroundColor: colors.background,
+
 })
 
 const $contentContainer: ThemedStyle<ViewStyle> = () => ({
   flexGrow: 1,
   justifyContent: "center",
+  alignItems: "center",
+  // borderWidth: 1,
+
 })
 
 const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   width: "100%",
   // height: "75%", // originally no height was specified here
+  paddingBottom: "20%",
   alignItems: "center",
   gap: spacing.xxxl,
+  // borderWidth: 1,
+
 })
 
 const $sectionContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({

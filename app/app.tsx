@@ -36,6 +36,7 @@ import { ClerkLoaded, ClerkProvider } from "@clerk/clerk-expo"
 import { tokenCache } from "@/cache"
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
+import { ProgressProvider } from "./context/ProgressProvider"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
@@ -158,15 +159,17 @@ export function App() {
         <ClerkProvider tokenCache={tokenCache} publishableKey={CLERK_PUBLISHABLE_KEY}>
           <ClerkLoaded>
             <GestureHandlerRootView>
-              <BottomSheetModalProvider>
-                <KeyboardProvider>
-                  <AppNavigator
-                    linking={linking}
-                    initialState={initialNavigationState}
-                    onStateChange={onNavigationStateChange}
-                  />
-                </KeyboardProvider>
-              </BottomSheetModalProvider>
+              <ProgressProvider>
+                <BottomSheetModalProvider>
+                  <KeyboardProvider>
+                    <AppNavigator
+                      linking={linking}
+                      initialState={initialNavigationState}
+                      onStateChange={onNavigationStateChange}
+                    />
+                  </KeyboardProvider>
+                </BottomSheetModalProvider>
+              </ProgressProvider>
             </GestureHandlerRootView>
           </ClerkLoaded>
         </ClerkProvider>

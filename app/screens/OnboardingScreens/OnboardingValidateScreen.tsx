@@ -1,13 +1,31 @@
-import { FC } from "react"
+import { FC, useCallback } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, View, ViewStyle } from "react-native"
 import { OnboardingStackScreenProps } from "@/navigators"
 import { Button, Icon, Screen, Text } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { colors, spacing, ThemedStyle } from "@/theme"
+import { useProgress } from "@/context/ProgressProvider"
+import ProgressBar from "@/components/ProgressBar"
+import { useFocusEffect } from "@react-navigation/native"
 
 export const OnboardingValidateScreen: FC<OnboardingStackScreenProps<"OnboardingValidate">> = observer(
-  function OnboardingCountryScreen() {
+  function OnboardingValidateScreen(_props) {
+
+    // progress bar
+    const { navigation } = _props;
+
+    const { setProgress } = useProgress();
+    useFocusEffect(
+      useCallback(() => {
+        setProgress(0.6);
+      }, [])
+    );
+
+    const handleNext = () => {
+      navigation.navigate("OnboardingCongratulations");
+    }
+    //
     const { themed } = useAppTheme()
     return (
       <Screen
@@ -16,6 +34,7 @@ export const OnboardingValidateScreen: FC<OnboardingStackScreenProps<"Onboarding
         preset="scroll"
       >
         <View style={themed($container)}>
+
           <View style={themed($sectionContainer)}>
             <View style={themed($textContainer)}>
               <Text tx="onboardingValidateScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
@@ -43,7 +62,7 @@ export const OnboardingValidateScreen: FC<OnboardingStackScreenProps<"Onboarding
             </View>
 
           </View>
-          <Button tx="onboardingValidateScreen:validate" style={themed($btnValidate)} />
+          <Button onPress={handleNext} tx="onboardingValidateScreen:validate" style={themed($btnValidate)} />
 
         </View>
       </Screen >)

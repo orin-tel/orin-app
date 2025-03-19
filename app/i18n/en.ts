@@ -177,6 +177,28 @@ const en = {
     number: "+91 8716239872", 
     next:"Next",
   },
+  onboardingAboutScreen: {
+    title: "Tell us a bit about you",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+    label_one: "Your name",
+    example_name:"Eg. Sanando", 
+    label_two: "Information about you for the AI to know you better",
+    example_info:"Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.", 
+    next:"Next",
+  },
+  onboardingAgentScreen: {
+    title: "Create your Orin agent",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+    label_one: "Agent name",
+    example_name:"Eg. Sanando", 
+    label_two: "Agent language",
+    select_language: "Select a language",
+    label_three: "Select a voice",
+    voice_one: "Voice 1",
+    voice_two: "Voice 2",
+    voice_three: "Voice 3",
+    finish_setup:"Finish setup",
+  },
 
   /** ORIN APP TRANSLATIONS */
 

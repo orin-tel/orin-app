@@ -2,15 +2,14 @@ import { FC, useCallback } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, View, ViewStyle } from "react-native"
 import { OnboardingStackScreenProps } from "@/navigators"
-import { Button, Icon, Screen, Text } from "@/components"
+import { Button, Icon, Screen, Text, TextField } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { colors, spacing, ThemedStyle } from "@/theme"
-import ProgressBar from "@/components/ProgressBar"
 import { useProgress } from "@/context/ProgressProvider"
 import { useFocusEffect } from "@react-navigation/native"
 
-export const OnboardingCongratulationsScreen: FC<OnboardingStackScreenProps<"OnboardingCongratulations">> = observer(
-  function OnboardingCongratulationsScreen(_props) {
+export const OnboardingAboutScreen: FC<OnboardingStackScreenProps<"OnboardingAbout">> = observer(
+  function OnboardingAboutScreen(_props) {
     const { themed } = useAppTheme()
 
     // progress bar
@@ -19,13 +18,12 @@ export const OnboardingCongratulationsScreen: FC<OnboardingStackScreenProps<"Onb
     const { setProgress } = useProgress();
     useFocusEffect(
       useCallback(() => {
-        setProgress(0.6);
+        setProgress(0.8);
       }, [])
     );
 
     const handleNext = () => {
-
-      navigation.navigate("OnboardingAbout");
+      navigation.navigate("OnboardingAgent");
     }
     //
     return (
@@ -37,25 +35,40 @@ export const OnboardingCongratulationsScreen: FC<OnboardingStackScreenProps<"Onb
         <View style={themed($container)}>
 
           <View style={themed($sectionContainer)}>
-            <Icon icon="checkInverse" size={55} />
+
             <View style={themed($textContainer)}>
-              <Text tx="onboardingCongratulationsScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
-              <Text tx="onboardingCongratulationsScreen:description" style={themed($sectionText)} size="sm" weight="normal" />
+              <Text tx="onboardingAboutScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
+              <Text tx="onboardingAboutScreen:description" style={themed($sectionText)} size="sm" weight="normal" />
             </View>
             <View style={themed($sectionContainerTwo)}>
-              <Text tx="onboardingCongratulationsScreen:label" style={themed($label)}
-                weight="medium" />
-              <View style={themed($numberBox)}>
-                <Text tx="onboardingCongratulationsScreen:number" size="lg" weight="bold" />
-                <Icon icon="copy" size={spacing.md} />
+              <View>
+                <Text tx="onboardingAboutScreen:label_one" style={themed($label)}
+                  weight="medium" />
+                <TextField
+                  inputWrapperStyle={themed($nameInputBox)}
+                  placeholderTx="onboardingAboutScreen:example_name"
+                  LeftAccessory={(props) => (
+                    <Icon icon="person" size={20} containerStyle={props.style} />
+                  )} />
               </View>
+              <View>
+                <Text tx="onboardingAboutScreen:label_two" style={themed($label)}
+                  weight="medium" />
 
+                <TextField
+                  multiline
+                  style={themed($infoInput)}
+                  inputWrapperStyle={themed($infoInputWrapper)}
+                  placeholderTx="onboardingAboutScreen:example_info"
+                />
+
+              </View>
             </View>
 
           </View>
-          <Button tx="onboardingCongratulationsScreen:next" 
-          style={themed($btnValidate)}
-          onPress={handleNext} />
+          <Button tx="onboardingAboutScreen:next"
+            style={themed($btnValidate)}
+            onPress={handleNext} />
 
         </View>
       </Screen >)
@@ -67,6 +80,7 @@ const $root: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
   backgroundColor: colors.background,
 })
+
 
 const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexGrow: 1,
@@ -85,11 +99,13 @@ const $sectionContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
   alignItems: "center",
 })
 const $sectionContainerTwo: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  gap: spacing.xxs,
+  gap: spacing.lg + spacing.xxs,
   alignSelf: "center",
 })
+
 const $label: ThemedStyle<TextStyle> = ({ spacing }) => ({
   gap: spacing.xxs,
+  paddingBottom: spacing.sm - spacing.xxxs,
 
 })
 const $textContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
@@ -104,20 +120,24 @@ const $sectionText: ThemedStyle<TextStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.md,
   textAlign: "center",
 })
-const $numberBox: ThemedStyle<TextStyle> = ({ colors }) => ({
-  flexDirection: "row",
-
+const $nameInputBox: ThemedStyle<TextStyle> = ({ colors }) => ({
   width: 321,
-  height: 57,
-  backgroundColor: colors.inputBackground,
-  borderRadius: 100,
-
-  borderColor: colors.textDim,
-  justifyContent: "space-between",
-  alignItems: "center",
-  alignSelf: "center",
-  paddingHorizontal: spacing.md,
 })
+const $infoInputWrapper: ThemedStyle<TextStyle> = ({ colors }) => ({
+  width: 321,
+  minHeight: 140,
+  borderRadius: 20,
+  flexWrap: "wrap",
+  textAlignVertical: "top",
+})
+const $infoInput: ThemedStyle<TextStyle> = ({ colors }) => ({
+  width: 321,
+  minHeight: 140,
+  borderRadius: 20,
+  flexWrap: "wrap",
+  textAlignVertical: "top",
+})
+
 
 const $btnValidate: ThemedStyle<TextStyle> = () => ({
   width: 260,

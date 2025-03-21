@@ -6,17 +6,25 @@ import { OnboardingStackScreenProps } from "@/navigators"
 import { View } from "react-native"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { $styles, spacing, ThemedStyle } from "@/theme"
-import { SelectField } from "@/components/SelectField"
 import { colors } from "./../../theme/colors"
 import { COUNTRY_MAP } from "@/constants"
 import { useProgress } from "@/context/ProgressProvider"
-import ProgressBar from "@/components/ProgressBar"
 import { useFocusEffect } from "@react-navigation/native"
+import { CountrySelect } from "@/components/CountrySelect"
+import { useStores } from "@/models"
 
 export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingCountry">> =
   observer(function OnboardingCountryScreen(_props) {
     const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
 
+    const {
+      userStore: {
+        userCountry,
+        userCountryIcon,
+        setUserCountry,
+        setUserCountryIcon
+      },
+    } = useStores()
     // page indicator
     const { navigation } = _props;
 
@@ -47,14 +55,15 @@ export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingC
               <Text tx="onboardingCountryScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
               <Text tx="onboardingCountryScreen:description" style={themed($sectionText)} size="sm" weight="normal" />
             </View>
-            <SelectField
+            <CountrySelect
               style={themed($selectField)}
               placeholderTx="onboardingCountryScreen:select_country"
-              value={selectedCountry}
-              onSelect={setSelectedCountry}
+              value={userCountry ? [userCountry] : []}
+              onSelect={(newValue) => {
+                setUserCountry(newValue[0] ?? null);
+              }}
               options={COUNTRY_MAP}
               multiple={false}
-              containerStyle={{ marginBottom: spacing.lg }}
               LeftAccessory={(props) => (
                 <Icon icon="world" size={20} containerStyle={props.style} />
               )}
@@ -67,11 +76,6 @@ export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingC
             text="Next"
             style={themed($btnNext)}
             textStyle={themed($btnNextText)}
-            // onPress={() => {
-            // _props.navigation.navigate("Onboarding", {
-            //   screen: "OnboardingRegisterMobile",
-            // })
-            // }}
             onPress={handleNext}
           />
         </View>

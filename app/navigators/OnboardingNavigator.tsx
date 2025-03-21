@@ -76,15 +76,15 @@ export const OnboardingNavigator = () => {
         // initialRouteName="OnboardingValidate"
         // initialRouteName="OnboardingCongratulations"
         // initialRouteName="OnboardingAbout"
-        initialRouteName="OnboardingAgent"
+        initialRouteName="OnboardingCountry"
         // initialRouteName="OnboardingCountry"
       >
         {/* <Stack.Screen name="OnboardingRegisterMobile" component={OnboardingRegisterMobileScreen} /> */}
-        {/* <Stack.Screen name="OnboardingCountry" component={OnboardingCountryScreen} />
+        <Stack.Screen name="OnboardingCountry" component={OnboardingCountryScreen} />
         <Stack.Screen name="OnboardingNumber" component={OnboardingNumberScreen} />
         <Stack.Screen name="OnboardingValidate" component={OnboardingValidateScreen} />
-        <Stack.Screen name="OnboardingCongratulations" component={OnboardingCongratulationsScreen} /> */}
-        {/* <Stack.Screen name="OnboardingAbout" component={OnboardingAboutScreen} /> */}
+        <Stack.Screen name="OnboardingCongratulations" component={OnboardingCongratulationsScreen} />
+        <Stack.Screen name="OnboardingAbout" component={OnboardingAboutScreen} />
         <Stack.Screen name="OnboardingAgent" component={OnboardingAgentScreen} />
         {/* <Stack.Screen name="OnboardingVerifyOtp" component={OnboardingVerifyOtpScreen} /> */}
       </Stack.Navigator>

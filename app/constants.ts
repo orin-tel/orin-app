@@ -30,11 +30,11 @@ export const LANGUAGE_MAP = [
   
   // Commenting canada because same code as USA
   // { value: "CA", label: "Canada", code: "+1" },
-  { value: "GB", label: "English", code: "" },
+  { value: "EN", country: "GB", label: "English", code: "" },
   
-  { value: "IN", label: "Hindi", code: "" },
-  // { value: "IN", label: "Bengali", code: "" },
+  { value: "HIN", country: "IN", label: "Hindi", code: "" },
+  {  value: "BEN", country: "IN", label: "Bengali", code: "" },
   
-  { value: "FR", label: "French", code: "" },
+  {  value: "FR", country: "FR", label: "French", code: "" },
   
 ]

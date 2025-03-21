@@ -7,10 +7,18 @@ import { useAppTheme } from "@/utils/useAppTheme"
 import { colors, spacing, ThemedStyle } from "@/theme"
 import { useProgress } from "@/context/ProgressProvider"
 import { useFocusEffect } from "@react-navigation/native"
+import { useStores } from "@/models"
 
 export const OnboardingAboutScreen: FC<OnboardingStackScreenProps<"OnboardingAbout">> = observer(
   function OnboardingAboutScreen(_props) {
     const { themed } = useAppTheme()
+
+    const {
+      userStore: {
+        setUserName,
+        setUserAbout,
+      },
+    } = useStores()
 
     // progress bar
     const { navigation } = _props;
@@ -42,21 +50,24 @@ export const OnboardingAboutScreen: FC<OnboardingStackScreenProps<"OnboardingAbo
             </View>
             <View style={themed($sectionContainerTwo)}>
               <View>
+                {/**User Name */}
                 <Text tx="onboardingAboutScreen:label_one" style={themed($label)}
                   weight="medium" />
                 <TextField
                   inputWrapperStyle={themed($nameInputBox)}
                   placeholderTx="onboardingAboutScreen:example_name"
+                  onChangeText={setUserName}
                   LeftAccessory={(props) => (
                     <Icon icon="person" size={20} containerStyle={props.style} />
                   )} />
               </View>
               <View>
+                {/**User About */}
                 <Text tx="onboardingAboutScreen:label_two" style={themed($label)}
                   weight="medium" />
-
                 <TextField
                   multiline
+                  onChangeText={setUserAbout}
                   style={themed($infoInput)}
                   inputWrapperStyle={themed($infoInputWrapper)}
                   placeholderTx="onboardingAboutScreen:example_info"

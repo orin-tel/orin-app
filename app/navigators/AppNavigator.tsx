@@ -84,17 +84,18 @@ const AppStack = observer(function AppStack() {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={"Onboarding"}
+      initialRouteName={"Core"}
     // initialRouteName={isAuthenticated ? "Core" : "SignUp"}
     // initialRouteName={"Demo"}
+  
     >
       {/* {isAuthenticated ? ( */}
       {
         <>
           {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
-          {/* <Stack.Screen name="Core" component={CoreNavigator} /> */}
+          <Stack.Screen name="Core" component={CoreNavigator} />
           {/* <Stack.Screen name="Demo" component={DemoNavigator} /> */}
-          <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
+          {/* <Stack.Screen name="Onboarding" component={OnboardingNavigator} /> */}
         </>
       // ) : (
       //   <>
@@ -106,9 +107,7 @@ const AppStack = observer(function AppStack() {
 
       {/** 🔥 Your screens go here */}
 
- 
 
-			<Stack.Screen name="OnboardingAgent" component={Screens.OnboardingAgentScreen} />
 			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

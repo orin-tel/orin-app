@@ -199,6 +199,18 @@ const en = {
     voice_three: "Voice 3",
     finish_setup:"Finish setup",
   },
+  overviewScreen: {
+    agent_config:"ORiN agent config",
+    agent_config_desc:"Agent name, Voice, Language",
+    connect_calls:"Connect calls",
+    connect_calls_desc:"Transfer calls, Block calls",
+    whitelist_blacklist:"Whitelist/backlist numbers",
+    whitelist_blacklist_desc:"Connect phonebook, Whitelist, Blacklist",
+    calendar_settings:"Calendar settings",
+    calendar_settings_desc:"Google calendar",
+    contact_orin:"Contact ORiN",
+    contact_orin_desc:"Contact ORiN team",
+  },
 
   /** ORIN APP TRANSLATIONS */
 

@@ -1,14 +1,33 @@
-import { FC } from "react"
+import { FC, useCallback } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, View, ViewStyle } from "react-native"
 import { OnboardingStackScreenProps } from "@/navigators"
 import { Button, Icon, Screen, Text } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { colors, spacing, ThemedStyle } from "@/theme"
+import ProgressBar from "@/components/ProgressBar"
+import { useProgress } from "@/context/ProgressProvider"
+import { useFocusEffect } from "@react-navigation/native"
 
 export const OnboardingCongratulationsScreen: FC<OnboardingStackScreenProps<"OnboardingCongratulations">> = observer(
-  function OnboardingCountryScreen() {
+  function OnboardingCongratulationsScreen(_props) {
     const { themed } = useAppTheme()
+
+    // progress bar
+    const { navigation } = _props;
+
+    const { setProgress } = useProgress();
+    useFocusEffect(
+      useCallback(() => {
+        setProgress(0.6);
+      }, [])
+    );
+
+    const handleNext = () => {
+
+      navigation.navigate("OnboardingAbout");
+    }
+    //
     return (
       <Screen
         style={themed($root)}
@@ -16,6 +35,7 @@ export const OnboardingCongratulationsScreen: FC<OnboardingStackScreenProps<"Onb
         preset="scroll"
       >
         <View style={themed($container)}>
+
           <View style={themed($sectionContainer)}>
             <Icon icon="checkInverse" size={55} />
             <View style={themed($textContainer)}>
@@ -33,7 +53,9 @@ export const OnboardingCongratulationsScreen: FC<OnboardingStackScreenProps<"Onb
             </View>
 
           </View>
-          <Button tx="onboardingCongratulationsScreen:next" style={themed($btnValidate)} />
+          <Button tx="onboardingCongratulationsScreen:next" 
+          style={themed($btnValidate)}
+          onPress={handleNext} />
 
         </View>
       </Screen >)
@@ -45,7 +67,6 @@ const $root: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
   backgroundColor: colors.background,
 })
-
 
 const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexGrow: 1,
@@ -96,39 +117,6 @@ const $numberBox: ThemedStyle<TextStyle> = ({ colors }) => ({
   alignItems: "center",
   alignSelf: "center",
   paddingHorizontal: spacing.md,
-})
-
-const $infoBox: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  width: 321,
-  height: 164,
-  borderRadius: 16,
-  backgroundColor: colors.infoBackground,
-  padding: spacing.md,
-  paddingVertical: spacing.sm,
-  alignSelf: "center",
-})
-
-const $infoOuter: ThemedStyle<TextStyle> = ({ colors }) => ({
-  height: "100%",
-  flexDirection: "row",
-  alignItems: "center",
-  gap: 12,
-
-
-})
-const $infoInner: ThemedStyle<TextStyle> = ({ colors }) => ({
-  width: 230,
-  marginTop: 10,
-  height: "100%",
-  flexDirection: "column",
-  alignItems: "center",
-  color: colors.info,
-  gap: 12,
-})
-
-const $infoText: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.info,
-
 })
 
 const $btnValidate: ThemedStyle<TextStyle> = () => ({

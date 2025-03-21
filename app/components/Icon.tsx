@@ -120,6 +120,8 @@ export const iconRegistry = {
   infoCircle: require("../../assets/icons/infoCircle.png"),
   copy: require("../../assets/icons/copy.png"),
   checkInverse: require("../../assets/icons/checkInverse.png"),
+  arrowLeftCircle: require("../../assets/icons/arrowLeftCircle.png"),
+  person: require("../../assets/icons/person.png"),
 }
 
 const $imageStyleBase: ImageStyle = {

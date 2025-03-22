@@ -13,7 +13,7 @@ import { $styles } from "../theme"
 import { Text, TextProps } from "./Text"
 import { useAppTheme } from "@/utils/useAppTheme"
 
-type Presets = "default" | "reversed"
+type Presets = "default" | "reversed" | "paper"
 
 interface CardProps extends TouchableOpacityProps {
   /**
@@ -294,19 +294,28 @@ const $containerPresets: Record<Presets, ThemedStyleArray<ViewStyle>> = {
       borderColor: theme.colors.palette.neutral500,
     }),
   ],
+  paper: [
+    $styles.row,
+    (theme) => ({
+      padding: theme.spacing.xs,
+    }),
+  ],
 }
 
 const $headingPresets: Record<Presets, ThemedStyleArray<TextStyle>> = {
   default: [],
   reversed: [(theme) => ({ color: theme.colors.palette.neutral100 })],
+  paper: [],
 }
 
 const $contentPresets: Record<Presets, ThemedStyleArray<TextStyle>> = {
   default: [],
   reversed: [(theme) => ({ color: theme.colors.palette.neutral100 })],
+  paper: [],
 }
 
 const $footerPresets: Record<Presets, ThemedStyleArray<TextStyle>> = {
   default: [],
   reversed: [(theme) => ({ color: theme.colors.palette.neutral100 })],
+  paper: [],
 }

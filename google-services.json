@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "486976270406",
+    "project_id": "orin-37b5b",
+    "storage_bucket": "orin-37b5b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486976270406:android:643dc7a5b00c304e921a47",
+        "android_client_info": {
+          "package_name": "com.orinapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCB6J3elMUHTTk49AalN96eTrEB6lZeooA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

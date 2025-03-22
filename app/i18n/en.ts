@@ -222,6 +222,17 @@ const en = {
     contact_orin_desc:"Contact ORiN team",
   },
 
+  /**
+   * CORE
+   */
+  call_list: {
+    empty_state_title: "No calls found",
+    empty_state_content: "wow so empty",
+  },
+  /**
+   * CORE
+   */
+
   /** ORIN APP TRANSLATIONS */
 
   ...demoEn,

@@ -13,7 +13,7 @@ export const CallScreen: FC<CallLogStackScreenProps<"Call">> = observer(function
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
-    <Screen style={$root} preset="scroll">
+    <Screen style={$root} preset="scroll" safeAreaEdges={["top"]}>
       <Text text="call" />
     </Screen>
   )

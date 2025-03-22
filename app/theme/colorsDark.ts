@@ -34,6 +34,12 @@ const palette = {
   overlay20: "rgba(25, 16, 21, 0.2)",
   overlay50: "rgba(25, 16, 21, 0.5)",
 
+  warning100: "#5A3700",
+  warning200: "#7A4A00",
+  warning300: "#9C5E00",
+  warning400: "#CD8D19",
+  warning500: "#F3C16D",
+
   info100: "#264F9B14",
   info200: "#264F9B33",
   info300: "#264F9B66",
@@ -52,7 +58,7 @@ const palette = {
   error400: "#B9474299",
   error500: "#B94742",
 
-  shadow: "#000"
+  shadow: "#fff",
 } as const
 
 export const colors = {
@@ -69,10 +75,12 @@ export const colors = {
   tint: palette.primary500,
   tintInactive: palette.neutral300,
   separator: palette.neutral300,
-  info:  palette.info500,
+  info: palette.info500,
   infoBackground: palette.info100,
-  success:  palette.success500, 
-  successBackground:  palette.success100, 
-  error: palette.error500, 
+  success: palette.success500,
+  successBackground: palette.success100,
+  error: palette.error500,
   errorBackground: palette.error100,
+  warning: palette.warning500,
+  warningBackground: palette.warning100,
 } as const

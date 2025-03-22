@@ -34,12 +34,18 @@ const palette = {
   overlay20: "rgba(25, 16, 21, 0.2)",
   overlay50: "rgba(25, 16, 21, 0.5)",
 
+  warning100: "#FCEFD2",
+  warning200: "#F8DA9C",
+  warning300: "#F3C16D",
+  warning400: "#EAAE49",
+  warning500: "#CD8D19",
+
   info100: "#3572E114",
   info200: "#3572E150",
   info300: "#3572E180",
   info400: "#3572E1BF",
   info500: "#3572E1",
-  
+
   success100: "#4DAE4D14",
   success200: "#4DAE4D50",
   success300: "#4DAE4D80",
@@ -52,8 +58,7 @@ const palette = {
   error400: "#FF6356BF",
   error500: "#FF6356",
 
-  shadow: "#000"
-
+  shadow: "#000",
 } as const
 
 export const colors = {
@@ -114,7 +119,7 @@ export const colors = {
   /**
    * Info messages.
    */
-  info:  palette.info500,
+  info: palette.info500,
   /**
    * Info Background.
    */
@@ -122,11 +127,11 @@ export const colors = {
   /**
    * Success messages.
    */
-  success:  palette.success500,
+  success: palette.success500,
   /**
    * Success Background.
    */
-  successBackground:  palette.success100,
+  successBackground: palette.success100,
   /**
    * Error messages.
    */
@@ -135,4 +140,12 @@ export const colors = {
    * Error Background.
    */
   errorBackground: palette.error100,
+  /**
+   * Warning messages.
+   */
+  warning: palette.warning500,
+  /**
+   * Warning Background.
+   */
+  warningBackground: palette.warning100,
 } as const

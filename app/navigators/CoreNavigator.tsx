@@ -11,6 +11,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { translate, TxKeyPath } from "@/i18n"
 import { Icon, IconTypes } from "@/components"
+import { getClerkInstance } from "@clerk/clerk-expo"
+import { useEffect } from "react"
 
 export type CoreTabNavigatorParamList = {
   CallLogs: NavigatorScreenParams<CallLogNavigatorParamList>
@@ -66,6 +68,13 @@ export type CoreTabScreenProps<T extends keyof CoreTabNavigatorParamList> = Comp
 const Tab = createBottomTabNavigator<CoreTabNavigatorParamList>()
 
 export const CoreNavigator = () => {
+  useEffect(() => {
+    async function getToken() {
+      const token = await getClerkInstance().session?.getToken()
+      console.log(token)
+    }
+    getToken()
+  }, [])
   const { bottom } = useSafeAreaInsets()
   const {
     themed,
@@ -125,7 +134,7 @@ const $activeIconStyle: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
 const $tabBar: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.background,
   borderTopColor: colors.transparent,
-  shadowOffset: { width: 2, height: -5 },
+  shadowOffset: { width: 0, height: -3 },
   shadowColor: colors.shadowPrimary,
   shadowOpacity: 1,
   shadowRadius: 10,

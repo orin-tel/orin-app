@@ -122,6 +122,10 @@ export const iconRegistry = {
   checkInverse: require("../../assets/icons/checkInverse.png"),
   arrowLeftCircle: require("../../assets/icons/arrowLeftCircle.png"),
   person: require("../../assets/icons/person.png"),
+  received_call: require("../../assets/icons/received_call.png"),
+  incoming_call: require("../../assets/icons/incoming_call.png"),
+  outgoing_call: require("../../assets/icons/outgoing_call.png"),
+  missed_call: require("../../assets/icons/missed_call.png"),
 }
 
 const $imageStyleBase: ImageStyle = {

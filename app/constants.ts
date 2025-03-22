@@ -1,7 +1,7 @@
 export const COUNTRY_MAP = [
   { value: "US", label: "United States", code: "+1" },
   // Commenting canada because same code as USA
-  // { value: "CA", label: "Canada", code: "+1" },
+  { value: "CA", label: "Canada", code: "+1" },
   { value: "GB", label: "United Kingdom", code: "+44" },
   { value: "AU", label: "Australia", code: "+61" },
   { value: "IN", label: "India", code: "+91" },
@@ -25,4 +25,16 @@ export const COUNTRY_MAP = [
   { value: "PK", label: "Pakistan", code: "+92" },
   { value: "BD", label: "Bangladesh", code: "+880" },
   { value: "EG", label: "Egypt", code: "+20" },
+]
+export const LANGUAGE_MAP = [
+  
+  // Commenting canada because same code as USA
+  // { value: "CA", label: "Canada", code: "+1" },
+  { value: "EN", country: "GB", label: "English", code: "" },
+  
+  { value: "HIN", country: "IN", label: "Hindi", code: "" },
+  {  value: "BEN", country: "IN", label: "Bengali", code: "" },
+  
+  {  value: "FR", country: "FR", label: "French", code: "" },
+  
 ]

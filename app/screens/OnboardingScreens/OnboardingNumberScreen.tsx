@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useCallback, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
 import { OnboardingStackScreenProps } from "@/navigators"
@@ -6,10 +6,28 @@ import { Button, Icon, Screen, Text } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { colors, spacing, ThemedStyle } from "@/theme"
 
+import { useProgress } from "@/context/ProgressProvider"
+import { useFocusEffect } from "@react-navigation/native"
+
 export const OnboardingNumberScreen: FC<OnboardingStackScreenProps<"OnboardingNumber">> = observer(
-  function OnboardingCountryScreen() {
+  function OnboardingNumberScreen(_props) {
     const [selectedOption, setSelectedOption] = useState<"ours" | "yours">("ours")
+
+    // progress bar
+    const { navigation } = _props;
+
+    const { setProgress } = useProgress();
+    useFocusEffect(
+      useCallback(() => {
+        setProgress(0.4);
+      }, [])
+    );
+    const handleNext = () => {
+      navigation.navigate("OnboardingValidate");
+    }
+    //
     const { themed } = useAppTheme()
+
     return (
       <Screen
         style={themed($root)}
@@ -17,6 +35,7 @@ export const OnboardingNumberScreen: FC<OnboardingStackScreenProps<"OnboardingNu
         preset="scroll"
       >
         <View style={themed($container)}>
+
           <View style={themed($sectionContainer)}>
             <View style={themed($textContainer)}>
               <Text tx="onboardingNumberScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
@@ -25,6 +44,7 @@ export const OnboardingNumberScreen: FC<OnboardingStackScreenProps<"OnboardingNu
             <View style={themed($outerOptionContainer)}>
               {/* Forward to ours----------------------*/}
               <TouchableOpacity
+                activeOpacity={ selectedOption === "ours" ? 1 : 0.5}
                 onPress={() => setSelectedOption("ours")}
                 style={themed([$optionContainer, selectedOption === "ours" && $selectedOptionOne])}
               >
@@ -50,6 +70,7 @@ export const OnboardingNumberScreen: FC<OnboardingStackScreenProps<"OnboardingNu
               </TouchableOpacity>
               {/* Choose Your Own Number-------------*/}
               <TouchableOpacity
+                activeOpacity={ selectedOption === "yours" ? 1 : 0.5}
                 onPress={() => setSelectedOption("yours")}
                 style={themed([$optionContainer, selectedOption === "yours" && $selectedOptionTwo])}
               >
@@ -63,7 +84,7 @@ export const OnboardingNumberScreen: FC<OnboardingStackScreenProps<"OnboardingNu
             </View>
           </View>
 
-          <Button tx="onboardingNumberScreen:next" style={themed($btnNext)} />
+          <Button onPress={handleNext} tx="onboardingNumberScreen:next" style={themed($btnNext)} />
         </View>
       </Screen>
     )

@@ -12,6 +12,8 @@ export * from "./OnboardingScreens/OnboardingCountryScreen"
 export * from "./OnboardingScreens/OnboardingNumberScreen"
 export * from "./OnboardingScreens/OnboardingValidateScreen"
 export * from "./OnboardingScreens/OnboardingCongratulationsScreen"
+export * from "./OnboardingScreens/OnboardingAboutScreen"
+export * from "./OnboardingScreens/OnboardingAgentScreen"
 export * from "./OnboardingScreens/OnboardingRegisterMobileScreen"
 export * from "./OnboardingScreens/OnboardingVerifyOtpScreen"
 /**
@@ -44,5 +46,7 @@ export * from "./SettingScreens/OverviewScreen"
 /**
  * Settings
  */
+
+
 
 

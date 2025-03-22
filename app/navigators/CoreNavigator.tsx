@@ -27,24 +27,24 @@ type CoreTabNavigatorTab = {
 }
 
 const AVAILABLE_TABS: CoreTabNavigatorTab[] = [
-  {
-    name: "CallLogs",
-    component: CallLogNavigator,
-    label: "tabs:call_logs",
-    icon: "call",
-  },
-  {
-    name: "Dialing",
-    component: DialingNavigator,
-    label: "tabs:dialer",
-    icon: "dialer",
-  },
-  {
-    name: "Contacts",
-    component: ContactsNavigator,
-    label: "tabs:contacts",
-    icon: "contacts",
-  },
+  // {
+  //   name: "CallLogs",
+  //   component: CallLogNavigator,
+  //   label: "tabs:call_logs",
+  //   icon: "call",
+  // },
+  // {
+  //   name: "Dialing",
+  //   component: DialingNavigator,
+  //   label: "tabs:dialer",
+  //   icon: "dialer",
+  // },
+  // {
+  //   name: "Contacts",
+  //   component: ContactsNavigator,
+  //   label: "tabs:contacts",
+  //   icon: "contacts",
+  // },
   {
     name: "Settings",
     component: SettingsNavigator,
@@ -97,7 +97,7 @@ export const CoreNavigator = () => {
               <View style={themed($activeViewStyle)}>
                 <Icon
                   icon={tab.icon}
-                  color={focused ? colors.tint : colors.tintInactive}
+                  color={focused ? colors.defaultPrimary : colors.tintInactive}
                   size={30}
                 />
                 {focused && <View style={themed($activeIconStyle)} />}
@@ -118,7 +118,7 @@ const $activeIconStyle: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   width: spacing.xxs,
   height: spacing.xxs,
   borderRadius: spacing.xxs,
-  backgroundColor: colors.tint,
+  backgroundColor: colors.defaultPrimary,
   marginTop: spacing.xs,
   marginLeft: spacing.xxxs * 0.85,
 })

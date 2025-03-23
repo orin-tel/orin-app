@@ -84,16 +84,16 @@ const AppStack = observer(function AppStack() {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={"Core"}
-      // initialRouteName={isAuthenticated ? "Core" : "SignUp"}
+      // initialRouteName={"Core"}
+      initialRouteName={isAuthenticated ? "Core" : "SignUp"}
       // initialRouteName={"Demo"}
     >
       {isAuthenticated ? (
         <>
-          {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
           <Stack.Screen name="Core" component={CoreNavigator} />
+          {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
           {/* <Stack.Screen name="Demo" component={DemoNavigator} /> */}
-          {/* <Stack.Screen name="Onboarding" component={OnboardingNavigator} /> */}
+          <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
         </>
       ) : (
         <>

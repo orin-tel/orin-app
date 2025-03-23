@@ -2398,6 +2398,19 @@
   resolved "https://registry.npmjs.org/@tsconfig/node16/-/node16-1.0.4.tgz"
   integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
 
+"@twilio/voice-errors@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@twilio/voice-errors/-/voice-errors-1.8.0.tgz#ab13ae8ee9bd53dc62acffa9631be4f391b8c695"
+  integrity sha512-Mh3CCCNOZ+OCFNv90ibml1VrsXiJy/1+/FP6382tUQuqZztndp41eqnJhsnM44UBkMAtlvVUSd1HuK8iCdHM/A==
+
+"@twilio/voice-react-native-sdk@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@twilio/voice-react-native-sdk/-/voice-react-native-sdk-1.4.0.tgz#2647f7a5ab4ce99db8aca82ac3e5f2f43df55295"
+  integrity sha512-MFgEWDx58LWcX6GFMSLZX7XUIb5OVC11DJ+cWeiwE4KIvIp5fxksdKtRHzO2Lmiblm904FQ34I6zdDRqg2SWEw==
+  dependencies:
+    "@twilio/voice-errors" "1.8.0"
+    eventemitter3 "^4.0.7"
+
 "@types/babel__core@^7.1.14":
   version "7.20.5"
   resolved "https://registry.npmjs.org/@types/babel__core/-/babel__core-7.20.5.tgz"
@@ -4566,6 +4579,11 @@ event-target-shim@^5.0.0, event-target-shim@^5.0.1:
   version "5.0.1"
   resolved "https://registry.npmjs.org/event-target-shim/-/event-target-shim-5.0.1.tgz"
   integrity sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==
+
+eventemitter3@^4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
+  integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
 eventemitter3@^5.0.1:
   version "5.0.1"

@@ -126,6 +126,10 @@ export const iconRegistry = {
   incoming_call: require("../../assets/icons/incoming_call.png"),
   outgoing_call: require("../../assets/icons/outgoing_call.png"),
   missed_call: require("../../assets/icons/missed_call.png"),
+  phoneOutgoing: require("../../assets/icons/phoneOutgoing.png"),
+  block: require("../../assets/icons/block.png"),
+  calendar: require("../../assets/icons/calendar.png"),
+  saveInverted: require("../../assets/icons/saveInverted.png"),
 }
 
 const $imageStyleBase: ImageStyle = {

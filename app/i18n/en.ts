@@ -221,6 +221,24 @@ const en = {
     contact_orin:"Contact ORiN",
     contact_orin_desc:"Contact ORiN team",
   },
+  settingsProfileScreen: {
+    label_one: "Your name",
+    // example_name:"Eg. Sanando", 
+    label_two: "Your phone number", 
+    label_three: "Information about you for the AI to know you better",
+    example_info:"Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.", 
+    save:"Save",
+  },
+  agentConfigScreen: {
+    label_one: "Agent name",
+    label_two: "Agent language",
+    select_language: "Select a language",
+    label_three: "Select a voice",
+    voice_one: "Voice 1",
+    voice_two: "Voice 2",
+    voice_three: "Voice 3",
+    save:"Save",
+  },
 
   /**
    * CORE

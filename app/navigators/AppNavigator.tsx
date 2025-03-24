@@ -44,6 +44,8 @@ export type AppStackParamList = {
   OnboardingCongratulations: undefined
   OnboardingAbout: undefined
   OnboardingAgent: undefined
+  Profile: undefined
+  AgentConfig: undefined
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 /**
@@ -86,7 +88,7 @@ const AppStack = observer(function AppStack() {
       }}
       // initialRouteName={"Core"}
       initialRouteName={isAuthenticated ? "Core" : "SignUp"}
-      // initialRouteName={"Demo"}
+    // initialRouteName={"Demo"}
     >
       {isAuthenticated ? (
         <>
@@ -104,12 +106,15 @@ const AppStack = observer(function AppStack() {
 
       {/** 🔥 Your screens go here */}
 
+
+      <Stack.Screen name="Profile" component={Screens.ProfileScreen} />
+      <Stack.Screen name="AgentConfig" component={Screens.AgentConfigScreen} />
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
 })
 
-export interface NavigationProps extends Partial<ComponentProps<typeof NavigationContainer>> {}
+export interface NavigationProps extends Partial<ComponentProps<typeof NavigationContainer>> { }
 
 export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
   const { themeScheme, navigationTheme, setThemeContextOverride, ThemeProvider } =

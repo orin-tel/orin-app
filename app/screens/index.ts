@@ -43,9 +43,13 @@ export * from "./ContactScreens/ContactListScreen"
  * Settings
  */
 export * from "./SettingScreens/OverviewScreen"
+export * from "./SettingScreens/ProfileScreen"
+export * from "./SettingScreens/AgentConfigScreen"
 /**
  * Settings
  */
+
+
 
 
 

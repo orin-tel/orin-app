@@ -39,7 +39,12 @@ export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAge
 
     const handleNext = () => {
 
-      // navigation.navigate("");
+      navigation.navigate("Core", {
+        screen: "CallLogs",
+        params: {
+          screen: "CallList"
+        }
+      })
     }
     //
     return (

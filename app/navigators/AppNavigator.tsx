@@ -44,8 +44,6 @@ export type AppStackParamList = {
   OnboardingCongratulations: undefined
   OnboardingAbout: undefined
   OnboardingAgent: undefined
-  Profile: undefined
-  AgentConfig: undefined
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 /**
@@ -87,28 +85,24 @@ const AppStack = observer(function AppStack() {
         },
       }}
       // initialRouteName={"Core"}
-      initialRouteName={isAuthenticated ? "Core" : "SignUp"}
+      initialRouteName={isAuthenticated ? "Onboarding" : "SignUp"}
     // initialRouteName={"Demo"}
     >
       {isAuthenticated ? (
         <>
-          <Stack.Screen name="Core" component={CoreNavigator} />
           {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
           {/* <Stack.Screen name="Demo" component={DemoNavigator} /> */}
           <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
+          <Stack.Screen name="Core" component={CoreNavigator} />
         </>
       ) : (
         <>
-          <Stack.Screen name="SignUp" component={Screens.SignUpScreen} />
-          <Stack.Screen name="SignIn" component={Screens.SignInScreen} />
+          <Stack.Screen name="SignUp" component={Screens.SignUpScreen}/>
+          <Stack.Screen name="SignIn" component={Screens.SignInScreen}/>
         </>
       )}
 
       {/** 🔥 Your screens go here */}
-
-
-      <Stack.Screen name="Profile" component={Screens.ProfileScreen} />
-      <Stack.Screen name="AgentConfig" component={Screens.AgentConfigScreen} />
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

@@ -6,6 +6,7 @@ import { Icon, Screen, Text } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { colors, spacing, ThemedStyle } from "@/theme"
 import { useStores } from "@/models"
+import { useAuth } from "@clerk/clerk-expo"
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "@/models"
@@ -18,7 +19,7 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
         userPhoneNumber
       },
     } = useStores()
-
+    const { signOut } = useAuth();
     const { navigation } = _props;
     const gotoProfile = () => {
 
@@ -55,7 +56,7 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
           <View style={themed($settingsNav)}>
             <TouchableOpacity activeOpacity={0.8} onPress={gotoAgentConfig} style={themed($item)}>
               <View style={themed($iconContainer)}>
-                <Icon icon="person" size={spacing.md + spacing.xxs} />
+                <Icon icon="person" size={spacing.md + spacing.xxs}/>
               </View>
               <View style={themed($textContainer)}>
                 <Text tx="overviewScreen:agent_config" size="md" weight="semiBold" />
@@ -89,7 +90,7 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
                 <Text tx="overviewScreen:calendar_settings_desc" size="sm" />
               </View>
             </View>
-            <View style={themed($item)}>
+            <TouchableOpacity style={themed($item)} onPress={() => signOut()}>
               <View style={themed($iconContainer)}>
                 <Icon icon="calendar" />
               </View>
@@ -97,7 +98,8 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
                 <Text tx="overviewScreen:contact_orin" size="md" weight="semiBold" />
                 <Text tx="overviewScreen:contact_orin_desc" size="sm" />
               </View>
-            </View>
+            </TouchableOpacity>
+
           </View>
         </View>
       </Screen>
@@ -154,7 +156,7 @@ const $nameNumber: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 })
 const $headerIcon: ThemedStyle<ViewStyle> = () => ({
   paddingTop: 4,
-  
+
 })
 const $settingsNav: ThemedStyle<ViewStyle> = () => ({
   paddingTop: spacing.sm

@@ -27,9 +27,7 @@ export const COUNTRY_MAP = [
   { value: "EG", label: "Egypt", code: "+20" },
 ]
 export const LANGUAGE_MAP = [
-  
-  // Commenting canada because same code as USA
-  // { value: "CA", label: "Canada", code: "+1" },
+
   { value: "EN", country: "GB", label: "English", code: "" },
   
   { value: "HIN", country: "IN", label: "Hindi", code: "" },

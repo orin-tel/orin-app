@@ -14,7 +14,7 @@ import CountryFlag from "react-native-country-flag"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { CountryPhoneCode } from "@/types"
 
-export interface PhoneTextFieldProps extends TextFieldProps {
+export interface PhoneVerifyProps extends TextFieldProps {
   /**
    * An optional style override useful for padding & margin.
    */
@@ -34,8 +34,8 @@ export interface CountryCodeFieldRef {
 /**
  * Describe your component here
  */
-export const PhoneTextField = observer(
-  forwardRef(function PhoneTextField(props: PhoneTextFieldProps, ref: Ref<CountryCodeFieldRef>) {
+export const PhoneVerify = observer(
+  forwardRef(function PhoneVerify(props: PhoneVerifyProps, ref: Ref<CountryCodeFieldRef>) {
     const {
       style,
       placeholder,
@@ -67,6 +67,7 @@ export const PhoneTextField = observer(
         <View style={$styles}>
           <TextField
             style={themed($text)}
+            inputWrapperStyle={themed($text)}
             value={value}
             onChangeText={setValue}
             maxLength={10}
@@ -105,7 +106,7 @@ export const PhoneTextField = observer(
             keyExtractor={(extracted_key) => extracted_key.value}
             contentContainerStyle={themed($bottomSheetFlatlist)}
             renderItem={({ item }) => {
-              const isSelected = value.includes(item.value)
+              const isSelected = value.includes(item.value);
               // const isSelected = countryPhoneCode === item.code
 
               return (
@@ -141,6 +142,30 @@ const $container: ViewStyle = {
   justifyContent: "center",
 }
 
+const $phoneNumber: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  width: 330,
+  height: 40,
+  backgroundColor: colors.background,
+  borderRadius: 20,
+  alignSelf: "center",
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: spacing.sm,
+  marginHorizontal: 0,
+  paddingLeft: spacing.sm,
+})
+const $phoneVerify: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  width: 330,
+  height: 40,
+  backgroundColor: colors.background,
+  borderRadius: 20,
+  alignSelf: "center",
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: spacing.sm,
+  marginHorizontal: 0,
+})
+
 const $leftAccessoryStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   display: "flex",
   flexDirection: "row",
@@ -163,12 +188,14 @@ const $text: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   // fontFamily: typography.primary.normal,
   fontSize: spacing.lg - spacing.xxs,
   color: colors.text,
+  backgroundColor: colors.background,
+  
 })
 
 const $bottomSheetStyle: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
-  borderTopLeftRadius: spacing.lg, // Adjust this for more/less rounding
+  borderTopLeftRadius: spacing.lg,
   borderTopRightRadius: spacing.lg,
-  backgroundColor: colors.inputBackground, // Maintain theme color
+  backgroundColor: colors.inputBackground,
 })
 
 const $bottomSheetFlatlist: ThemedStyle<ViewStyle> = ({ spacing }) => ({

@@ -44,7 +44,9 @@ export type AppStackParamList = {
   OnboardingCongratulations: undefined
   OnboardingAbout: undefined
   OnboardingAgent: undefined
-  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+
+
+	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 /**
  * This is a list of all the route names that will exit the app if the back button
@@ -97,13 +99,14 @@ const AppStack = observer(function AppStack() {
         </>
       ) : (
         <>
-          <Stack.Screen name="SignUp" component={Screens.SignUpScreen}/>
-          <Stack.Screen name="SignIn" component={Screens.SignInScreen}/>
+          <Stack.Screen name="SignUp" component={Screens.SignUpScreen} />
+          <Stack.Screen name="SignIn" component={Screens.SignInScreen} />
         </>
       )}
 
       {/** 🔥 Your screens go here */}
-      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
+			
+			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
 })

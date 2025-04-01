@@ -1,23 +1,22 @@
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
-import { AgentConfigScreen, OverviewScreen, ProfileScreen } from "@/screens"
+import { AgentConfigScreen, ConnectCallsScreen, ExpectedCallsScreen, OverviewScreen, ProfileScreen, WhitelistBlacklistScreen, WhitelistScreen } from "@/screens"
 import { CoreTabNavigatorParamList, CoreTabScreenProps } from "."
 import { CompositeScreenProps } from "@react-navigation/native"
 import { useAppTheme } from "@/utils/useAppTheme"
-import { TouchableOpacity, ViewStyle } from "react-native"
+import { TouchableOpacity } from "react-native"
 import { Icon } from "@/components"
-import { colors, ThemedStyle } from "@/theme"
+import { colors } from "@/theme"
 
 export type SettingsNavigatorParamList = {
   Overview: undefined
   Profile: undefined
   AgentConfig: undefined
+  ConnectCalls: undefined
+  WhitelistBlacklist: undefined
+  Whitelist: undefined
+  ExpectedCalls: undefined
 }
 
-/**
- * Helper for automatically generating navigation prop types for each route.
- *
- * More info: https://reactnavigation.org/docs/typescript/#organizing-types
- */
 export type SettingStackScreenProps<T extends keyof SettingsNavigatorParamList> =
   CompositeScreenProps<
     NativeStackScreenProps<SettingsNavigatorParamList, T>,
@@ -39,7 +38,7 @@ export const SettingsNavigator = () => {
         contentStyle: {
           backgroundColor: colors.background,
         },
-        headerTitleStyle: { fontWeight: "bold"}
+        headerTitleStyle: { fontWeight: "bold", }
       })}
       initialRouteName="Overview"
     >
@@ -52,6 +51,18 @@ export const SettingsNavigator = () => {
       }} />
       <Stack.Screen name="AgentConfig" component={AgentConfigScreen} options={{
         title: "ORiN agent config",
+      }} />
+      <Stack.Screen name="ConnectCalls" component={ConnectCallsScreen} options={{
+        title: "Connect calls",
+      }} />
+      <Stack.Screen name="ExpectedCalls" component={ExpectedCallsScreen} options={{
+        title: "Expected calls",
+      }} />
+      <Stack.Screen name="WhitelistBlacklist" component={WhitelistBlacklistScreen} options={{
+        title: "Whitelist / Blacklist numbers",
+      }} />
+      <Stack.Screen name="Whitelist" component={WhitelistScreen} options={{
+        title: "Whitelist numbers",
       }} />
     </Stack.Navigator>
   )

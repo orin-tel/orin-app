@@ -71,7 +71,7 @@ export function Icon(props: IconProps): JSX.Element {
 
   const $imageStyle: StyleProp<ImageStyle> = [
     $imageStyleBase,
-    { tintColor: color ?? theme.colors.text },
+    icon !== "google" && { tintColor: color ?? theme.colors.text },
     size !== undefined && { width: size, height: size },
     $imageStyleOverride,
   ]
@@ -130,6 +130,12 @@ export const iconRegistry = {
   block: require("../../assets/icons/block.png"),
   calendar: require("../../assets/icons/calendar.png"),
   saveInverted: require("../../assets/icons/saveInverted.png"),
+  delete: require("../../assets/icons/delete.png"),
+  plusCircle: require("../../assets/icons/plusCircle.png"),
+  google: require("../../assets/icons/google.png"),
+  apple: require("../../assets/icons/apple.png"),
+  search: require("../../assets/icons/search.png"),
+  checkOutCircle: require("../../assets/icons/checkOutCircle.png"),
 }
 
 const $imageStyleBase: ImageStyle = {

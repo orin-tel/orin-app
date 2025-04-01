@@ -41,6 +41,7 @@ const palette = {
   warning500: "#CD8D19",
 
   info100: "#3572E114",
+  info150: "#3572E126",
   info200: "#3572E150",
   info300: "#3572E180",
   info400: "#3572E1BF",
@@ -53,6 +54,7 @@ const palette = {
   success500: "#4DAE4D",
 
   error100: "#FF635614",
+  error150: "#FF635626",
   error200: "#FF635650",
   error300: "#FF635680",
   error400: "#FF6356BF",
@@ -123,7 +125,7 @@ export const colors = {
   /**
    * Info Background.
    */
-  infoBackground: palette.info100,
+  infoBackground: palette.info150,
   /**
    * Success messages.
    */
@@ -139,7 +141,7 @@ export const colors = {
   /**
    * Error Background.
    */
-  errorBackground: palette.error100,
+  errorBackground: palette.error150,
   /**
    * Warning messages.
    */

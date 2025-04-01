@@ -29,6 +29,14 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
 
       navigation.navigate("AgentConfig");
     }
+    const gotoConnectCalls = () => {
+
+      navigation.navigate("ConnectCalls");
+    }
+    const gotoWhitelistBlacklist = () => {
+
+      navigation.navigate("WhitelistBlacklist");
+    }
 
     const { themed } = useAppTheme()
     return (
@@ -56,47 +64,47 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
           <View style={themed($settingsNav)}>
             <TouchableOpacity activeOpacity={0.8} onPress={gotoAgentConfig} style={themed($item)}>
               <View style={themed($iconContainer)}>
-                <Icon icon="person" size={spacing.md + spacing.xxs}/>
+                <Icon icon="person" size={spacing.md + spacing.xxs} />
               </View>
               <View style={themed($textContainer)}>
-                <Text tx="overviewScreen:agent_config" size="md" weight="semiBold" />
-                <Text tx="overviewScreen:agent_config_desc" size="sm" />
+                <Text tx="overviewScreen:agent_config" size="sm" weight="semiBold" />
+                <Text tx="overviewScreen:agent_config_desc" size="xs" />
               </View>
             </TouchableOpacity>
-            <View style={themed($item)}>
+            <TouchableOpacity activeOpacity={0.8} onPress={gotoConnectCalls} style={themed($item)}>
               <View style={themed($iconContainer)}>
                 <Icon icon="phoneOutgoing" />
               </View>
               <View style={themed($textContainer)}>
-                <Text tx="overviewScreen:connect_calls" size="md" weight="semiBold" />
-                <Text tx="overviewScreen:connect_calls_desc" size="sm" />
+                <Text tx="overviewScreen:connect_calls" size="sm" weight="semiBold" />
+                <Text tx="overviewScreen:connect_calls_desc" size="xs" />
               </View>
-            </View>
-            <View style={themed($item)}>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.8} onPress={gotoWhitelistBlacklist} style={themed($item)}>
               <View style={themed($iconContainer)}>
                 <Icon icon="block" />
               </View>
               <View style={themed($textContainer)}>
-                <Text tx="overviewScreen:whitelist_blacklist" size="md" weight="semiBold" />
-                <Text tx="overviewScreen:whitelist_blacklist_desc" size="sm" />
+                <Text tx="overviewScreen:whitelist_blacklist" size="sm" weight="semiBold" />
+                <Text tx="overviewScreen:whitelist_blacklist_desc" size="xs" />
               </View>
-            </View>
+            </TouchableOpacity>
             <View style={themed($item)}>
               <View style={themed($iconContainer)}>
                 <Icon icon="calendar" />
               </View>
               <View style={themed($textContainer)}>
-                <Text tx="overviewScreen:calendar_settings" size="md" weight="semiBold" />
-                <Text tx="overviewScreen:calendar_settings_desc" size="sm" />
+                <Text tx="overviewScreen:calendar_settings" size="sm" weight="semiBold" />
+                <Text tx="overviewScreen:calendar_settings_desc" size="xs" />
               </View>
             </View>
-            <TouchableOpacity style={themed($item)} onPress={() => signOut()}>
+            <TouchableOpacity style={themed($item)}>
               <View style={themed($iconContainer)}>
                 <Icon icon="calendar" />
               </View>
               <View style={themed($textContainer)}>
-                <Text tx="overviewScreen:contact_orin" size="md" weight="semiBold" />
-                <Text tx="overviewScreen:contact_orin_desc" size="sm" />
+                <Text tx="overviewScreen:contact_orin" size="sm" weight="semiBold" />
+                <Text tx="overviewScreen:contact_orin_desc" size="xs" />
               </View>
             </TouchableOpacity>
 
@@ -107,10 +115,6 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
   },
 )
 
-const $root: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  flex: 1,
-  backgroundColor: colors.background,
-})
 
 const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   padding: spacing.md,
@@ -159,7 +163,7 @@ const $headerIcon: ThemedStyle<ViewStyle> = () => ({
 
 })
 const $settingsNav: ThemedStyle<ViewStyle> = () => ({
-  paddingTop: spacing.sm
+  paddingTop: spacing.xs,
 })
 const $textContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   gap: spacing.xs,

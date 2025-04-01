@@ -152,7 +152,7 @@ export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAge
           <Button tx="onboardingAgentScreen:finish_setup"
             style={themed($btnValidate)}
             onPress={handleNext}
-            LeftAccessory={(props) => <Icon icon="check" containerStyle={props.style} />}
+            LeftAccessory={(props) => <Icon icon="checkOutCircle" color={colors.background} />}
           />
         </View>
       </Screen >)
@@ -274,25 +274,14 @@ const $sectionText: ThemedStyle<TextStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.md,
   textAlign: "center",
 })
+
 const $nameInputBox: ThemedStyle<TextStyle> = ({ colors }) => ({
   width: 321,
 })
-const $infoInputWrapper: ThemedStyle<TextStyle> = ({ colors }) => ({
-  width: 321,
-  minHeight: 140,
-  borderRadius: 20,
-  flexWrap: "wrap",
-  textAlignVertical: "top",
-})
-const $infoInput: ThemedStyle<TextStyle> = ({ colors }) => ({
-  width: 321,
-  minHeight: 140,
-  borderRadius: 20,
-  flexWrap: "wrap",
-  textAlignVertical: "top",
-})
-
 
 const $btnValidate: ThemedStyle<TextStyle> = () => ({
   width: 260,
+  gap: spacing.xs,
 })
+
+

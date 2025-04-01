@@ -255,9 +255,9 @@ const $nameInputBox: ThemedStyle<TextStyle> = ({ colors }) => ({
 })
 
 const $saveBtn: ThemedStyle<TextStyle> = ({ colors }) => ({
-  width: 120,
+  width: 106,
+  height: 48,
   alignSelf: "center",
-
   backgroundColor: colors.background,
   borderColor: colors.defaultPrimary,
   borderWidth: 2,

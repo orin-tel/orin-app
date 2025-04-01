@@ -201,7 +201,7 @@ function SwitchAccessibilityLabel(props: SwitchInputProps & { role: "on" | "off"
   const color = (function () {
     if (disabled) return colors.palette.neutral600
     if (status === "error") return colors.error
-    if (!on) return innerStyle?.backgroundColor || colors.palette.secondary500
+    if (!on) return innerStyle?.backgroundColor || colors.defaultPrimary
     return detailStyle?.backgroundColor || colors.palette.neutral100
   })()
 
@@ -230,21 +230,28 @@ function SwitchAccessibilityLabel(props: SwitchInputProps & { role: "on" | "off"
 
 const $inputOuter: StyleProp<ViewStyle> = [
   $inputOuterBase,
-  { height: 32, width: 56, borderRadius: 16, borderWidth: 0 },
+  { height: 22, width: 35, borderRadius: 20, borderWidth: 0 },
+  // { height: 32, width: 56, borderRadius: 16, borderWidth: 0 },
 ]
 
 const $switchInner: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderColor: colors.transparent,
   position: "absolute",
   paddingStart: 4,
-  paddingEnd: 4,
+  paddingEnd: 0,
+  padding: 1,
+  // paddingStart: 4,
+  // paddingEnd: 4,
 })
 
 const $switchDetail: SwitchToggleProps["inputDetailStyle"] = {
-  borderRadius: 12,
+  // borderRadius: 12,
+  borderRadius: 8,
   position: "absolute",
-  width: 24,
-  height: 24,
+  // width: 24,
+  // height: 24,
+  width: 16,
+  height: 16,
 }
 
 const $switchAccessibility: TextStyle = {

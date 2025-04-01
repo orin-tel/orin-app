@@ -20,11 +20,10 @@ export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingC
     const {
       userStore: {
         userCountry,
-        userCountryIcon,
         setUserCountry,
-        setUserCountryIcon
       },
     } = useStores()
+    
     // page indicator
     const { navigation } = _props;
 

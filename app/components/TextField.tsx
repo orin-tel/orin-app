@@ -259,15 +259,15 @@ const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
 
 const $inputStyle: ThemedStyle<ViewStyle> = ({ colors, typography, spacing }) => ({
   flex: 1,
-  alignSelf: "stretch",
+  // alignSelf: "stretch",
   // alignSelf: "center",
   fontFamily: typography.primary.normal,
   color: colors.text,
   fontSize: 16,
   height: spacing.lg + spacing.md,
   // https://github.com/facebook/react-native/issues/21720#issuecomment-532642093
-  paddingVertical: 0,
-  paddingHorizontal: 0,
+  // paddingVertical: 0,
+  // paddingHorizontal: 0,
   marginVertical: spacing.xs,
   marginHorizontal: spacing.sm,
 })

@@ -13,7 +13,6 @@ import { Button } from "./Button";
 import { Icon } from "./Icon";
 import { ListItem } from "./ListItem";
 import { TextField, TextFieldProps } from "./TextField";
-import CountryFlag from "react-native-country-flag";
 
 export interface SelectFieldProps
     extends Omit<TextFieldProps, "ref" | "onValueChange" | "onChange" | "value"> {

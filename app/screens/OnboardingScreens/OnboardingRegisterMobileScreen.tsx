@@ -8,6 +8,8 @@ import { useAppTheme } from "@/utils/useAppTheme"
 import { useStores } from "@/models"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "@/models"
+import { userStore } from './../../models/UserStore';
+import { EpisodeModel } from './../../models/Episode';
 
 export const OnboardingRegisterMobileScreen: FC<
   OnboardingStackScreenProps<"OnboardingRegisterMobile">
@@ -21,12 +23,14 @@ export const OnboardingRegisterMobileScreen: FC<
       setUserPhoneNumber,
       setUserCountryPhoneCode,
     },
+    episodeStore
   } = useStores()
 
   const { navigation } = _props
 
   const handleOTPGeneration = () => {
     // Handle API for otp generation
+    episodeStore.setProp("episodes", [])
     navigation.navigate("Onboarding", {
       screen: "OnboardingVerifyOtp",
     })

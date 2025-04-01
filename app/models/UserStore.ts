@@ -11,6 +11,14 @@ export const UserStore = types
         COUNTRY_MAP.map((c) => c.code),
       ),
     ),
+    userTransferPhoneNumber: types.maybeNull(types.string),
+    userTransferPhoneCode: types.maybeNull(
+      types.enumeration(
+        "CountryPhoneCode",
+        COUNTRY_MAP.map((c) => c.code),
+      ),
+    ),
+    userTransferPhoneCodeIcon: types.maybeNull(types.string),
     // Country Screen-----
     userCountry: types.maybeNull(types.string),
     userCountryIcon: types.maybeNull(types.string),
@@ -34,6 +42,17 @@ export const UserStore = types
     setUserCountryPhoneCode(countryPhoneCode: CountryPhoneCode | null) {
       self.userCountryPhoneCode = countryPhoneCode;
     },
+    // transfer
+    setUserTransferPhoneNumber(transferPhoneNumber: string | null) {
+      self.userTransferPhoneNumber = transferPhoneNumber;
+    },
+    setUserTransferPhoneCode(transferPhoneCode: CountryPhoneCode | null) {
+      self.userTransferPhoneCode = transferPhoneCode;
+    },
+    setUserTransferPhoneCodeIcon(userTransferPhoneCodeIcon: string | null) {
+      const country = LANGUAGE_MAP.find((item) => item.value === userTransferPhoneCodeIcon)?.country ?? null;
+      self.userTransferPhoneCodeIcon = country;
+    },
     // Country Screen-----
     setUserCountry(userCountry: string | null) {
       self.userCountry = userCountry;
@@ -42,6 +61,7 @@ export const UserStore = types
       const country = COUNTRY_MAP.find((item) => item.value === userCountryIcon)?.value ?? null;
       self.userCountryIcon = country;
     },
+    // -----Country Screen
     // About Screen-----
     setUserName(userName: string | null) {
       self.userName = userName;

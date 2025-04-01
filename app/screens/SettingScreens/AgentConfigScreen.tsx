@@ -1,52 +1,38 @@
-import { FC, useCallback, useState } from "react"
+import { FC, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
-import { OnboardingStackScreenProps } from "@/navigators"
+import { SettingStackScreenProps } from "@/navigators"
 import { Button, Icon, Screen, Text, TextField } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { colors, spacing, ThemedStyle } from "@/theme"
-import { useProgress } from "@/context/ProgressProvider"
-import { useFocusEffect } from "@react-navigation/native"
-import { LanguageSelect } from "@/components/LanguageSelect"
-import { COUNTRY_MAP, LANGUAGE_MAP } from "@/constants"
-import CountryFlag from "react-native-country-flag"
 import { useStores } from "@/models"
+import { LanguageSelect } from "@/components/LanguageSelect"
+import { LANGUAGE_MAP } from "@/constants"
+import CountryFlag from "react-native-country-flag"
 
-export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAgent">> = observer(
-  function OnboardingAgentScreen(_props) {
-    const { themed } = useAppTheme();
-    const [selectedOption, setSelectedOption] = useState<"one" | "two" | "three">("one");
-
+export const AgentConfigScreen: FC<SettingStackScreenProps<"AgentConfig">> = observer(
+  function AgentConfigScreen(_props) {
     const {
       userStore: {
         userLanguage,
         userLanguageIcon,
+        userAgentName,
+        userAgentVoice,
         setUserLanguage,
         setUserLanguageIcon,
         setUserAgentName,
         setUserAgentVoice,
       },
     } = useStores()
-    // progress bar
-    const { navigation } = _props;
 
-    const { setProgress } = useProgress();
-    useFocusEffect(
-      useCallback(() => {
-        setProgress(1);
-      }, [])
-    );
-
-    const handleNext = () => {
-
-      navigation.navigate("Core", {
-        screen: "CallLogs",
-        params: {
-          screen: "CallList"
-        }
-      })
+    const [editedName, setEditedName] = useState(userAgentName);
+    const [selectedOption, setSelectedOption] = useState<"Voice 1" | "Voice 2" | "Voice 3" | string>(userAgentVoice ? userAgentVoice : "Voice 1");
+    const updateChanges = () => {
+      setUserAgentName(editedName);
+      setUserAgentVoice(selectedOption);
     }
-    //
+
+    const { themed } = useAppTheme()
     return (
       <Screen
         style={themed($root)}
@@ -55,22 +41,18 @@ export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAge
       >
         <View style={themed($container)}>
 
-          <View style={themed($sectionContainer)}>
-            <View style={themed($textContainer)}>
-              <Text tx="onboardingAgentScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
-              <Text tx="onboardingAgentScreen:description" style={themed($sectionText)} size="sm" weight="normal" />
-            </View>
+          <View style={themed($agentDetails)}>
+
             <View style={themed($sectionContainerOne)}>
               <View>
                 <Text tx="onboardingAgentScreen:label_one" style={themed($label)}
                   weight="medium" />
                 <TextField
                   inputWrapperStyle={themed($nameInputBox)}
-                  placeholderTx="onboardingAgentScreen:example_name"
-                  onChangeText={setUserAgentName}
-                  LeftAccessory={(props) => (
-                    <Icon icon="person" size={20} containerStyle={props.style} />
-                  )} />
+                  // placeholderTx="onboardingAgentScreen:example_name"
+                  placeholder={`${userAgentName}`}
+                  onChangeText={setEditedName}
+                />
               </View>
               <View>
                 <Text tx="onboardingAgentScreen:label_two" style={themed($label)}
@@ -78,6 +60,7 @@ export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAge
 
                 <LanguageSelect
                   style={themed($languageSelect)}
+                  inputWrapperStyle={themed($nameInputBox)}
                   placeholderTx="onboardingAgentScreen:select_language"
                   value={userLanguage ? [userLanguage] : []}
                   onSelect={(newValue) => {
@@ -108,57 +91,58 @@ export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAge
               <View style={themed($outerOptionContainer)}>
                 {/**Voice 1--------------- */}
                 <TouchableOpacity
-                  activeOpacity={selectedOption === "one" ? 1 : 0.5}
-                  onPress={() => { setSelectedOption("one"); setUserAgentVoice("Voice 1") }}
-                  style={themed([$optionContainer, selectedOption === "one" && $selectedOption])}
+                  activeOpacity={selectedOption === "Voice 1" ? 1 : 0.5}
+                  onPress={() => { setSelectedOption("Voice 1"); }}
+                  style={themed([$optionContainer, selectedOption === "Voice 1" && $selectedOption])}
                 >
                   <View style={themed($optionTitle)}>
-                    <View style={selectedOption === "one" ? themed($checkIconSelected) : themed($checkIconNotSelected)}>
-                      {selectedOption === "one" && <Icon icon="check" size={16} color={colors.background} />}
+                    <View style={selectedOption === "Voice 1" ? themed($checkIconSelected) : themed($checkIconNotSelected)}>
+                      {selectedOption === "Voice 1" && <Icon icon="check" size={16} color={colors.background} />}
                     </View>
-                    <Text tx="onboardingAgentScreen:voice_one" weight={selectedOption === "one" ? "semiBold" : "normal"} />
+                    <Text tx="onboardingAgentScreen:voice_one" weight={selectedOption === "Voice 1" ? "semiBold" : "normal"} />
                   </View>
                 </TouchableOpacity>
                 {/**Voice 2--------------- */}
                 <TouchableOpacity
-                  activeOpacity={selectedOption === "two" ? 1 : 0.5}
-                  onPress={() => { setSelectedOption("two"); setUserAgentVoice("Voice 2") }}
-                  style={themed([$optionContainer, selectedOption === "two" && $selectedOption])}
+                  activeOpacity={selectedOption === "Voice 2" ? 1 : 0.5}
+                  onPress={() => { setSelectedOption("Voice 2"); }}
+                  style={themed([$optionContainer, selectedOption === "Voice 2" && $selectedOption])}
                 >
                   <View style={themed($optionTitle)}>
-                    <View style={selectedOption === "two" ? themed($checkIconSelected) : themed($checkIconNotSelected)}>
-                      {selectedOption === "two" && <Icon icon="check" size={16} color={colors.background} />}
+                    <View style={selectedOption === "Voice 2" ? themed($checkIconSelected) : themed($checkIconNotSelected)}>
+                      {selectedOption === "Voice 2" && <Icon icon="check" size={16} color={colors.background} />}
                     </View>
-                    <Text tx="onboardingAgentScreen:voice_two" weight={selectedOption === "two" ? "semiBold" : "normal"} />
+                    <Text tx="onboardingAgentScreen:voice_two" weight={selectedOption === "Voice 2" ? "semiBold" : "normal"} />
                   </View>
                 </TouchableOpacity>
                 {/**Voice 3--------------- */}
                 <TouchableOpacity
-                  activeOpacity={selectedOption === "three" ? 1 : 0.5}
-                  onPress={() => { setSelectedOption("three"); setUserAgentVoice("Voice 3") }}
-                  style={themed([$optionContainer, selectedOption === "three" && $selectedOption])}
+                  activeOpacity={selectedOption === "Voice 3" ? 1 : 0.5}
+                  onPress={() => { setSelectedOption("Voice 3"); }}
+                  style={themed([$optionContainer, selectedOption === "Voice 3" && $selectedOption])}
                 >
                   <View style={themed($optionTitle)}>
-                    <View style={selectedOption === "three" ? themed($checkIconSelected) : themed($checkIconNotSelected)}>
-                      {selectedOption === "three" && <Icon icon="check" size={16} color={colors.background} />}
+                    <View style={selectedOption === "Voice 3" ? themed($checkIconSelected) : themed($checkIconNotSelected)}>
+                      {selectedOption === "Voice 3" && <Icon icon="check" size={16} color={colors.background} />}
                     </View>
-                    <Text tx="onboardingAgentScreen:voice_three" weight={selectedOption === "three" ? "semiBold" : "normal"} />
+                    <Text tx="onboardingAgentScreen:voice_three" weight={selectedOption === "Voice 3" ? "semiBold" : "normal"} />
                   </View>
                 </TouchableOpacity>
               </View>
             </View>
 
           </View>
-          <Button tx="onboardingAgentScreen:finish_setup"
-            style={themed($btnValidate)}
-            onPress={handleNext}
-            LeftAccessory={(props) => <Icon icon="checkOutCircle" color={colors.background} />}
+          <Button tx="agentConfigScreen:save"
+            style={themed($saveBtn)}
+            textStyle={themed($saveBtnText)}
+            onPress={updateChanges}
+            LeftAccessory={(props) => <Icon icon="saveInverted" containerStyle={props.style} />}
           />
         </View>
-      </Screen >)
-  }
+      </Screen >
+    )
+  },
 )
-
 
 const $root: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
@@ -178,40 +162,45 @@ const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   gap: spacing.xxxl,
 })
 
-const $sectionContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  gap: spacing.lg + spacing.xxs,
-  alignItems: "center",
-})
 const $label: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  gap: spacing.xxs,
+  // gap: spacing.xxs,
   paddingBottom: spacing.sm - spacing.xxxs,
 })
-const $sectionContainerOne: ThemedStyle<TextStyle> = ({ spacing }) => ({
+
+const $agentDetails: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
+  backgroundColor: colors.inputBackground,
+  // alignItems: "center",
+  borderRadius: 20,
+  padding: spacing.md,
   gap: spacing.lg + spacing.xxs,
-  alignSelf: "center",
+  alignItems: "center",
+
+})
+
+const $sectionContainerOne: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  gap: spacing.lg,
 
 })
 const $sectionContainerTwo: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  alignSelf: "center",
 })
 const $outerOptionContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
   gap: spacing.md,
-  alignSelf: "center",
+
 })
 
 const $optionContainer: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.transparent,
+  backgroundColor: colors.background,
   width: 321,
   padding: spacing.md,
   paddingVertical: spacing.sm,
-  gap: spacing.md,
+  borderRadius: 53,
 })
 
 const $optionTitle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row",
   gap: spacing.md,
   alignItems: "center",
-  zIndex: -1,
+
 })
 
 const $checkIconSelected: ThemedStyle<ViewStyle> = ({ colors }) => ({
@@ -247,7 +236,6 @@ const $selectedOption: ThemedStyle<TextStyle> = ({ colors }) => ({
   shadowOpacity: 0.1,
   shadowRadius: 12,
   elevation: 4,
-
 })
 
 const $languageSelect: ThemedStyle<TextStyle> = ({ }) => ({
@@ -257,31 +245,30 @@ const $languageSelect: ThemedStyle<TextStyle> = ({ }) => ({
   borderWidth: 0,
   justifyContent: "space-between",
 })
-
 const $countryIcon: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingLeft: spacing.md,
 })
 
-const $textContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  gap: spacing.sm,
-})
-
-const $sectionTitle: ThemedStyle<TextStyle> = () => ({
-  textAlign: "center",
-})
-
-const $sectionText: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  paddingHorizontal: spacing.md,
-  textAlign: "center",
-})
-
 const $nameInputBox: ThemedStyle<TextStyle> = ({ colors }) => ({
   width: 321,
+  backgroundColor: colors.background,
 })
 
-const $btnValidate: ThemedStyle<TextStyle> = () => ({
-  width: 260,
-  gap: spacing.xs,
+const $saveBtn: ThemedStyle<TextStyle> = ({ colors }) => ({
+  width: 106,
+  height: 48,
+  alignSelf: "center",
+  backgroundColor: colors.background,
+  borderColor: colors.defaultPrimary,
+  borderWidth: 2,
+  shadowColor: colors.shadowPrimary,
+  shadowOpacity: 0.1,
+  shadowRadius: 12,
+  elevation: 4,
+})
+const $saveBtnText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.defaultPrimary,
+  paddingLeft: spacing.sm
 })
 
 

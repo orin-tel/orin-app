@@ -6,9 +6,9 @@ import { Screen } from "@/components"
 import { AppStackScreenProps } from "@/navigators"
 import { useAppTheme } from "@/utils/useAppTheme"
 import * as WebBrowser from "expo-web-browser"
-import * as AuthSession from "expo-auth-session"
 import { useSSO } from "@clerk/clerk-expo"
 import { useWarmUpBrowser } from "@/utils/useWarmupBrowser"
+import { createURL } from "expo-linking"
 
 // Handle any pending authentication sessions
 WebBrowser.maybeCompleteAuthSession()
@@ -26,9 +26,7 @@ export const SignUpScreen: FC<AppStackScreenProps<"SignUp">> = function SignUpSc
       const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
         strategy: "oauth_google",
         // Defaults to current path
-        redirectUrl: AuthSession.makeRedirectUri({
-          native: "orinapp://onboarding/country",
-        }),
+        redirectUrl: createURL("/onboarding/country", { scheme: "orinapp" }),
       })
 
       // If sign in was successful, set the active session

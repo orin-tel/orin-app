@@ -5,7 +5,6 @@ import { DialingStackScreenProps } from "@/navigators"
 import { Screen, Text } from "@/components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "@/models"
-// import TwilioVoiceSdkModule from "modules/twilio-voice-sdk/src/TwilioVoiceSdkModule"
 
 export const DialerScreen: FC<DialingStackScreenProps<"Dialer">> = observer(
   function DialerScreen() {
@@ -17,7 +16,6 @@ export const DialerScreen: FC<DialingStackScreenProps<"Dialer">> = observer(
     return (
       <Screen style={$root} preset="scroll">
         <Text text="dialer" />
-        {/* <Text>{TwilioVoiceSdkModule.hello()}</Text> */}
       </Screen>
     )
   },

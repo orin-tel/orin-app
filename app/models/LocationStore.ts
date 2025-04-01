@@ -9,6 +9,7 @@ import {
 } from "mobx-state-tree"
 import * as Location from "expo-location"
 import { COUNTRY_MAP } from "@/constants"
+import { withSetPropAction } from "./helpers/withSetPropAction"
 
 export const COUNTRY_PHONE_MAP: Record<string, string> = COUNTRY_MAP.reduce(
   (acc, { value, code }) => {
@@ -19,7 +20,8 @@ export const COUNTRY_PHONE_MAP: Record<string, string> = COUNTRY_MAP.reduce(
 )
 
 export const LocationStore = types
-  .model("LocationStore", {
+  .model("LocationStore")
+  .props({
     permissionGranted: types.optional(types.boolean, false),
     latitude: types.maybeNull(types.number),
     longitude: types.maybeNull(types.number),
@@ -28,6 +30,7 @@ export const LocationStore = types
     error: types.maybeNull(types.string),
     loading: types.optional(types.boolean, false),
   })
+  .actions(withSetPropAction)
   .actions((self) => ({
     fetchLocation: flow(function* () {
       self.loading = true

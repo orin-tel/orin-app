@@ -1,9 +1,11 @@
 import { types, Instance, SnapshotIn, SnapshotOut, applySnapshot } from "mobx-state-tree"
 import { COUNTRY_MAP, LANGUAGE_MAP } from "@/constants"
-import { CountryPhoneCode, LanguageIcon } from "@/types"
+import { CountryPhoneCode } from "@/types"
+import { withSetPropAction } from "./helpers/withSetPropAction"
 
 export const UserStore = types
-  .model("UserStore", {
+  .model("UserStore")
+  .props({
     userPhoneNumber: types.maybeNull(types.string),
     userCountryPhoneCode: types.maybeNull(
       types.enumeration(
@@ -33,14 +35,18 @@ export const UserStore = types
     userAgentName: types.maybeNull(types.string),
     userAgentVoice: types.maybeNull(types.string),
     // -----Agent Screen
-    
+
+    // ------ Call related -------
+    telephonyAccessToken: types.maybeNull(types.string),
+    // ------ Call related -------
   })
+  .actions(withSetPropAction)
   .actions((self) => ({
     setUserPhoneNumber(phoneNumber: string | null) {
-      self.userPhoneNumber = phoneNumber;
+      self.userPhoneNumber = phoneNumber
     },
     setUserCountryPhoneCode(countryPhoneCode: CountryPhoneCode | null) {
-      self.userCountryPhoneCode = countryPhoneCode;
+      self.userCountryPhoneCode = countryPhoneCode
     },
     // transfer
     setUserTransferPhoneNumber(transferPhoneNumber: string | null) {
@@ -55,36 +61,41 @@ export const UserStore = types
     },
     // Country Screen-----
     setUserCountry(userCountry: string | null) {
-      self.userCountry = userCountry;
+      self.userCountry = userCountry
     },
     setUserCountryIcon(userCountryIcon: string | null) {
-      const country = COUNTRY_MAP.find((item) => item.value === userCountryIcon)?.value ?? null;
-      self.userCountryIcon = country;
+      const country = COUNTRY_MAP.find((item) => item.value === userCountryIcon)?.value ?? null
+      self.userCountryIcon = country
     },
     // -----Country Screen
     // About Screen-----
     setUserName(userName: string | null) {
-      self.userName = userName;
+      self.userName = userName
     },
     setUserAbout(userAbout: string | null) {
-      self.userAbout = userAbout;
+      self.userAbout = userAbout
     },
     // -----About Screen
     // Agent Screen-----
     setUserLanguage(userLanguage: string | null) {
-      self.userLanguage = userLanguage;
+      self.userLanguage = userLanguage
     },
     setUserLanguageIcon(userLanguageIcon: string | null) {
-      const country = LANGUAGE_MAP.find((item) => item.value === userLanguageIcon)?.country ?? null;
-      self.userLanguageIcon = country;
+      const country = LANGUAGE_MAP.find((item) => item.value === userLanguageIcon)?.country ?? null
+      self.userLanguageIcon = country
     },
     setUserAgentName(userAgentName: string | null) {
-      self.userAgentName = userAgentName;
+      self.userAgentName = userAgentName
     },
     setUserAgentVoice(userAgentVoice: string | null) {
-      self.userAgentVoice = userAgentVoice;
+      self.userAgentVoice = userAgentVoice
     },
     // -----Agent Screen
+    // ------ Call related -------
+    setTelephonyAccessToken(telephonyAccessToken: string | null) {
+      self.telephonyAccessToken = telephonyAccessToken
+    },
+    // ------ Call related -------
     resetStore() {
       applySnapshot(self, {})
     },

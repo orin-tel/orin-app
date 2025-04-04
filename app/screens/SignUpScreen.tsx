@@ -1,12 +1,12 @@
-import { FC, useCallback } from "react"
-import { TextStyle, ViewStyle } from "react-native"
+import { FC, useCallback, useEffect, useState } from "react"
+import { ActivityIndicator, TextStyle, ViewStyle } from "react-native"
 import { Text, Button, Icon } from "../components"
 import { $styles, ThemedStyle } from "@/theme"
 import { Screen } from "@/components"
 import { AppStackScreenProps } from "@/navigators"
 import { useAppTheme } from "@/utils/useAppTheme"
 import * as WebBrowser from "expo-web-browser"
-import { useSSO } from "@clerk/clerk-expo"
+import { useAuth, useSSO } from "@clerk/clerk-expo"
 import { useWarmUpBrowser } from "@/utils/useWarmupBrowser"
 import { createURL } from "expo-linking"
 
@@ -18,12 +18,15 @@ export const SignUpScreen: FC<AppStackScreenProps<"SignUp">> = function SignUpSc
   // Use the `useSSO()` hook to access the `startSSOFlow()` method
   const { startSSOFlow } = useSSO()
   const { themed } = useAppTheme()
+  const { isSignedIn } = useAuth()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const onPress = useCallback(async () => {
     try {
+      setIsLoading(true)
       // Start the authentication process by calling `startSSOFlow()`
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
+      const { createdSessionId, setActive } = await startSSOFlow({
         strategy: "oauth_google",
         // Defaults to current path
         redirectUrl: createURL("/onboarding/country", { scheme: "orinapp" }),
@@ -48,6 +51,10 @@ export const SignUpScreen: FC<AppStackScreenProps<"SignUp">> = function SignUpSc
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    console.log(isLoading)
+  }, [isLoading, isSignedIn])
+
   return (
     <Screen
       preset="fixed"
@@ -58,13 +65,17 @@ export const SignUpScreen: FC<AppStackScreenProps<"SignUp">> = function SignUpSc
       <Text preset="heading" tx="signUpScreen:title" style={themed($title)} />
       <Text preset="default" tx="signUpScreen:intro_one" style={themed($intro)} />
       <Text preset="default" tx="signUpScreen:intro_two" style={themed($intro)} />
-      <Button
-        preset="filled"
-        tx="signUpScreen:google_oauth"
-        style={themed($emailBtn)}
-        onPress={onPress}
-        LeftAccessory={(props) => <Icon style={props.style} icon="github" />}
-      />
+      {!isLoading ? (
+        <Button
+          preset="filled"
+          tx="signUpScreen:google_oauth"
+          style={themed($emailBtn)}
+          onPress={onPress}
+          LeftAccessory={(props) => <Icon style={props.style} icon="github" />}
+        />
+      ) : (
+        <ActivityIndicator />
+      )}
     </Screen>
   )
 }

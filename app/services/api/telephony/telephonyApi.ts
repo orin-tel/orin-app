@@ -6,16 +6,16 @@
  * documentation for more details.
  */
 import { ApiResponse, ApisauceInstance, create } from "apisauce"
-import Config from "../../config"
-import { GeneralApiProblem, getGeneralApiProblem } from "./apiProblem"
-import type { ApiConfig, ApiFeedResponse } from "./api.types"
-import type { EpisodeSnapshotIn } from "../../models/Episode"
+import Config from "../../../config"
+import { GeneralApiProblem, getGeneralApiProblem } from "../apiProblem"
+import type { ApiConfig, NestResponse } from "../api.types"
+import { getClerkInstance } from "@clerk/clerk-expo"
 
 /**
  * Configuring the apisauce instance.
  */
-export const DEFAULT_API_CONFIG: ApiConfig = {
-  url: Config.API_BASE_URL,
+export const CALLS_API_CONFIG: ApiConfig = {
+  url: Config.API_BASE_URL + "/calls",
   timeout: 10000,
 }
 
@@ -23,14 +23,14 @@ export const DEFAULT_API_CONFIG: ApiConfig = {
  * Manages all requests to the API. You can use this class to build out
  * various requests that you need to call from your backend API.
  */
-export class Api {
+export class TelephonyApi {
   apisauce: ApisauceInstance
   config: ApiConfig
 
   /**
    * Set up our API instance. Keep this lightweight!
    */
-  constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
+  constructor(config: ApiConfig = CALLS_API_CONFIG) {
     this.config = config
     this.apisauce = create({
       baseURL: this.config.url,
@@ -42,31 +42,27 @@ export class Api {
   }
 
   /**
-   * Gets a list of recent React Native Radio episodes.
+   * getTelephony registration token
    */
-  async getEpisodes(): Promise<{ kind: "ok"; episodes: EpisodeSnapshotIn[] } | GeneralApiProblem> {
-    // make the api call
-    const response: ApiResponse<ApiFeedResponse> = await this.apisauce.get(
-      `api.json?rss_url=https%3A%2F%2Ffeeds.simplecast.com%2FhEI_f9Dx`,
-    )
+  async getTelephonyToken(): Promise<{ kind: "ok"; token: string } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response: ApiResponse<NestResponse<string>> = await this.apisauce.get(`/telephony-token`)
 
     // the typical ways to die when calling an api
     if (!response.ok) {
       const problem = getGeneralApiProblem(response)
       if (problem) return problem
     }
-
-    // transform the data into the format we are expecting
     try {
-      const rawData = response.data
-
-      // This is where we transform the data into the shape we expect for our MST model.
-      const episodes: EpisodeSnapshotIn[] =
-        rawData?.items.map((raw) => ({
-          ...raw,
-        })) ?? []
-
-      return { kind: "ok", episodes }
+      const data = response.data
+      if (!data) {
+        throw new Error("data not available")
+      }
+      return {
+        kind: "ok",
+        token: data?.data,
+      }
     } catch (e) {
       if (__DEV__ && e instanceof Error) {
         console.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
@@ -77,4 +73,4 @@ export class Api {
 }
 
 // Singleton instance of the API for convenience
-export const api = new Api()
+export const telephonyApi = new TelephonyApi()

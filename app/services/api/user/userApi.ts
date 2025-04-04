@@ -6,16 +6,17 @@
  * documentation for more details.
  */
 import { ApiResponse, ApisauceInstance, create } from "apisauce"
-import Config from "../../config"
-import { GeneralApiProblem, getGeneralApiProblem } from "./apiProblem"
-import type { ApiConfig, ApiFeedResponse } from "./api.types"
-import type { EpisodeSnapshotIn } from "../../models/Episode"
+import Config from "../../../config"
+import { GeneralApiProblem, getGeneralApiProblem } from "../apiProblem"
+import type { ApiConfig, NestResponse } from "../api.types"
+import { IUser } from "./types"
+import { getClerkInstance } from "@clerk/clerk-expo"
 
 /**
  * Configuring the apisauce instance.
  */
-export const DEFAULT_API_CONFIG: ApiConfig = {
-  url: Config.API_BASE_URL,
+export const USER_API_CONFIG: ApiConfig = {
+  url: Config.API_BASE_URL + "/user",
   timeout: 10000,
 }
 
@@ -23,14 +24,14 @@ export const DEFAULT_API_CONFIG: ApiConfig = {
  * Manages all requests to the API. You can use this class to build out
  * various requests that you need to call from your backend API.
  */
-export class Api {
+export class UserApi {
   apisauce: ApisauceInstance
   config: ApiConfig
 
   /**
    * Set up our API instance. Keep this lightweight!
    */
-  constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
+  constructor(config: ApiConfig = USER_API_CONFIG) {
     this.config = config
     this.apisauce = create({
       baseURL: this.config.url,
@@ -42,31 +43,27 @@ export class Api {
   }
 
   /**
-   * Gets a list of recent React Native Radio episodes.
+   * signIn user
    */
-  async getEpisodes(): Promise<{ kind: "ok"; episodes: EpisodeSnapshotIn[] } | GeneralApiProblem> {
-    // make the api call
-    const response: ApiResponse<ApiFeedResponse> = await this.apisauce.get(
-      `api.json?rss_url=https%3A%2F%2Ffeeds.simplecast.com%2FhEI_f9Dx`,
-    )
+  async signInUser(): Promise<{ kind: "ok"; user: IUser } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response: ApiResponse<NestResponse<IUser>> = await this.apisauce.get(`/sign-in`)
 
     // the typical ways to die when calling an api
     if (!response.ok) {
       const problem = getGeneralApiProblem(response)
       if (problem) return problem
     }
-
-    // transform the data into the format we are expecting
     try {
-      const rawData = response.data
-
-      // This is where we transform the data into the shape we expect for our MST model.
-      const episodes: EpisodeSnapshotIn[] =
-        rawData?.items.map((raw) => ({
-          ...raw,
-        })) ?? []
-
-      return { kind: "ok", episodes }
+      const data = response.data
+      if (!data) {
+        throw new Error("data not available")
+      }
+      return {
+        kind: "ok",
+        user: data?.data,
+      }
     } catch (e) {
       if (__DEV__ && e instanceof Error) {
         console.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
@@ -77,4 +74,4 @@ export class Api {
 }
 
 // Singleton instance of the API for convenience
-export const api = new Api()
+export const userApi = new UserApi()

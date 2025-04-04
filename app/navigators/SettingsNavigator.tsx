@@ -1,5 +1,13 @@
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
-import { AgentConfigScreen, ConnectCallsScreen, ExpectedCallsScreen, OverviewScreen, ProfileScreen, WhitelistBlacklistScreen, WhitelistScreen } from "@/screens"
+import {
+  AgentConfigScreen,
+  ConnectCallsScreen,
+  ExpectedCallsScreen,
+  OverviewScreen,
+  ProfileScreen,
+  WhitelistBlacklistScreen,
+  WhitelistScreen,
+} from "@/screens"
 import { CoreTabNavigatorParamList, CoreTabScreenProps } from "."
 import { CompositeScreenProps } from "@react-navigation/native"
 import { useAppTheme } from "@/utils/useAppTheme"
@@ -38,32 +46,60 @@ export const SettingsNavigator = () => {
         contentStyle: {
           backgroundColor: colors.background,
         },
-        headerTitleStyle: { fontWeight: "bold", }
+        headerTitleStyle: { fontWeight: "bold" },
       })}
       initialRouteName="Overview"
     >
-      <Stack.Screen name="Overview" component={OverviewScreen} options={{
-        title: "Settings",
-        headerLeft: () => null,
-      }} />
-      <Stack.Screen name="Profile" component={ProfileScreen} options={{
-        title: "Profile",
-      }} />
-      <Stack.Screen name="AgentConfig" component={AgentConfigScreen} options={{
-        title: "ORiN agent config",
-      }} />
-      <Stack.Screen name="ConnectCalls" component={ConnectCallsScreen} options={{
-        title: "Connect calls",
-      }} />
-      <Stack.Screen name="ExpectedCalls" component={ExpectedCallsScreen} options={{
-        title: "Expected calls",
-      }} />
-      <Stack.Screen name="WhitelistBlacklist" component={WhitelistBlacklistScreen} options={{
-        title: "Whitelist / Blacklist numbers",
-      }} />
-      <Stack.Screen name="Whitelist" component={WhitelistScreen} options={{
-        title: "Whitelist numbers",
-      }} />
+      <Stack.Screen
+        name="Overview"
+        component={OverviewScreen}
+        options={{
+          title: "Settings",
+          headerLeft: () => null,
+        }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: "Profile",
+        }}
+      />
+      <Stack.Screen
+        name="AgentConfig"
+        component={AgentConfigScreen}
+        options={{
+          title: "ORiN agent config",
+        }}
+      />
+      <Stack.Screen
+        name="ConnectCalls"
+        component={ConnectCallsScreen}
+        options={{
+          title: "Connect calls",
+        }}
+      />
+      <Stack.Screen
+        name="ExpectedCalls"
+        component={ExpectedCallsScreen}
+        options={{
+          title: "Expected calls",
+        }}
+      />
+      <Stack.Screen
+        name="WhitelistBlacklist"
+        component={WhitelistBlacklistScreen}
+        options={{
+          title: "Whitelist / Blacklist numbers",
+        }}
+      />
+      <Stack.Screen
+        name="Whitelist"
+        component={WhitelistScreen}
+        options={{
+          title: "Whitelist numbers",
+        }}
+      />
     </Stack.Navigator>
   )
 }

@@ -174,60 +174,66 @@ const en = {
   },
   onboardingValidateScreen: {
     title: "Forward and Validate",
-    description: "You must complete the forwarding process first and then validate it to confirm the successful setup of call forwarding",
-    number: "*#21# +91 8716239872", 
-    info_one: "If you have an Android phone, simply copy and paste this into your dialer and call to complete the process",
-    info_two: "If you have an iOS phone, go to Settings > Phone > Call Forwarding, enter the number, and enable forwarding.", 
-    validate:"Validate",
+    description:
+      "You must complete the forwarding process first and then validate it to confirm the successful setup of call forwarding",
+    number: "*#21# +91 8716239872",
+    info_one:
+      "If you have an Android phone, simply copy and paste this into your dialer and call to complete the process",
+    info_two:
+      "If you have an iOS phone, go to Settings > Phone > Call Forwarding, enter the number, and enable forwarding.",
+    validate: "Validate",
   },
   onboardingCongratulationsScreen: {
     title: "Congratulations!",
-    description: "Your validation has been done successfully. All your calls will be forwarded to our number.",
+    description:
+      "Your validation has been done successfully. All your calls will be forwarded to our number.",
     label: "Number",
-    number: "+91 8716239872", 
-    next:"Next",
+    number: "+91 8716239872",
+    next: "Next",
   },
   onboardingAboutScreen: {
     title: "Tell us a bit about you",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
     label_one: "Your name",
-    example_name:"Eg. Sanando", 
+    example_name: "Eg. Sanando",
     label_two: "Information about you for the AI to know you better",
-    example_info:"Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.", 
-    next:"Next",
+    example_info:
+      "Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.",
+    next: "Next",
   },
   onboardingAgentScreen: {
     title: "Create your Orin agent",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
     label_one: "Agent name",
-    example_name:"Eg. Sanando", 
+    example_name: "Eg. Sanando",
     label_two: "Agent language",
     select_language: "Select a language",
     label_three: "Select a voice",
     voice_one: "Voice 1",
     voice_two: "Voice 2",
     voice_three: "Voice 3",
-    finish_setup:"Finish setup",
+    finish_setup: "Finish setup",
   },
   overviewScreen: {
-    agent_config:"ORiN agent config",
-    agent_config_desc:"Agent name, Voice, Language",
-    connect_calls:"Connect calls",
-    connect_calls_desc:"Transfer calls, Block calls",
-    whitelist_blacklist:"Whitelist/backlist numbers",
-    whitelist_blacklist_desc:"Connect phonebook, Whitelist, Blacklist",
-    calendar_settings:"Calendar settings",
-    calendar_settings_desc:"Google calendar",
-    contact_orin:"Contact ORiN",
-    contact_orin_desc:"Contact ORiN team",
+    agent_config: "ORiN agent config",
+    agent_config_desc: "Agent name, Voice, Language",
+    connect_calls: "Connect calls",
+    connect_calls_desc: "Transfer calls, Block calls",
+    whitelist_blacklist: "Whitelist/backlist numbers",
+    whitelist_blacklist_desc: "Connect phonebook, Whitelist, Blacklist",
+    calendar_settings: "Calendar settings",
+    calendar_settings_desc: "Google calendar",
+    contact_orin: "Contact ORiN",
+    contact_orin_desc: "Contact ORiN team",
   },
   settingsProfileScreen: {
     label_one: "Your name",
-    // example_name:"Eg. Sanando", 
-    label_two: "Your phone number", 
+    // example_name:"Eg. Sanando",
+    label_two: "Your phone number",
     label_three: "Information about you for the AI to know you better",
-    example_info:"Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.", 
-    save:"Save",
+    example_info:
+      "Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.",
+    save: "Save",
   },
   agentConfigScreen: {
     label_one: "Agent name",
@@ -237,7 +243,7 @@ const en = {
     voice_one: "Voice 1",
     voice_two: "Voice 2",
     voice_three: "Voice 3",
-    save:"Save",
+    save: "Save",
   },
   connectCallsScreen: {
     transfer: "Transfer calls",
@@ -254,24 +260,26 @@ const en = {
     blockSpam: "Block spam/promotional calls",
     blockSpam_desc: "Block all spam/promotional calls completely",
     expecting: "Expecting calls",
-    expecting_desc: "If your are expecting a call from a service or person, please provide details.",
+    expecting_desc:
+      "If your are expecting a call from a service or person, please provide details.",
     view_all: "View all",
   },
   expectedCallsScreen: {
-    search:"Search for an expected call",
+    search: "Search for an expected call",
     expected: "Expected call ",
     caller_name: "Caller name",
     caller_name_example: "Eg. BMW Call",
     reason: "Reason",
-    reason_example: "Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.",
+    reason_example:
+      "Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.",
     add: "Add",
   },
   whitelistBlacklistScreen: {
     connect_google: "Connect Google Phonebook",
-    connect_apple:"Connect Apple Phonebook",
-    or:"or",
-    add_manually:"Add manually",
-    add_manually_desc:"Add numbers to Whitelist / Blacklist manually",
+    connect_apple: "Connect Apple Phonebook",
+    or: "or",
+    add_manually: "Add manually",
+    add_manually_desc: "Add numbers to Whitelist / Blacklist manually",
     whitelist_numbers: "Whitelist numbers ",
     blacklist_numbers: "Blacklist numbers ",
   },
@@ -290,6 +298,15 @@ const en = {
   /**
    * CORE
    */
+
+  /**
+   * Notifications
+   */
+  activeCall: {
+    incoming_call: "Incoming Call",
+    rejected: "Rejected",
+    cancelled: "Cancelled",
+  },
 
   /** ORIN APP TRANSLATIONS */
 

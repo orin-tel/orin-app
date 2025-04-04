@@ -12,7 +12,7 @@ import { $styles } from "../theme"
 import { Text, TextProps } from "./Text"
 import { useAppTheme } from "@/utils/useAppTheme"
 
-type Presets = "default" | "filled" | "reversed"
+type Presets = "default" | "filled" | "reversed" | "outline" | "outlineReversed"
 
 export interface ButtonAccessoryProps {
   style: StyleProp<any>
@@ -224,6 +224,24 @@ const $viewPresets: Record<Presets, ThemedStyleArray<ViewStyle>> = {
     $baseViewStyle,
     ({ colors }) => ({ backgroundColor: colors.palette.neutral800 }),
   ],
+  outline: [
+    $styles.row,
+    $baseViewStyle,
+    ({ colors, spacing }) => ({
+      backgroundColor: colors.palette.neutral300,
+      borderColor: colors.palette.neutral900,
+      borderWidth: spacing.xxxs * 0.4,
+    }),
+  ],
+  outlineReversed: [
+    $styles.row,
+    $baseViewStyle,
+    ({ colors, spacing }) => ({
+      backgroundColor: colors.palette.neutral700,
+      borderColor: colors.palette.neutral100,
+      borderWidth: spacing.xxxs * 0.4,
+    }),
+  ],
 }
 
 const $textPresets: Record<Presets, ThemedStyleArray<TextStyle>> = {
@@ -235,16 +253,22 @@ const $textPresets: Record<Presets, ThemedStyleArray<TextStyle>> = {
   ],
   filled: [$baseTextStyle],
   reversed: [$baseTextStyle, ({ colors }) => ({ color: colors.palette.neutral100 })],
+  outline: [$baseTextStyle, ({ colors }) => ({ color: colors.palette.neutral200 })],
+  outlineReversed: [$baseTextStyle, ({ colors }) => ({ color: colors.palette.neutral100 })],
 }
 
 const $pressedViewPresets: Record<Presets, ThemedStyle<ViewStyle>> = {
   default: () => ({ opacity: 0.9 }),
   filled: ({ colors }) => ({ backgroundColor: colors.palette.neutral400 }),
   reversed: ({ colors }) => ({ backgroundColor: colors.palette.neutral700 }),
+  outline: ({ colors }) => ({ backgroundColor: colors.palette.neutral400 }),
+  outlineReversed: ({ colors }) => ({ backgroundColor: colors.palette.neutral900 }),
 }
 
 const $pressedTextPresets: Record<Presets, ThemedStyle<ViewStyle>> = {
   default: () => ({ opacity: 0.9 }),
   filled: () => ({ opacity: 0.9 }),
   reversed: () => ({ opacity: 0.9 }),
+  outline: () => ({ opacity: 0.9 }),
+  outlineReversed: () => ({ opacity: 0.9 }),
 }

@@ -6,11 +6,8 @@ import { Button, PhoneTextField, Screen, Text } from "@/components"
 import { $styles, ThemedStyle } from "@/theme"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { useStores } from "@/models"
-import { UserStore, userStore } from "@/models/UserStore"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "@/models"
-import { userStore } from './../../models/UserStore';
-import { EpisodeModel } from './../../models/Episode';
 
 export const OnboardingRegisterMobileScreen: FC<
   OnboardingStackScreenProps<"OnboardingRegisterMobile">
@@ -25,7 +22,7 @@ export const OnboardingRegisterMobileScreen: FC<
       setUserPhoneNumber,
       setUserCountryPhoneCode,
     },
-    episodeStore
+    episodeStore,
   } = useStores()
 
   const { navigation } = _props

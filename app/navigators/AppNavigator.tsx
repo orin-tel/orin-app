@@ -4,7 +4,11 @@
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
  * and a "core" flow which the user will use once logged in.
  */
-import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native"
+import {
+  createNavigationContainerRef,
+  NavigationContainer,
+  NavigatorScreenParams,
+} from "@react-navigation/native"
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import { observer } from "mobx-react-lite"
 import * as Screens from "@/screens"
@@ -17,6 +21,8 @@ import { useAuth } from "@clerk/clerk-expo"
 import { OnboardingNavigator, OnboardingNavigatorParamList } from "./OnboardingNavigator"
 import { useStores } from "@/models"
 import { CoreNavigator, CoreTabNavigatorParamList } from "./CoreNavigator"
+import { AppServices } from "@/app-services"
+import { CallInvite } from "@twilio/voice-react-native-sdk"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -44,7 +50,8 @@ export type AppStackParamList = {
   OnboardingCongratulations: undefined
   OnboardingAbout: undefined
   OnboardingAgent: undefined
-
+  AuthReconcile: undefined
+  ActiveCall: CallInvite
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 /**
@@ -86,11 +93,12 @@ const AppStack = observer(function AppStack() {
         },
       }}
       // initialRouteName={"Core"}
-      initialRouteName={isAuthenticated ? "Onboarding" : "SignUp"}
+      initialRouteName={isAuthenticated ? "AuthReconcile" : "SignUp"}
       // initialRouteName={"Demo"}
     >
       {isAuthenticated ? (
         <>
+          <Stack.Screen name="AuthReconcile" component={Screens.AuthReconcileScreen} />
           <Stack.Screen name="Core" component={CoreNavigator} />
           <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
           {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
@@ -102,9 +110,8 @@ const AppStack = observer(function AppStack() {
           <Stack.Screen name="SignIn" component={Screens.SignInScreen} />
         </>
       )}
-
       {/** 🔥 Your screens go here */}
-
+      <Stack.Screen name="ActiveCall" component={Screens.ActiveCallScreen} />
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

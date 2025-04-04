@@ -136,6 +136,8 @@ export const iconRegistry = {
   apple: require("../../assets/icons/apple.png"),
   search: require("../../assets/icons/search.png"),
   checkOutCircle: require("../../assets/icons/checkOutCircle.png"),
+  micOff: require("../../assets/icons/mic-off.png"),
+  speaker: require("../../assets/icons/speaker.png"),
 }
 
 const $imageStyleBase: ImageStyle = {

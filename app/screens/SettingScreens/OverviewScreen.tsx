@@ -14,28 +14,21 @@ import { useAuth } from "@clerk/clerk-expo"
 export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
   function OverviewScreen(_props) {
     const {
-      userStore: {
-        userName,
-        userPhoneNumber
-      },
+      userStore: { userName, userPhoneNumber },
     } = useStores()
-    const { signOut } = useAuth();
-    const { navigation } = _props;
+    const { signOut } = useAuth()
+    const { navigation } = _props
     const gotoProfile = () => {
-
-      navigation.navigate("Profile");
+      navigation.navigate("Profile")
     }
     const gotoAgentConfig = () => {
-
-      navigation.navigate("AgentConfig");
+      navigation.navigate("AgentConfig")
     }
     const gotoConnectCalls = () => {
-
-      navigation.navigate("ConnectCalls");
+      navigation.navigate("ConnectCalls")
     }
     const gotoWhitelistBlacklist = () => {
-
-      navigation.navigate("WhitelistBlacklist");
+      navigation.navigate("WhitelistBlacklist")
     }
 
     const { themed } = useAppTheme()
@@ -46,7 +39,11 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
             <View style={themed($headerLeft)}>
               <View style={themed($pictureContainer)}>
                 <View style={themed($profilePicture)}>
-                  <Text text={`${userName?.charAt(0).toUpperCase()}`} size={"xl"} style={themed($profilePictureText)} />
+                  <Text
+                    text={`${userName?.charAt(0).toUpperCase()}`}
+                    size={"xl"}
+                    style={themed($profilePictureText)}
+                  />
                 </View>
               </View>
               <View style={themed($nameNumber)}>
@@ -80,7 +77,11 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
                 <Text tx="overviewScreen:connect_calls_desc" size="xs" />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={gotoWhitelistBlacklist} style={themed($item)}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={gotoWhitelistBlacklist}
+              style={themed($item)}
+            >
               <View style={themed($iconContainer)}>
                 <Icon icon="block" />
               </View>
@@ -98,7 +99,13 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
                 <Text tx="overviewScreen:calendar_settings_desc" size="xs" />
               </View>
             </View>
-            <TouchableOpacity style={themed($item)}>
+            <TouchableOpacity
+              style={themed($item)}
+              onPress={() => {
+                console.log("THIS CRAZY")
+                signOut()
+              }}
+            >
               <View style={themed($iconContainer)}>
                 <Icon icon="calendar" />
               </View>
@@ -107,7 +114,6 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
                 <Text tx="overviewScreen:contact_orin_desc" size="xs" />
               </View>
             </TouchableOpacity>
-
           </View>
         </View>
       </Screen>
@@ -115,14 +121,10 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
   },
 )
 
-
 const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   padding: spacing.md,
-
 })
-const $container: ThemedStyle<ViewStyle> = () => ({
-
-})
+const $container: ThemedStyle<ViewStyle> = () => ({})
 const $horizontalLine: ThemedStyle<ViewStyle> = ({ colors }) => ({
   paddingVertical: 15,
   borderBottomColor: colors.defaultPrimary,
@@ -160,7 +162,6 @@ const $nameNumber: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 })
 const $headerIcon: ThemedStyle<ViewStyle> = () => ({
   paddingTop: 4,
-
 })
 const $settingsNav: ThemedStyle<ViewStyle> = () => ({
   paddingTop: spacing.xs,
@@ -178,5 +179,5 @@ const $item: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   padding: 12,
   flexDirection: "row",
   alignItems: "center",
-  gap: spacing.md + spacing.xxs
+  gap: spacing.md + spacing.xxs,
 })

@@ -37,6 +37,7 @@ import { tokenCache } from "@/cache"
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { ProgressProvider } from "./context/ProgressProvider"
+import { AppServices } from "./app-services"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
@@ -46,6 +47,8 @@ const prefix = Linking.createURL("/")
 const config = {
   screens: {
     Signup: "signup",
+    AuthReconcile: "auth-reconcile",
+    ActiveCall: "active-call",
     Onboarding: {
       path: "onboarding",
       screens: {
@@ -158,19 +161,21 @@ export function App() {
       <ErrorBoundary catchErrors={Config.catchErrors}>
         <ClerkProvider tokenCache={tokenCache} publishableKey={CLERK_PUBLISHABLE_KEY}>
           <ClerkLoaded>
-            <GestureHandlerRootView>
-              <ProgressProvider>
-                <BottomSheetModalProvider>
-                  <KeyboardProvider>
-                    <AppNavigator
-                      linking={linking}
-                      initialState={initialNavigationState}
-                      onStateChange={onNavigationStateChange}
-                    />
-                  </KeyboardProvider>
-                </BottomSheetModalProvider>
-              </ProgressProvider>
-            </GestureHandlerRootView>
+            <AppServices>
+              <GestureHandlerRootView>
+                <ProgressProvider>
+                  <BottomSheetModalProvider>
+                    <KeyboardProvider>
+                      <AppNavigator
+                        linking={linking}
+                        initialState={initialNavigationState}
+                        onStateChange={onNavigationStateChange}
+                      />
+                    </KeyboardProvider>
+                  </BottomSheetModalProvider>
+                </ProgressProvider>
+              </GestureHandlerRootView>
+            </AppServices>
           </ClerkLoaded>
         </ClerkProvider>
       </ErrorBoundary>

@@ -2,10 +2,14 @@ import { types, Instance, SnapshotIn, SnapshotOut, applySnapshot } from "mobx-st
 import { COUNTRY_MAP, LANGUAGE_MAP } from "@/constants"
 import { CountryPhoneCode } from "@/types"
 import { withSetPropAction } from "./helpers/withSetPropAction"
+import { telephonyApi } from "@/services/api/telephony/telephonyApi"
+import { userApi } from "@/services/api/user/userApi"
 
 export const UserStore = types
   .model("UserStore")
   .props({
+    authProvider: types.maybeNull(types.string),
+    authProviderId: types.maybeNull(types.string),
     userPhoneNumber: types.maybeNull(types.string),
     userCountryPhoneCode: types.maybeNull(
       types.enumeration(
@@ -13,6 +17,8 @@ export const UserStore = types
         COUNTRY_MAP.map((c) => c.code),
       ),
     ),
+    userPrimaryEmail: types.maybeNull(types.string),
+    userProfilePicture: types.maybeNull(types.string),
     userTransferPhoneNumber: types.maybeNull(types.string),
     userTransferPhoneCode: types.maybeNull(
       types.enumeration(
@@ -20,6 +26,7 @@ export const UserStore = types
         COUNTRY_MAP.map((c) => c.code),
       ),
     ),
+    isUserOnboardingComplete: types.maybeNull(types.boolean),
     userTransferPhoneCodeIcon: types.maybeNull(types.string),
     // Country Screen-----
     userCountry: types.maybeNull(types.string),
@@ -50,14 +57,15 @@ export const UserStore = types
     },
     // transfer
     setUserTransferPhoneNumber(transferPhoneNumber: string | null) {
-      self.userTransferPhoneNumber = transferPhoneNumber;
+      self.userTransferPhoneNumber = transferPhoneNumber
     },
     setUserTransferPhoneCode(transferPhoneCode: CountryPhoneCode | null) {
-      self.userTransferPhoneCode = transferPhoneCode;
+      self.userTransferPhoneCode = transferPhoneCode
     },
     setUserTransferPhoneCodeIcon(userTransferPhoneCodeIcon: string | null) {
-      const country = LANGUAGE_MAP.find((item) => item.value === userTransferPhoneCodeIcon)?.country ?? null;
-      self.userTransferPhoneCodeIcon = country;
+      const country =
+        LANGUAGE_MAP.find((item) => item.value === userTransferPhoneCodeIcon)?.country ?? null
+      self.userTransferPhoneCodeIcon = country
     },
     // Country Screen-----
     setUserCountry(userCountry: string | null) {
@@ -94,6 +102,41 @@ export const UserStore = types
     // ------ Call related -------
     setTelephonyAccessToken(telephonyAccessToken: string | null) {
       self.telephonyAccessToken = telephonyAccessToken
+    },
+    async fetchTelephonyAccessToken(): Promise<string> {
+      const response = await telephonyApi.getTelephonyToken()
+      if (response.kind === "ok") {
+        self.setProp("telephonyAccessToken", response.token)
+        return response.token
+      } else {
+        console.error(`Error fetching telephonyAccessToken: ${JSON.stringify(response)}`)
+        return ""
+      }
+    },
+    /**
+     * returns true if user already existed
+     * false if onboarding is needed
+     */
+    async signInUser(): Promise<boolean> {
+      const response = await userApi.signInUser()
+      if (response.kind === "ok") {
+        const user = response.user
+        self.setProp("authProvider", user.auth_provider)
+        self.setProp("authProviderId", user.auth_provider_id)
+        self.setProp("userAgentName", user.agent_name)
+        self.setProp("userAgentVoice", user.agent_voice)
+        self.setProp("userCountry", user.location)
+        self.setProp("userLanguage", user.language)
+        self.setProp("userName", user.first_name + " " + user.last_name)
+        self.setProp("userPhoneNumber", user.phone_number)
+        self.setProp("userPrimaryEmail", user.primary_email)
+        self.setProp("userProfilePicture", user.profile_picture_url)
+        if (user.is_onboarding_complete) return true
+        return false
+      } else {
+        console.error(`Error signing in user: ${JSON.stringify(response)}`)
+        return false
+      }
     },
     // ------ Call related -------
     resetStore() {

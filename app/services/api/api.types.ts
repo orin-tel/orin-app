@@ -48,3 +48,8 @@ export interface ApiConfig {
    */
   timeout: number
 }
+
+export interface NestResponse<T> {
+  data: T
+  message: string
+}

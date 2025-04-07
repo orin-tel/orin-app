@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react"
+import { FC, useEffect, useMemo, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { Keyboard, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
 import { SettingStackScreenProps } from "@/navigators"
@@ -7,6 +7,7 @@ import { colors, spacing, ThemedStyle } from "@/theme"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { BottomSheetBackdrop, BottomSheetFooter, BottomSheetModal } from "@gorhom/bottom-sheet"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { useStores } from "@/models"
 
 interface ExpectedCall {
   id: number
@@ -34,35 +35,104 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
     const [snapIndex, setSnapIndex] = useState(0)
     const [nameModal, setNameModal] = useState("")
     const [reasonModal, setReasonModal] = useState("")
-    const [expectedCalls, setExpectedCalls] = useState<ExpectedCall[]>([])
 
-    const handleAddCall = () => {
-      setExpectedCalls([
-        ...expectedCalls,
-        {
-          id: Date.now(),
-          number: expectedCalls.length + 1,
-          name: nameModal,
-          reason: reasonModal,
-          expanded: true,
-        },
-      ])
+    const {
+      expectedCallStore: {
+        expectedCalls,
+        getExpectedCalls,
+        fetchExpectedCalls,
+        createExpectedCall,
+        updateExpectedCall,
+        deleteExpectedCall,
+      },
+    } = useStores()
+    // const [expectedCalls, setExpectedCalls] = useState<ExpectedCall[]>([])
+
+    // useEffect(() => {
+    //   fetchExpectedCalls()
+    // }, [])
+
+    console.log("from Screen first", expectedCalls)
+    const handleAddCall = async () => {
+      await createExpectedCall(nameModal, reasonModal)
+
+      // setExpectedCalls([
+      //   ...expectedCalls,
+      //   {
+      //     id: Date.now(),
+      //     number: expectedCalls.length + 1,
+      //     name: nameModal,
+      //     reason: reasonModal,
+      //     expanded: true,
+      //   },
+      // ])
     }
 
-    const handleEditCall = (id: number, field: "name" | "reason", value: string) => {
-      setExpectedCalls((prev) =>
-        prev.map((call) => (call.id === id ? { ...call, [field]: value } : call)),
-      )
+    const handleEditCall = async (id: number, field: "name" | "reason", value: string) => {
+      const call = expectedCalls.find((c) => Number(c.id) === id)
+      if (!call) return
+
+      const updatedName = field === "name" ? value : call.name
+      const updatedReason = field === "reason" ? value : call.reason
+
+      await updateExpectedCall(call.id, updatedName, updatedReason)
     }
+
+    // const handleEditCall = (id: number, field: "name" | "reason", value: string) => {
+    //   const call = expectedCalls.find((c) => Number(c.id) === id)
+    //   if (call) {
+    //     call[field] = value
+    //   }
+    // }
+
+    // const handleEditCall = (id: number, field: "name" | "reason", value: string) => {
+    //   setExpectedCalls((prev) =>
+    //     prev.map((call) => (call.id === id ? { ...call, [field]: value } : call)),
+    //   )
+    // }
+
+    const [expandedCalls, setExpandedCalls] = useState<Record<number, boolean>>({})
 
     const toggleCallExpansion = (id: number) => {
-      setExpectedCalls((prev) =>
-        prev.map((call) => (call.id === id ? { ...call, expanded: !call.expanded } : call)),
-      )
+      setExpandedCalls((prev) => ({
+        ...prev,
+        [id]: !prev[id],
+      }))
     }
+
+    // const toggleCallExpansion = (id: number) => {
+    //   setExpectedCalls((prev) =>
+    //     prev.map((call) => (call.id === id ? { ...call, expanded: !call.expanded } : call)),
+    //   )
+    // }
+
     const deleteCall = (id: number) => {
-      setExpectedCalls((prev) => prev.filter((call) => call.id !== id))
+      deleteExpectedCall(id.toString())
+      setExpandedCalls((prev) => {
+        const updated = { ...prev }
+        delete updated[id]
+        return updated
+      })
     }
+
+    // const deleteCall = async (id: number) => {
+    //   try {
+    //     await deleteExpectedCall(id)
+
+    //     // Update local expectedCalls
+    //     setExpectedCalls((prev) => prev.filter((call) => call.id !== id))
+
+    //     // Remove the call from expandedCalls state
+    //     setExpandedCalls((prev) => {
+    //       const updated = { ...prev }
+    //       delete updated[id]
+    //       return updated
+    //     })
+    //   } catch (error) {
+    //     console.error("Failed to delete expected call:", error)
+    //     // Optionally show a toast or alert here
+    //   }
+    // }
 
     useEffect(() => {
       const showSub = Keyboard.addListener("keyboardDidShow", () => {
@@ -78,6 +148,15 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
         hideSub.remove()
       }
     }, [])
+
+    const callsWithExpansion = getExpectedCalls.map((call, index) => ({
+      ...call,
+      id: Number(call.id),
+      number: index + 1,
+      expanded: expandedCalls[Number(call.id)] ?? false,
+    }))
+
+    console.log("from Screen", getExpectedCalls)
 
     return (
       <>
@@ -96,7 +175,8 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
             <View style={themed($itemsContainer)}>
               {/* ----- Expected call item generation*/}
               <ListView<ExpectedCall>
-                data={expectedCalls}
+                // data={expectedCalls}
+                data={callsWithExpansion}
                 keyExtractor={(item) => item.id.toString()}
                 estimatedItemSize={24}
                 renderItem={({ item }) => (
@@ -111,13 +191,13 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                       </View>
                       <View style={themed($toggleContainer)}>
                         <Switch
-                          value={item.expanded}
+                          value={!!expandedCalls[item.id]}
                           onValueChange={() => toggleCallExpansion(item.id)}
                         />
                         <TouchableOpacity onPress={() => deleteCall(item.id)}>
                           <Icon icon="delete" color="error" />
                         </TouchableOpacity>
-                        {item.expanded ? (
+                        {expandedCalls[item.id] ? (
                           <Icon
                             icon="caretLeft"
                             size={20}
@@ -129,7 +209,7 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                       </View>
                     </TouchableOpacity>
                     {/** ---- Name and reason inputs */}
-                    {item.expanded && (
+                    {expandedCalls[item.id] && (
                       <View style={themed($inputFields)}>
                         <Text
                           style={themed($label)}

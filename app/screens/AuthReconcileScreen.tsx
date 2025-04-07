@@ -5,7 +5,6 @@ import { AppStackScreenProps } from "@/navigators"
 import { Screen } from "@/components"
 import { useStores } from "@/models"
 import { useTheme } from "@react-navigation/native"
-import { CallInvite } from "@twilio/voice-react-native-sdk"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "@/models"
 

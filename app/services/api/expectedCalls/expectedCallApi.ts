@@ -1,0 +1,109 @@
+import { ApiResponse, ApisauceInstance, create } from "apisauce"
+import Config from "../../../config"
+import { GeneralApiProblem, getGeneralApiProblem } from "../apiProblem"
+import type { ApiConfig, NestResponse } from "../api.types"
+
+import { getClerkInstance } from "@clerk/clerk-expo"
+import { IExpectedCall } from "./types"
+
+/**
+ * Configuring the apisauce instance.
+ */
+export const EXPECTED_CALL_API_CONFIG: ApiConfig = {
+  url: Config.API_BASE_URL + "/expecting-call",
+  timeout: 10000,
+}
+
+/**
+ * Manages all requests to the API. You can use this class to build out
+ * various requests that you need to call from your backend API.
+ */
+export class ExpectedCallApi {
+  apisauce: ApisauceInstance
+  config: ApiConfig
+
+  /**
+   * Set up our API instance. Keep this lightweight!
+   */
+  constructor(config: ApiConfig = EXPECTED_CALL_API_CONFIG) {
+    this.config = config
+    this.apisauce = create({
+      baseURL: this.config.url,
+      timeout: this.config.timeout,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+  }
+
+  // expected calls
+
+  async getExpectedCalls(): Promise<{ kind: "ok"; calls: IExpectedCall[] } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response: ApiResponse<NestResponse<IExpectedCall[]>> = await this.apisauce.get("")
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    return { kind: "ok", calls: response.data?.data ?? [] }
+  }
+
+  async createExpectedCall(callData: {
+    caller_name: string
+    caller_reason: string
+    caller_number: string
+    user_id?: string
+  }): Promise<{ kind: "ok"; call: IExpectedCall } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    callData.user_id = "4f492be9-9003-46f5-a621-fa9278a7097f"
+
+    const response: ApiResponse<NestResponse<IExpectedCall>> = await this.apisauce.post(
+      "",
+      callData,
+    )
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    const data = response.data
+    if (!data) throw new Error("data not available")
+    return { kind: "ok", call: data.data }
+  }
+
+  async updateExpectedCall(
+    id: string,
+    data: {
+      name: string
+      reason: string
+    },
+  ): Promise<{ kind: "ok" } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response = await this.apisauce.put(`${id}`, data)
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    return { kind: "ok" }
+  }
+
+  async deleteExpectedCall(id: string): Promise<{ kind: "ok" } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response = await this.apisauce.delete(`${id}`)
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    return { kind: "ok" }
+  }
+}
+export const expectedCallApi = new ExpectedCallApi()

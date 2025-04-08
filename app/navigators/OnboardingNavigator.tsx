@@ -10,23 +10,29 @@ import {
   OnboardingAgentScreen,
 } from "@/screens"
 import { AppStackParamList, AppStackScreenProps } from "."
-import { CompositeScreenProps, useNavigation } from "@react-navigation/native"
+import {
+  CompositeScreenProps,
+  createNavigationContainerRef,
+  RouteProp,
+  useNavigation,
+} from "@react-navigation/native"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { Icon, Text } from "@/components"
 import { TouchableOpacity, View, ViewStyle } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { spacing, ThemedStyle } from "@/theme"
 import ProgressBar from "@/components/ProgressBar"
+import { useRef } from "react"
 
 export type OnboardingNavigatorParamList = {
   OnboardingRegisterMobile: undefined
+  OnboardingVerifyOtp: undefined
   OnboardingCountry: undefined
   OnboardingNumber: undefined
   OnboardingValidate: undefined
   OnboardingCongratulations: undefined
-  OnboardingAbout: undefined,
-  OnboardingAgent: undefined,
-  OnboardingVerifyOtp: undefined
+  OnboardingAbout: undefined
+  OnboardingAgent: undefined
 }
 
 export type OnboardingStackScreenProps<T extends keyof OnboardingNavigatorParamList> =
@@ -43,11 +49,26 @@ export const OnboardingNavigator = () => {
     themed,
   } = useAppTheme()
 
-  const navigation = useNavigation();
+  const onboardingNavRef = useRef<{
+    route: RouteProp<OnboardingNavigatorParamList, keyof OnboardingNavigatorParamList>
+    navigation: any
+  }>()
 
   const handleBack = () => {
-    navigation.goBack();
-  };
+    if (
+      onboardingNavRef &&
+      onboardingNavRef.current &&
+      onboardingNavRef.current &&
+      (onboardingNavRef.current as any).navigation &&
+      typeof (onboardingNavRef.current as any).navigation?.canGoBack === "function" &&
+      typeof (onboardingNavRef.current as any).navigation?.goBack === "function"
+    ) {
+      if ((onboardingNavRef.current as any).navigation?.canGoBack()) {
+        if (onboardingNavRef.current.route.name === "OnboardingRegisterMobile") return
+        ;(onboardingNavRef.current as any).navigation?.goBack()
+      }
+    }
+  }
   return (
     <SafeAreaView style={themed($contentContainer)}>
       <View style={themed($headerContainer)}>
@@ -57,36 +78,29 @@ export const OnboardingNavigator = () => {
         <ProgressBar />
       </View>
       <Stack.Navigator
-        screenOptions={() => ({
-          headerShown: false,
-          // header: () => (
-          //   <SafeAreaView style={themed($logoContainer)}>
-          //     <View>
-          //       <Text preset="heading" weight="medium" text="ORiN" />
-          //     </View>
-          //   </SafeAreaView>
-          // ),
-          navigationBarColor: colors.background,
-          contentStyle: {
-            backgroundColor: colors.background,
-          },
-        })}
-        // initialRouteName="OnboardingRegisterMobile"
-        // initialRouteName="OnboardingVerifyOtp"
-        // initialRouteName="OnboardingValidate"
-        // initialRouteName="OnboardingCongratulations"
-        // initialRouteName="OnboardingAbout"
-        initialRouteName="OnboardingCountry"
-        // initialRouteName="OnboardingCountry"
+        screenOptions={(props) => {
+          onboardingNavRef.current = props
+          return {
+            headerShown: false,
+            navigationBarColor: colors.background,
+            contentStyle: {
+              backgroundColor: colors.background,
+            },
+          }
+        }}
+        initialRouteName="OnboardingRegisterMobile"
       >
-        {/* <Stack.Screen name="OnboardingRegisterMobile" component={OnboardingRegisterMobileScreen} /> */}
+        <Stack.Screen name="OnboardingRegisterMobile" component={OnboardingRegisterMobileScreen} />
+        <Stack.Screen name="OnboardingVerifyOtp" component={OnboardingVerifyOtpScreen} />
         <Stack.Screen name="OnboardingCountry" component={OnboardingCountryScreen} />
         <Stack.Screen name="OnboardingNumber" component={OnboardingNumberScreen} />
         <Stack.Screen name="OnboardingValidate" component={OnboardingValidateScreen} />
-        <Stack.Screen name="OnboardingCongratulations" component={OnboardingCongratulationsScreen} />
+        <Stack.Screen
+          name="OnboardingCongratulations"
+          component={OnboardingCongratulationsScreen}
+        />
         <Stack.Screen name="OnboardingAbout" component={OnboardingAboutScreen} />
         <Stack.Screen name="OnboardingAgent" component={OnboardingAgentScreen} />
-        {/* <Stack.Screen name="OnboardingVerifyOtp" component={OnboardingVerifyOtpScreen} /> */}
       </Stack.Navigator>
     </SafeAreaView>
   )
@@ -95,7 +109,6 @@ export const OnboardingNavigator = () => {
 const $contentContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   flex: 1,
   backgroundColor: colors.background,
-
 })
 
 // const $logoContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
@@ -112,10 +125,6 @@ const $headerContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   // justifyContent: "space-between",
   alignItems: "center",
   gap: spacing.lg,
-
 })
 
-const $backBtnContainer: ThemedStyle<ViewStyle> = () => ({
-
-
-})
+const $backBtnContainer: ThemedStyle<ViewStyle> = () => ({})

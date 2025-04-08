@@ -7,4 +7,5 @@
  */
 export default {
   API_BASE_URL: "http://localhost:8081",
+  TELEPHONY_SERVER_NUMBER: "+16466634660",
 }

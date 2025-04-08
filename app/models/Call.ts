@@ -1,63 +1,41 @@
-import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
-import { withSetPropAction } from "./helpers/withSetPropAction"
+import { types, Instance, SnapshotIn, SnapshotOut } from "mobx-state-tree"
 
-/**
- * Enum for call types.
- */
 export const CallTypeEnum = types.enumeration("CallType", [
-  "incoming_call",
-  "outgoing_call",
-  "missed_call",
-  "received_call",
+  "INCOMING_CALL",
+  "OUTGOING_CALL",
+  "MISSED_CALL",
+  "RECEIVED_CALL",
 ])
 
-/**
- * Enum for tags.
- */
-export const TagEnum = types.enumeration("Tag", ["AI", "Spam", "Callback"])
+export const TagEnum = types.enumeration("Tag", ["AI", "SPAM", "CALLBACK"])
 
-/**
- * Represents a call record with transcription and notes.
- */
-export const CallModel = types
-  .model("Call")
-  .props({
-    phoneNumber: types.string,
-    callerName: types.maybe(types.string),
-    timestamp: types.string, // ISO 8601 format
-    callType: CallTypeEnum,
-    tags: types.array(TagEnum),
-    summary: types.string,
-    transcription: types.array(
-      types.model({
-        timestamp: types.string,
-        speaker: types.string,
-        text: types.string,
-      }),
-    ),
-    notes: types.array(
-      types.model({
-        timestamp: types.string,
-        text: types.string,
-      }),
-    ),
-  })
-  .actions(withSetPropAction)
-  .actions((self) => ({
-    addTranscription(timestamp: string, speaker: string, text: string) {
-      self.transcription.push({ timestamp, speaker, text })
-    },
-    clearTranscriptions() {
-      self.transcription.clear()
-    },
-    addNote(timestamp: string, text: string) {
-      self.notes.push({ timestamp, text })
-    },
-    clearNotes() {
-      self.notes.clear()
-    },
-  }))
+export const CallModel = types.model("Call").props({
+  id: types.identifier,
+  userId: types.string,
+  callId: types.string,
+  toPhoneNumber: types.string,
+  fromPhoneNumber: types.string,
+  callerName: types.maybe(types.string),
+  receiverName: types.maybe(types.string),
+  provider: types.string,
+  forwardedFrom: types.maybe(types.string),
+  callStartTime: types.string,
+  callEndTime: types.maybe(types.string),
+  callDuration: types.maybe(types.number),
+  duration: types.maybe(types.number),
+  metadata: types.maybe(types.frozen()),
 
+  callType: types.maybe(CallTypeEnum),
+  tags: types.maybe(types.array(TagEnum)),
+  summary: types.maybe(types.string),
+  transcription: types.frozen(),
+  notes: types.frozen(),
+
+  createdAt: types.string,
+  updatedAt: types.string,
+})
+
+// TypeScript helpers
 export interface Call extends Instance<typeof CallModel> {}
-export interface CallSnapshotOut extends SnapshotOut<typeof CallModel> {}
 export interface CallSnapshotIn extends SnapshotIn<typeof CallModel> {}
+export interface CallSnapshotOut extends SnapshotOut<typeof CallModel> {}

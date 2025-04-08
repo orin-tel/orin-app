@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react"
+import { FC, useEffect, useMemo, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { ActivityIndicator, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { CallLogStackScreenProps } from "@/navigators"
@@ -7,42 +7,54 @@ import { callLogFixture } from "@/fixtures/call-logs.fixtures"
 import { CallLog } from "@/types"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { $styles, ThemedStyle } from "@/theme"
-import { isRTL } from "@/i18n"
+import { isRTL, translate } from "@/i18n"
 import { ContentStyle } from "@shopify/flash-list"
 import { format, isToday, isYesterday, parseISO } from "date-fns"
-import { formatMilliseconds } from "@/utils/formatMiliseconds"
+import { formatMilliseconds, formatSeconds } from "@/utils/formatMiliseconds"
+import { useStores } from "@/models"
+import { Call } from "@/models/Call"
+
+import { IconTypes } from "@/components"
+import { delay } from "@/utils/delay"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "@/models"
 
 export const CallListScreen: FC<CallLogStackScreenProps<"CallList">> = observer(
   function CallListScreen() {
     // Pull in one of our MST stores
-    // const { someStore, anotherStore } = useStores()
-
+    const { callStore } = useStores()
+    const [refreshing, setRefreshing] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    useEffect(() => {
+      ;(async function load() {
+        setIsLoading(true)
+        await callStore.fetchCalls()
+        setIsLoading(false)
+      })()
+    }, [callStore])
     // Pull in navigation via hook
     // const navigation = useNavigation()
 
     // get data for fixture, this is only for DEV
-    const call_logs = callLogFixture
     const { themed } = useAppTheme()
-    const [refreshing, setRefreshing] = useState(false)
-    const [isLoading, _setIsLoading] = useState(false)
 
     async function manualRefresh() {
       setRefreshing(true)
-      // Data fetching
+      await Promise.all([callStore.fetchCalls(), delay(750)])
       setRefreshing(false)
     }
 
     return (
       <Screen style={$root} preset="scroll">
-        <ListView<CallLog>
-          data={call_logs}
+        <ListView<Call>
+          data={callStore.calls.slice()}
           contentContainerStyle={themed([$listContentContainer])}
           refreshing={refreshing}
           onRefresh={manualRefresh}
-          keyExtractor={(item) => item.call_id}
-          estimatedItemSize={24}
+          keyExtractor={(item) => item?.callId}
+          estimatedItemSize={100}
+          onEndReached={() => callStore.fetchCallsBefore()}
+          onEndReachedThreshold={0.6}
           ListEmptyComponent={
             isLoading ? (
               <ActivityIndicator />
@@ -60,9 +72,9 @@ export const CallListScreen: FC<CallLogStackScreenProps<"CallList">> = observer(
           }
           // renderItem={({ item }) => <CallCard callLog={item} />}
           renderItem={({ item, index }) => {
-            const previousItem = index > 0 ? call_logs[index - 1] : null
-            const currentDateLabel = formatDate(item.datetime)
-            const previousDateLabel = previousItem ? formatDate(previousItem.datetime) : null
+            const previousItem = index > 0 ? callStore.calls[index - 1] : null
+            const currentDateLabel = formatDate(item.createdAt)
+            const previousDateLabel = previousItem ? formatDate(previousItem.createdAt) : null
             const showDivider = currentDateLabel !== previousDateLabel
 
             return (
@@ -90,7 +102,7 @@ const formatDate = (datetime: string) => {
   return format(date, "dd MMMM") // Example: 15 March
 }
 
-const CallCard = observer(function CallCard({ callLog }: { callLog: CallLog }) {
+const CallCard = observer(function CallCard({ callLog }: { callLog: Call }) {
   const {
     theme: { colors },
     themed,
@@ -98,18 +110,18 @@ const CallCard = observer(function CallCard({ callLog }: { callLog: CallLog }) {
 
   const CallStateColor = useMemo(
     () => ({
-      callback: {
+      CALLBACK: {
         icon: colors.success,
         border: colors.success,
         background: colors.successBackground,
         text: colors.success,
       },
-      ai: {
+      AI: {
         border: colors.info,
         background: colors.infoBackground,
         text: colors.info,
       },
-      spam: {
+      SPAM: {
         border: colors.error,
         background: colors.errorBackground,
         text: colors.error,
@@ -120,46 +132,66 @@ const CallCard = observer(function CallCard({ callLog }: { callLog: CallLog }) {
 
   const CallIconColor = useMemo(
     () => ({
-      incoming_call: colors.warning,
-      received_call: colors.success,
-      outgoing_call: colors.info,
-      missed_call: colors.error,
+      INCOMING_CALL: colors.warning,
+      RECEIVED_CALL: colors.success,
+      OUTGOING_CALL: colors.info,
+      MISSED_CALL: colors.error,
     }),
     [colors],
+  )
+
+  const callIconName = useMemo(
+    () => ({
+      INCOMING_CALL: "incoming_call" as IconTypes,
+      RECEIVED_CALL: "received_call" as IconTypes,
+      OUTGOING_CALL: "outgoing_call" as IconTypes,
+      MISSED_CALL: "missed_call" as IconTypes,
+    }),
+    [],
   )
 
   return (
     <Card
       preset="paper"
-      heading={callLog.caller_first_name}
+      heading={
+        callLog.callerName && callLog.callerName?.length > 0
+          ? callLog.callerName
+          : translate("call_list:unknown")
+      }
       LeftComponent={
         <View style={themed($leftComponent)}>
-          <Icon icon={callLog.call_type} color={CallIconColor[callLog.call_type]} />
+          <Icon
+            icon={callIconName[callLog.callType ?? "INCOMING_CALL"]}
+            color={CallIconColor[callLog.callType ?? "INCOMING_CALL"]}
+          />
         </View>
       }
       ContentComponent={
         <View style={themed([$styles.row, $contentContainerStyle])}>
-          <Text text={callLog.from_number} />
+          <Text text={callLog.fromPhoneNumber} />
           <View
             style={themed([
               {
-                backgroundColor: CallStateColor[callLog.tag].background,
-                borderColor: CallStateColor[callLog.tag].border,
+                backgroundColor: CallStateColor[callLog.tags?.[0] ?? "AI"].background,
+                borderColor: CallStateColor[callLog.tags?.[0] ?? "AI"].border,
               },
               $tagStyle,
             ])}
           >
             <Text
-              text={callLog.tag}
-              style={themed([{ color: CallStateColor[callLog.tag].text }, $tagTextStyle])}
+              text={callLog.tags?.[0]?.toLocaleLowerCase() ?? "ai"}
+              style={themed([
+                { color: CallStateColor[callLog.tags?.[0] ?? "AI"].text },
+                $tagTextStyle,
+              ])}
             />
           </View>
         </View>
       }
       RightComponent={
         <View style={themed($rightComponent)}>
-          <Text text={formatMilliseconds(callLog.call_duration)} />
-          <Text text={format(new Date(callLog.datetime), "hh:mm a")} />
+          <Text text={formatSeconds(callLog.callDuration ?? 0)} />
+          <Text text={format(new Date(callLog.createdAt), "hh:mm a")} />
         </View>
       }
     />
@@ -171,6 +203,7 @@ const $root: ViewStyle = {
 }
 
 const $listContentContainer: ThemedStyle<ContentStyle> = ({ spacing }) => ({
+  flex: 1,
   paddingHorizontal: spacing.xs,
   paddingTop: spacing.md,
   paddingBottom: spacing.lg,

@@ -18,7 +18,7 @@ module.exports = {
     "@typescript-eslint/ban-ts-comment": 0,
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/no-unused-vars": [
-      "error",
+      "warn",
       {
         argsIgnorePattern: "^_",
         varsIgnorePattern: "^_",

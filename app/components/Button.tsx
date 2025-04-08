@@ -1,5 +1,6 @@
 import { ComponentType } from "react"
 import {
+  ActivityIndicator,
   Pressable,
   PressableProps,
   PressableStateCallbackType,
@@ -81,6 +82,10 @@ export interface ButtonProps extends PressableProps {
    * An optional style override for the disabled state
    */
   disabledStyle?: StyleProp<ViewStyle>
+  /**
+   * loading prop, shows the activity indicator and disables the button if true
+   */
+  loading?: boolean
 }
 
 /**
@@ -112,6 +117,7 @@ export function Button(props: ButtonProps) {
     LeftAccessory,
     disabled,
     disabledStyle: $disabledViewStyleOverride,
+    loading,
     ...rest
   } = props
 
@@ -151,31 +157,42 @@ export function Button(props: ButtonProps) {
       accessibilityRole="button"
       accessibilityState={{ disabled: !!disabled }}
       {...rest}
-      disabled={disabled}
+      disabled={loading || disabled}
     >
-      {(state) => (
-        <>
-          {!!LeftAccessory && (
-            <LeftAccessory style={$leftAccessoryStyle} pressableState={state} disabled={disabled} />
-          )}
+      {(state) =>
+        loading ? (
+          <ActivityIndicator color={themed($loaderStyle).color} />
+        ) : (
+          <>
+            {!!LeftAccessory && (
+              <LeftAccessory
+                style={$leftAccessoryStyle}
+                pressableState={state}
+                disabled={disabled}
+              />
+            )}
 
-          <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
-            {children}
-          </Text>
+            <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
+              {children}
+            </Text>
 
-          {!!RightAccessory && (
-            <RightAccessory
-              style={$rightAccessoryStyle}
-              pressableState={state}
-              disabled={disabled}
-            />
-          )}
-        </>
-      )}
+            {!!RightAccessory && (
+              <RightAccessory
+                style={$rightAccessoryStyle}
+                pressableState={state}
+                disabled={disabled}
+              />
+            )}
+          </>
+        )
+      }
     </Pressable>
   )
 }
 
+const $loaderStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.palette.neutral100,
+})
 const $baseViewStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   // minHeight: 56,
   height: 45,

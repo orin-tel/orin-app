@@ -8,22 +8,22 @@ import { colors, spacing, ThemedStyle } from "@/theme"
 import { useProgress } from "@/context/ProgressProvider"
 import ProgressBar from "@/components/ProgressBar"
 import { useFocusEffect } from "@react-navigation/native"
+import Config from "@/config"
 
-export const OnboardingValidateScreen: FC<OnboardingStackScreenProps<"OnboardingValidate">> = observer(
-  function OnboardingValidateScreen(_props) {
-
+export const OnboardingValidateScreen: FC<OnboardingStackScreenProps<"OnboardingValidate">> =
+  observer(function OnboardingValidateScreen(_props) {
     // progress bar
-    const { navigation } = _props;
+    const { navigation } = _props
 
-    const { setProgress } = useProgress();
+    const { setProgress } = useProgress()
     useFocusEffect(
       useCallback(() => {
-        setProgress(0.6);
-      }, [])
-    );
+        setProgress(0.5)
+      }, []),
+    )
 
     const handleNext = () => {
-      navigation.navigate("OnboardingCongratulations");
+      navigation.navigate("OnboardingCongratulations")
     }
     //
     const { themed } = useAppTheme()
@@ -34,15 +34,24 @@ export const OnboardingValidateScreen: FC<OnboardingStackScreenProps<"Onboarding
         preset="scroll"
       >
         <View style={themed($container)}>
-
           <View style={themed($sectionContainer)}>
             <View style={themed($textContainer)}>
-              <Text tx="onboardingValidateScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
-              <Text tx="onboardingValidateScreen:description" style={themed($sectionText)} size="sm" weight="normal" />
+              <Text
+                tx="onboardingValidateScreen:title"
+                style={themed($sectionTitle)}
+                size="xl"
+                weight="bold"
+              />
+              <Text
+                tx="onboardingValidateScreen:description"
+                style={themed($sectionText)}
+                size="sm"
+                weight="normal"
+              />
             </View>
             <View style={themed($sectionContainerTwo)}>
               <View style={themed($numberBox)}>
-                <Text tx="onboardingValidateScreen:number" size="lg" weight="bold" />
+                <Text text={"*#21#" + Config.TELEPHONY_SERVER_NUMBER} size="lg" weight="bold" />
                 <Icon icon="copy" size={spacing.md} />
               </View>
 
@@ -52,29 +61,35 @@ export const OnboardingValidateScreen: FC<OnboardingStackScreenProps<"Onboarding
                   <View style={themed($infoInner)}>
                     <Text
                       tx="onboardingValidateScreen:info_one"
-                      style={themed($infoText)} size="xxs" weight="normal" />
+                      style={themed($infoText)}
+                      size="xxs"
+                      weight="normal"
+                    />
                     <Text
                       tx="onboardingValidateScreen:info_two"
-                      style={themed($infoText)} size="xxs" weight="normal" />
+                      style={themed($infoText)}
+                      size="xxs"
+                      weight="normal"
+                    />
                   </View>
                 </View>
               </View>
             </View>
-
           </View>
-          <Button onPress={handleNext} tx="onboardingValidateScreen:validate" style={themed($btnValidate)} />
-
+          <Button
+            onPress={handleNext}
+            tx="onboardingValidateScreen:validate"
+            style={themed($btnValidate)}
+          />
         </View>
-      </Screen >)
-  }
-)
-
+      </Screen>
+    )
+  })
 
 const $root: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
   backgroundColor: colors.background,
 })
-
 
 const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexGrow: 1,
@@ -104,7 +119,6 @@ const $sectionTitle: ThemedStyle<TextStyle> = () => ({
 })
 
 const $sectionText: ThemedStyle<TextStyle> = () => ({
-
   textAlign: "center",
 })
 const $numberBox: ThemedStyle<TextStyle> = ({ colors }) => ({
@@ -141,8 +155,6 @@ const $infoOuter: ThemedStyle<TextStyle> = ({ colors }) => ({
   flexDirection: "row",
   alignItems: "center",
   gap: 12,
-
-
 })
 const $infoInner: ThemedStyle<TextStyle> = ({ colors }) => ({
   width: 230,
@@ -156,7 +168,6 @@ const $infoInner: ThemedStyle<TextStyle> = ({ colors }) => ({
 
 const $infoText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.info,
-
 })
 
 const $btnValidate: ThemedStyle<TextStyle> = () => ({

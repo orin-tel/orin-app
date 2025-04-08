@@ -8,60 +8,69 @@ import { colors, spacing, ThemedStyle } from "@/theme"
 import ProgressBar from "@/components/ProgressBar"
 import { useProgress } from "@/context/ProgressProvider"
 import { useFocusEffect } from "@react-navigation/native"
+import Config from "@/config"
 
-export const OnboardingCongratulationsScreen: FC<OnboardingStackScreenProps<"OnboardingCongratulations">> = observer(
-  function OnboardingCongratulationsScreen(_props) {
-    const { themed } = useAppTheme()
+export const OnboardingCongratulationsScreen: FC<
+  OnboardingStackScreenProps<"OnboardingCongratulations">
+> = observer(function OnboardingCongratulationsScreen(_props) {
+  const { themed } = useAppTheme()
 
-    // progress bar
-    const { navigation } = _props;
+  // progress bar
+  const { navigation } = _props
 
-    const { setProgress } = useProgress();
-    useFocusEffect(
-      useCallback(() => {
-        setProgress(0.6);
-      }, [])
-    );
+  const { setProgress } = useProgress()
+  useFocusEffect(
+    useCallback(() => {
+      setProgress(0.6)
+    }, []),
+  )
 
-    const handleNext = () => {
+  const copyToClipboard = () => {}
 
-      navigation.navigate("OnboardingAbout");
-    }
-    //
-    return (
-      <Screen
-        style={themed($root)}
-        contentContainerStyle={themed($contentContainer)}
-        preset="scroll"
-      >
-        <View style={themed($container)}>
-
-          <View style={themed($sectionContainer)}>
-            <Icon icon="checkInverse" size={55} />
-            <View style={themed($textContainer)}>
-              <Text tx="onboardingCongratulationsScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
-              <Text tx="onboardingCongratulationsScreen:description" style={themed($sectionText)} size="sm" weight="normal" />
-            </View>
-            <View style={themed($sectionContainerTwo)}>
-              <Text tx="onboardingCongratulationsScreen:label" style={themed($label)}
-                weight="medium" />
-              <View style={themed($numberBox)}>
-                <Text tx="onboardingCongratulationsScreen:number" size="lg" weight="bold" />
-                <Icon icon="copy" size={spacing.md} />
-              </View>
-
-            </View>
-
-          </View>
-          <Button tx="onboardingCongratulationsScreen:next" 
-          style={themed($btnValidate)}
-          onPress={handleNext} />
-
-        </View>
-      </Screen >)
+  const handleNext = () => {
+    navigation.navigate("OnboardingAbout")
   }
-)
-
+  //
+  return (
+    <Screen style={themed($root)} contentContainerStyle={themed($contentContainer)} preset="scroll">
+      <View style={themed($container)}>
+        <View style={themed($sectionContainer)}>
+          <Icon icon="checkInverse" size={55} />
+          <View style={themed($textContainer)}>
+            <Text
+              tx="onboardingCongratulationsScreen:title"
+              style={themed($sectionTitle)}
+              size="xl"
+              weight="bold"
+            />
+            <Text
+              tx="onboardingCongratulationsScreen:description"
+              style={themed($sectionText)}
+              size="sm"
+              weight="normal"
+            />
+          </View>
+          <View style={themed($sectionContainerTwo)}>
+            <Text
+              tx="onboardingCongratulationsScreen:label"
+              style={themed($label)}
+              weight="medium"
+            />
+            <View style={themed($numberBox)}>
+              <Text text={Config.TELEPHONY_SERVER_NUMBER} size="lg" weight="bold" />
+              <Icon icon="copy" size={spacing.md} onPress={copyToClipboard} />
+            </View>
+          </View>
+        </View>
+        <Button
+          tx="onboardingCongratulationsScreen:next"
+          style={themed($btnValidate)}
+          onPress={handleNext}
+        />
+      </View>
+    </Screen>
+  )
+})
 
 const $root: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
@@ -90,7 +99,6 @@ const $sectionContainerTwo: ThemedStyle<TextStyle> = ({ spacing }) => ({
 })
 const $label: ThemedStyle<TextStyle> = ({ spacing }) => ({
   gap: spacing.xxs,
-
 })
 const $textContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
   gap: spacing.sm,

@@ -27,12 +27,10 @@ export const COUNTRY_MAP = [
   { value: "EG", label: "Egypt", code: "+20" },
 ]
 export const LANGUAGE_MAP = [
-
   { value: "EN", country: "GB", label: "English", code: "" },
-  
+
   { value: "HIN", country: "IN", label: "Hindi", code: "" },
-  {  value: "BEN", country: "IN", label: "Bengali", code: "" },
-  
-  {  value: "FR", country: "FR", label: "French", code: "" },
-  
+  { value: "BEN", country: "IN", label: "Bengali", code: "" },
+
+  { value: "FR", country: "FR", label: "French", code: "" },
 ]

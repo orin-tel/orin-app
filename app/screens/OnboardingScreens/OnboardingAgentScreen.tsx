@@ -4,25 +4,34 @@ import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
 import { OnboardingStackScreenProps } from "@/navigators"
 import { Button, Icon, Screen, Text, TextField } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
-import { colors, spacing, ThemedStyle } from "@/theme"
+import { $styles, colors, spacing, ThemedStyle } from "@/theme"
 import { useProgress } from "@/context/ProgressProvider"
 import { useFocusEffect } from "@react-navigation/native"
 import { LanguageSelect } from "@/components/LanguageSelect"
 import { LANGUAGE_MAP } from "@/constants"
 import CountryFlag from "react-native-country-flag"
 import { useStores } from "@/models"
+import { TxKeyPath } from "@/i18n"
+import { userStore } from "@/models/UserStore"
+import { IUser } from "@/services/api/user/types"
 
 export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAgent">> = observer(
   function OnboardingAgentScreen(_props) {
     const { themed } = useAppTheme()
     const [selectedOption, setSelectedOption] = useState<"one" | "two" | "three">("one")
-
+    const [loading, setLoading] = useState<boolean>(false)
+    const [onboardingError, setOnboardingError] = useState<TxKeyPath>()
     const {
       userStore: {
-        userLanguage,
-        userLanguageIcon,
-        setUserLanguage,
-        setUserLanguageIcon,
+        agentLanguageIcon,
+        agentLanguage,
+        userAgentName,
+        userAgentVoice,
+        userName,
+        userCountry,
+        userAbout,
+        setAgentLanguage,
+        setAgentLanguageIcon,
         setUserAgentName,
         setUserAgentVoice,
       },
@@ -37,13 +46,50 @@ export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAge
       }, []),
     )
 
-    const handleNext = () => {
-      navigation.navigate("Core", {
+    const finishOnboarding = async () => {
+      setLoading(true)
+      const user_name_list = userName?.split(" ")
+      const user_first_name = user_name_list?.[0]
+      const user_last_name = user_name_list?.slice(1)?.join(" ")
+
+      const user_location = userCountry
+      const user_description = userAbout
+      const agent_voice = userAgentVoice
+      const agent_name = userAgentName
+      const agent_language = agentLanguage
+
+      const user: IUser = {
+        first_name: user_first_name,
+        last_name: user_last_name,
+        user_description: user_description ?? "",
+        location: user_location ?? "",
+        agent_voice: agent_voice ?? "",
+        agent_name: agent_name ?? "",
+        agent_language: agent_language ?? "",
+      }
+
+      console.log("USER IS HERE", user)
+      const response = await userStore.completeOnboarding(user)
+      if (typeof response === "boolean") {
+        if (response) {
+          _props.navigation.navigate("Core", {
+            screen: "CallLogs",
+            params: {
+              screen: "CallList",
+            },
+          })
+          setOnboardingError(undefined)
+        }
+      } else {
+        setOnboardingError(`generalApiProblem:${response.kind}`)
+      }
+      _props.navigation.navigate("Core", {
         screen: "CallLogs",
         params: {
           screen: "CallList",
         },
       })
+      setLoading(false)
     }
     //
     return (
@@ -73,6 +119,7 @@ export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAge
                 <Text tx="onboardingAgentScreen:label_one" style={themed($label)} weight="medium" />
                 <TextField
                   inputWrapperStyle={themed($nameInputBox)}
+                  value={userAgentName ?? ""}
                   placeholderTx="onboardingAgentScreen:example_name"
                   onChangeText={setUserAgentName}
                   LeftAccessory={(props) => (
@@ -86,18 +133,18 @@ export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAge
                 <LanguageSelect
                   style={themed($languageSelect)}
                   placeholderTx="onboardingAgentScreen:select_language"
-                  value={userLanguage ? [userLanguage] : []}
+                  value={agentLanguage ? [agentLanguage] : []}
                   onSelect={(newValue) => {
-                    setUserLanguage(newValue[0] ?? null)
-                    setUserLanguageIcon(newValue[0] ?? null)
+                    setAgentLanguage(newValue[0] ?? null)
+                    setAgentLanguageIcon(newValue[0] ?? null)
                   }}
                   options={LANGUAGE_MAP}
                   multiple={false}
                   LeftAccessory={(props) => {
-                    if (userLanguageIcon != null)
+                    if (agentLanguageIcon != null)
                       return (
                         <View style={themed($countryIcon)}>
-                          <CountryFlag isoCode={userLanguageIcon} size={16} />
+                          <CountryFlag isoCode={agentLanguageIcon} size={16} />
                         </View>
                       )
                     return <Icon icon="world" size={20} containerStyle={props.style} />
@@ -204,9 +251,17 @@ export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAge
           <Button
             tx="onboardingAgentScreen:finish_setup"
             style={themed($btnValidate)}
-            onPress={handleNext}
+            disabled={!!!userAgentName || !!!userAgentVoice || !!!agentLanguage}
+            onPress={finishOnboarding}
+            loading={loading}
             LeftAccessory={(props) => <Icon icon="checkOutCircle" color={colors.background} />}
           />
+          {onboardingError && (
+            <View style={[$styles.row, themed($errorContainer)]}>
+              <Icon icon="infoCircle" color={themed($errorStyle).color?.toString()} />
+              <Text tx={onboardingError} style={themed($errorStyle)} />
+            </View>
+          )}
         </View>
       </Screen>
     )
@@ -331,4 +386,19 @@ const $nameInputBox: ThemedStyle<TextStyle> = ({ colors }) => ({
 const $btnValidate: ThemedStyle<TextStyle> = () => ({
   width: 260,
   gap: spacing.xs,
+})
+
+const $errorContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  width: "100%",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: spacing.sm,
+  marginTop: -spacing.xl,
+})
+
+const $errorStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
+  // alignItems: "center",
+  // justifyContent: "center",
+  textAlign: "center",
+  color: colors.error,
 })

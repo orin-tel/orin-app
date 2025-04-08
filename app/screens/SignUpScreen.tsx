@@ -71,7 +71,7 @@ export const SignUpScreen: FC<AppStackScreenProps<"SignUp">> = function SignUpSc
           tx="signUpScreen:google_oauth"
           style={themed($emailBtn)}
           onPress={onPress}
-          LeftAccessory={(props) => <Icon style={props.style} icon="github" />}
+          LeftAccessory={(props) => <Icon style={props.style} icon="google" />}
         />
       ) : (
         <ActivityIndicator />

@@ -28,9 +28,10 @@ export const AuthReconcileScreen: FC<AppStackScreenProps<"AuthReconcile">> = obs
               screen: "CallList",
             },
           })
-        _props.navigation.navigate("Onboarding", {
-          screen: "OnboardingRegisterMobile",
-        })
+        else
+          _props.navigation.navigate("Onboarding", {
+            screen: "OnboardingRegisterMobile",
+          })
       })()
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

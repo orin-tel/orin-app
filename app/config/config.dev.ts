@@ -7,5 +7,6 @@
  */
 
 export default {
-  API_BASE_URL: "https://cc7b-115-187-43-71.ngrok-free.app",
+  API_BASE_URL: "https://7d7e-115-187-43-71.ngrok-free.app",
+  TELEPHONY_SERVER_NUMBER: "+16466634660",
 }

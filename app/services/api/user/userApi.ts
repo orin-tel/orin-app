@@ -71,6 +71,129 @@ export class UserApi {
       return { kind: "bad-data" }
     }
   }
+
+  async requestOtp(phone_number_e164: string): Promise<{ kind: "ok" } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response: ApiResponse<NestResponse<string>> = await this.apisauce.post(`/request-otp`, {
+      phone_number_e164,
+    })
+
+    // the typical ways to die when calling an api
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    try {
+      const data = response.data
+      if (!data) {
+        throw new Error("data not available")
+      }
+      return {
+        kind: "ok",
+      }
+    } catch (e) {
+      if (__DEV__ && e instanceof Error) {
+        console.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
+      }
+      return { kind: "bad-data" }
+    }
+  }
+
+  async verifyOtp(
+    otp: string,
+    phone_number_e164: string,
+  ): Promise<{ kind: "ok"; user: IUser } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response: ApiResponse<NestResponse<IUser>> = await this.apisauce.post(`/verify-otp`, {
+      otp,
+      phone_number_e164,
+    })
+
+    // the typical ways to die when calling an api
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    try {
+      const data = response.data
+      if (!data) {
+        throw new Error("data not available")
+      }
+      return {
+        kind: "ok",
+        user: data?.data,
+      }
+    } catch (e) {
+      if (__DEV__ && e instanceof Error) {
+        console.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
+      }
+      return { kind: "bad-data" }
+    }
+  }
+
+  async completeOnboarding(user: IUser): Promise<{ kind: "ok"; user: IUser } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response: ApiResponse<NestResponse<IUser>> = await this.apisauce.post(
+      `/complete-onboarding`,
+      {
+        ...user,
+      },
+    )
+
+    // the typical ways to die when calling an api
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    try {
+      const data = response.data
+      if (!data) {
+        throw new Error("data not available")
+      }
+      return {
+        kind: "ok",
+        user: data?.data,
+      }
+    } catch (e) {
+      if (__DEV__ && e instanceof Error) {
+        console.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
+      }
+      return { kind: "bad-data" }
+    }
+  }
+
+  async registerDevice(device_token: string): Promise<{ kind: "ok" } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response: ApiResponse<NestResponse<string>> = await this.apisauce.post(
+      "/register-device",
+      {
+        device_token,
+      },
+    )
+    // the typical ways to die when calling an api
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    try {
+      const data = response.data
+      if (!data) {
+        throw new Error("data not available")
+      }
+      return {
+        kind: "ok",
+      }
+    } catch (e) {
+      if (__DEV__ && e instanceof Error) {
+        console.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
+      }
+      return { kind: "bad-data" }
+    }
+  }
 }
 
 // Singleton instance of the API for convenience

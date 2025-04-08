@@ -30,3 +30,42 @@ export type CallLog = {
   subject_line: string
   call_id: string
 }
+
+export interface ICall {
+  id: string
+
+  call_id: string
+
+  user_id: string
+
+  to_phone_number: string
+  from_phone_number: string
+
+  caller_name: string | null
+  receiver_name: string | null
+
+  provider: string
+
+  forwarded_from: string | null
+
+  call_start_time: string // ISO 8601
+  call_end_time: string | null
+
+  call_duration: number | null
+  duration: number | null
+
+  metadata?: Record<string, any> | null
+
+  call_type: string
+
+  tags: string[]
+
+  summary: string
+
+  transcription: object[]
+
+  notes: object[]
+
+  created_at: string // ISO 8601
+  updated_at: string // ISO 8601
+}

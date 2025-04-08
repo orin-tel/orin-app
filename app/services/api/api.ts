@@ -15,7 +15,7 @@ import type { EpisodeSnapshotIn } from "../../models/Episode"
  * Configuring the apisauce instance.
  */
 export const DEFAULT_API_CONFIG: ApiConfig = {
-  url: Config.API_BASE_URL,
+  url: "https://api.rss2json.com/v1/",
   timeout: 10000,
 }
 
@@ -60,11 +60,14 @@ export class Api {
     try {
       const rawData = response.data
 
+      console.log("RAW DATA", rawData)
       // This is where we transform the data into the shape we expect for our MST model.
       const episodes: EpisodeSnapshotIn[] =
         rawData?.items.map((raw) => ({
           ...raw,
         })) ?? []
+
+      console.log("EPISODE SNAPSHOT", episodes)
 
       return { kind: "ok", episodes }
     } catch (e) {

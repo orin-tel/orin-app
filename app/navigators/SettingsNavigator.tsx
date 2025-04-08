@@ -13,7 +13,6 @@ import { CompositeScreenProps } from "@react-navigation/native"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { TouchableOpacity } from "react-native"
 import { Icon } from "@/components"
-import { colors } from "@/theme"
 
 export type SettingsNavigatorParamList = {
   Overview: undefined
@@ -33,7 +32,10 @@ export type SettingStackScreenProps<T extends keyof SettingsNavigatorParamList> 
 
 const Stack = createNativeStackNavigator<SettingsNavigatorParamList>()
 export const SettingsNavigator = () => {
-  const { themed } = useAppTheme()
+  const {
+    themed,
+    theme: { colors },
+  } = useAppTheme()
   return (
     <Stack.Navigator
       screenOptions={({ navigation }) => ({

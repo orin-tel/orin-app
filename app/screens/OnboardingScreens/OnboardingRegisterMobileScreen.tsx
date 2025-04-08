@@ -1,11 +1,17 @@
-import { FC } from "react"
+import { FC, useCallback, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, View, ViewStyle } from "react-native"
 import { OnboardingStackScreenProps } from "@/navigators"
-import { Button, PhoneTextField, Screen, Text } from "@/components"
+import { Button, Icon, PhoneTextField, Screen, Text } from "@/components"
 import { $styles, ThemedStyle } from "@/theme"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { useStores } from "@/models"
+import { useProgress } from "@/context/ProgressProvider"
+import { useFocusEffect } from "@react-navigation/native"
+import { userStore } from "@/models/UserStore"
+import { GeneralApiProblem } from "@/services/api/apiProblem"
+import { PhoneNumberUtil, PhoneNumber, PhoneNumberFormat } from "google-libphonenumber"
+import { TxKeyPath } from "@/i18n"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "@/models"
 
@@ -13,6 +19,8 @@ export const OnboardingRegisterMobileScreen: FC<
   OnboardingStackScreenProps<"OnboardingRegisterMobile">
 > = observer(function OnboardingRegisterMobileScreen(_props) {
   // Pull in one of our MST stores
+  const [loading, setLoading] = useState<boolean>(false)
+  const [otpError, setOtpError] = useState<TxKeyPath>()
   const {
     locationStore: { countryPhoneCode },
 
@@ -25,14 +33,48 @@ export const OnboardingRegisterMobileScreen: FC<
     episodeStore,
   } = useStores()
 
+  const { setProgress } = useProgress()
+  useFocusEffect(
+    useCallback(() => {
+      setProgress(0.1)
+    }, []),
+  )
+
   const { navigation } = _props
 
-  const handleOTPGeneration = () => {
-    // Handle API for otp generation
-    episodeStore.setProp("episodes", [])
-    navigation.navigate("Onboarding", {
-      screen: "OnboardingVerifyOtp",
-    })
+  const handleOTPGeneration = async () => {
+    if (!userPhoneNumber) {
+      return
+    }
+    setLoading(true)
+    const phoneNumber = userCountryPhoneCode + userPhoneNumber
+    // validate phone number
+    const phoneUtil = PhoneNumberUtil.getInstance()
+    const parsedNumber = phoneUtil.parse(phoneNumber, "")
+    const isValid = phoneUtil.isValidNumber(parsedNumber)
+
+    if (!isValid) {
+      setOtpError("onboardingRegisterMobileScreen:invalid_number")
+      setLoading(false)
+      return
+    }
+    const phone_number_e164 = phoneUtil.format(parsedNumber, PhoneNumberFormat.E164)
+    const response = await userStore.requestOtp(phone_number_e164)
+    if (typeof response === "boolean") {
+      if (response) {
+        // Handle API for otp generation
+        navigation.navigate("Onboarding", {
+          screen: "OnboardingVerifyOtp",
+        })
+        setOtpError(undefined)
+      } else {
+        // do nothing if it returns false
+      }
+    } else {
+      // handle general api error
+      setOtpError(`generalApiProblem:${response.kind}`)
+    }
+    setLoading(false)
   }
 
   const { themed } = useAppTheme()
@@ -63,7 +105,14 @@ export const OnboardingRegisterMobileScreen: FC<
           tx="onboardingRegisterMobileScreen:get_otp"
           style={themed($getOtpBtn)}
           onPress={handleOTPGeneration}
+          loading={loading}
         />
+        {otpError && (
+          <View style={[$styles.row, themed($errorContainer)]}>
+            <Icon icon="infoCircle" color={themed($errorStyle).color?.toString()} />
+            <Text tx={otpError} style={themed($errorStyle)} />
+          </View>
+        )}
       </View>
     </Screen>
   )
@@ -99,4 +148,19 @@ const $contentContainer: ThemedStyle<ViewStyle> = ({}) => ({
   alignItems: "stretch",
   justifyContent: "flex-start",
   height: "100%",
+})
+
+const $errorContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  width: "100%",
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: spacing.md,
+  gap: spacing.sm,
+})
+
+const $errorStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
+  // alignItems: "center",
+  // justifyContent: "center",
+  textAlign: "center",
+  color: colors.error,
 })

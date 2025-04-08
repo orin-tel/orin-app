@@ -52,7 +52,7 @@ export const DemoPodcastListScreen: FC<DemoTabScreenProps<"DemoPodcastList">> = 
   function DemoPodcastListScreen(_props) {
     const { episodeStore } = useStores()
     const { themed } = useAppTheme()
-
+    const { episodes } = episodeStore
     const [refreshing, setRefreshing] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 

@@ -20,6 +20,7 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
       ...existingPlugins,
       require("./plugins/withSplashScreen").withSplashScreen,
       require("./plugins/withKotlinFiles").withKotlinFiles,
+      require("./plugins/withTwilioMessagingDisabled").withTwilioMessagingDisabled,
     ],
   }
 }

@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from "react"
+import { FC, useCallback, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, ViewStyle } from "react-native"
 import { Button, Icon, Screen, Text } from "@/components"
@@ -15,29 +15,29 @@ import { useStores } from "@/models"
 
 export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingCountry">> =
   observer(function OnboardingCountryScreen(_props) {
-    const [selectedCountry, setSelectedCountry] = useState<string[]>([]);
+    const [selectedCountry, setSelectedCountry] = useState<string[]>([])
 
     const {
-      userStore: {
-        userCountry,
-        setUserCountry,
-      },
+      userStore: { userCountry, setUserCountry },
     } = useStores()
-    
-    // page indicator
-    const { navigation } = _props;
 
-    const { setProgress } = useProgress();
+    // page indicator
+    const { navigation } = _props
+
+    const { setProgress } = useProgress()
     useFocusEffect(
       useCallback(() => {
-        setProgress(0.2);
-      }, [])
-    );
+        setProgress(0.3)
+      }, []),
+    )
 
     const handleNext = () => {
-      navigation.navigate("OnboardingNumber");
+      navigation.navigate("OnboardingNumber")
     }
-    //
+
+    useEffect(() => {
+      console.log("User country", !!userCountry)
+    }, [userCountry])
 
     const { themed } = useAppTheme()
     return (
@@ -48,18 +48,27 @@ export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingC
         preset="scroll"
       >
         <View style={themed($container)}>
-
           <View style={themed($sectionContainer)}>
             <View style={themed($textContainer)}>
-              <Text tx="onboardingCountryScreen:title" style={themed($sectionTitle)} size="xl" weight="bold" />
-              <Text tx="onboardingCountryScreen:description" style={themed($sectionText)} size="sm" weight="normal" />
+              <Text
+                tx="onboardingCountryScreen:title"
+                style={themed($sectionTitle)}
+                size="xl"
+                weight="bold"
+              />
+              <Text
+                tx="onboardingCountryScreen:description"
+                style={themed($sectionText)}
+                size="sm"
+                weight="normal"
+              />
             </View>
             <CountrySelect
               style={themed($selectField)}
               placeholderTx="onboardingCountryScreen:select_country"
               value={userCountry ? [userCountry] : []}
               onSelect={(newValue) => {
-                setUserCountry(newValue[0] ?? null);
+                setUserCountry(newValue[0] ?? null)
               }}
               options={COUNTRY_MAP}
               multiple={false}
@@ -76,6 +85,7 @@ export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingC
             style={themed($btnNext)}
             textStyle={themed($btnNextText)}
             onPress={handleNext}
+            disabled={!!!userCountry}
           />
         </View>
       </Screen>
@@ -85,7 +95,6 @@ export const OnboardingCountryScreen: FC<OnboardingStackScreenProps<"OnboardingC
 const $root: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
   backgroundColor: colors.background,
-
 })
 
 const $contentContainer: ThemedStyle<ViewStyle> = () => ({
@@ -93,7 +102,6 @@ const $contentContainer: ThemedStyle<ViewStyle> = () => ({
   justifyContent: "center",
   alignItems: "center",
   // borderWidth: 1,
-
 })
 
 const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
@@ -103,7 +111,6 @@ const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   alignItems: "center",
   gap: spacing.xxxl,
   // borderWidth: 1,
-
 })
 
 const $sectionContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
@@ -130,7 +137,7 @@ const $btnNext: ThemedStyle<TextStyle> = ({ colors }) => ({
   borderRadius: 100,
 })
 
-const $selectField: ThemedStyle<TextStyle> = ({ }) => ({
+const $selectField: ThemedStyle<TextStyle> = ({}) => ({
   width: 345,
   borderRadius: 100,
   borderWidth: 0,

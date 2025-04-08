@@ -150,10 +150,12 @@ const en = {
     register: "REGISTER",
     enter_your_mobile_number: "Enter your mobile number",
     get_otp: "Get OTP",
+    invalid_number: "Invalid mobile number",
   },
   onboardingVerifyOtpScreen: {
     otp_verification: "OTP Verification",
     otp_successfully_sent_to: "OTP successfully sent to",
+    invalid_number_issue: "An unexpected problem occured, please contact support",
     resend_otp: "Resend OTP",
     confirm_otp: "Confirm OTP",
   },
@@ -166,7 +168,6 @@ const en = {
     title: "Choose an option",
     description: "Select how you want to forward your calls",
     select_country: "Select a country",
-    number: "+91 8716239872",
     forward_to_ours: "Forward calls to our number",
     info: "This is our secure, server-protected number to which all your calls will be initially forwarded.",
     choose_yours: "Choose your own number",
@@ -176,7 +177,6 @@ const en = {
     title: "Forward and Validate",
     description:
       "You must complete the forwarding process first and then validate it to confirm the successful setup of call forwarding",
-    number: "*#21# +91 8716239872",
     info_one:
       "If you have an Android phone, simply copy and paste this into your dialer and call to complete the process",
     info_two:
@@ -188,7 +188,6 @@ const en = {
     description:
       "Your validation has been done successfully. All your calls will be forwarded to our number.",
     label: "Number",
-    number: "+91 8716239872",
     next: "Next",
   },
   onboardingAboutScreen: {
@@ -294,6 +293,7 @@ const en = {
   call_list: {
     empty_state_title: "No calls found",
     empty_state_content: "wow so empty",
+    unknown: "Unknown",
   },
   /**
    * CORE
@@ -309,6 +309,25 @@ const en = {
   },
 
   /** ORIN APP TRANSLATIONS */
+
+  /**
+   *  API PROBLEMS
+   */
+  generalApiProblem: {
+    "timeout": "Request timed out. Please try again.",
+    "cannot-connect": "Check your internet connection.",
+    "server": "Server error. Please try again later.",
+    "unauthorized": "You are not authorized. Please log in.",
+    "forbidden": "You don't have permission to access this resource.",
+    "not-found": "Requested resource not found.",
+    "rejected": "Please check and try again.",
+    "unknown": "Something went wrong. Please try again.",
+    "bad-data": "Invalid request. Please contact support.",
+  },
+
+  /**
+   *  API PROBLEMS
+   */
 
   ...demoEn,
 }

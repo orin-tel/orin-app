@@ -4,6 +4,9 @@ import { CountryPhoneCode } from "@/types"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 import { telephonyApi } from "@/services/api/telephony/telephonyApi"
 import { userApi } from "@/services/api/user/userApi"
+import { GeneralApiProblem } from "@/services/api/apiProblem"
+import { PhoneNumberFormat, PhoneNumberUtil } from "google-libphonenumber"
+import { IUser } from "@/services/api/user/types"
 
 export const UserStore = types
   .model("UserStore")
@@ -37,8 +40,8 @@ export const UserStore = types
     userAbout: types.maybeNull(types.string),
     // -----About Screen
     // Agent Screen-----
-    userLanguage: types.maybeNull(types.string),
-    userLanguageIcon: types.maybeNull(types.string),
+    agentLanguage: types.maybeNull(types.string),
+    agentLanguageIcon: types.maybeNull(types.string),
     userAgentName: types.maybeNull(types.string),
     userAgentVoice: types.maybeNull(types.string),
     // -----Agent Screen
@@ -85,12 +88,12 @@ export const UserStore = types
     },
     // -----About Screen
     // Agent Screen-----
-    setUserLanguage(userLanguage: string | null) {
-      self.userLanguage = userLanguage
+    setAgentLanguage(userLanguage: string | null) {
+      self.agentLanguage = userLanguage
     },
-    setUserLanguageIcon(userLanguageIcon: string | null) {
+    setAgentLanguageIcon(userLanguageIcon: string | null) {
       const country = LANGUAGE_MAP.find((item) => item.value === userLanguageIcon)?.country ?? null
-      self.userLanguageIcon = country
+      self.agentLanguageIcon = country
     },
     setUserAgentName(userAgentName: string | null) {
       self.userAgentName = userAgentName
@@ -119,23 +122,76 @@ export const UserStore = types
      */
     async signInUser(): Promise<boolean> {
       const response = await userApi.signInUser()
+
       if (response.kind === "ok") {
         const user = response.user
+        if (user.phone_number && user.phone_number.length > 0) {
+          const phoneUtil = PhoneNumberUtil.getInstance()
+          const parsedNumber = phoneUtil.parse(user.phone_number, "")
+          const isValid = phoneUtil.isValidNumber(parsedNumber)
+          if (!isValid) {
+            self.setProp("userPhoneNumber", "")
+            self.setProp("userCountryPhoneCode", "")
+          } else {
+            const nationalNumber = parsedNumber.getNationalNumber()?.toString()
+            const countryCode = parsedNumber.getCountryCode()?.toString()
+
+            self.setProp("userPhoneNumber", nationalNumber)
+            self.setProp("userCountryPhoneCode", `+${countryCode}`)
+          }
+        }
         self.setProp("authProvider", user.auth_provider)
         self.setProp("authProviderId", user.auth_provider_id)
         self.setProp("userAgentName", user.agent_name)
         self.setProp("userAgentVoice", user.agent_voice)
         self.setProp("userCountry", user.location)
-        self.setProp("userLanguage", user.language)
+        self.setProp("agentLanguage", user.agent_language)
         self.setProp("userName", user.first_name + " " + user.last_name)
-        self.setProp("userPhoneNumber", user.phone_number)
         self.setProp("userPrimaryEmail", user.primary_email)
         self.setProp("userProfilePicture", user.profile_picture_url)
+        console.log("USER RETRIEVED IS", user)
         if (user.is_onboarding_complete) return true
         return false
       } else {
         console.error(`Error signing in user: ${JSON.stringify(response)}`)
         return false
+      }
+    },
+    /**
+     * Request otp, returns false if there's no error
+     */
+    async requestOtp(phone_number_e164: string): Promise<GeneralApiProblem | boolean> {
+      // test
+      return true
+      const response = await userApi.requestOtp(phone_number_e164)
+      if (response.kind === "ok") {
+        console.log("successfully requested otp")
+        return true
+      } else {
+        return response
+      }
+    },
+    /**
+     * Verify otp
+     */
+    async verifyOtp(otp: string, phone_number_e164: string): Promise<GeneralApiProblem | boolean> {
+      const response = await userApi.verifyOtp(otp, phone_number_e164)
+      if (response.kind === "ok") {
+        console.log("successfully requested otp")
+        return true
+      } else {
+        // for testing
+        return true
+        return response
+      }
+    },
+    async completeOnboarding(user: IUser): Promise<GeneralApiProblem | boolean> {
+      const response = await userApi.completeOnboarding(user)
+      if (response.kind === "ok") {
+        console.log("completed onboarding")
+        return true
+      } else {
+        return response
       }
     },
     // ------ Call related -------

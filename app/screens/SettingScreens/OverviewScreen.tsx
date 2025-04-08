@@ -14,7 +14,7 @@ import { useAuth } from "@clerk/clerk-expo"
 export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
   function OverviewScreen(_props) {
     const {
-      userStore: { userName, userPhoneNumber },
+      userStore: { userName, userPhoneNumber, userCountryPhoneCode },
     } = useStores()
     const { signOut } = useAuth()
     const { navigation } = _props
@@ -49,7 +49,11 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
               <View style={themed($nameNumber)}>
                 {/* <Text text={`Sanando Chanda`} size="lg" weight="semiBold" /> */}
                 <Text text={`${userName}`} size="lg" weight="semiBold" />
-                <Text text={`+91 7679384799`} size="sm" weight="medium" />
+                <Text
+                  text={userCountryPhoneCode + " " + userPhoneNumber}
+                  size="sm"
+                  weight="medium"
+                />
                 {/* <Text text={`${userPhoneNumber}`} size="sm" weight="medium" /> */}
               </View>
             </View>

@@ -13,6 +13,7 @@ import { translate, TxKeyPath } from "@/i18n"
 import { Icon, IconTypes } from "@/components"
 import { getClerkInstance } from "@clerk/clerk-expo"
 import { useEffect } from "react"
+import { useFirebaseMessaging, useTelephonyNotificationService } from "@/services/notifications"
 
 export type CoreTabNavigatorParamList = {
   CallLogs: NavigatorScreenParams<CallLogNavigatorParamList>
@@ -75,6 +76,9 @@ export const CoreNavigator = () => {
     }
     getToken()
   }, [])
+  useTelephonyNotificationService()
+  useFirebaseMessaging()
+
   const { bottom } = useSafeAreaInsets()
   const {
     themed,

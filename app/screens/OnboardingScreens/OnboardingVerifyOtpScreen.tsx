@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react"
+import { FC, useCallback, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, View, ViewStyle } from "react-native"
 import { OnboardingStackScreenProps } from "@/navigators"
@@ -8,6 +8,11 @@ import { OtpInput } from "react-native-otp-entry"
 import { $styles, ThemedStyle } from "@/theme"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { useStores } from "@/models"
+import { useProgress } from "@/context/ProgressProvider"
+import { useFocusEffect } from "@react-navigation/native"
+import { PhoneNumberFormat, PhoneNumberUtil } from "google-libphonenumber"
+import { TxKeyPath } from "@/i18n"
+import { userStore } from "@/models/UserStore"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "@/models"
 
@@ -23,11 +28,13 @@ export const OnboardingVerifyOtpScreen: FC<OnboardingStackScreenProps<"Onboardin
       themed,
       theme: { colors },
     } = useAppTheme()
-    const [_otp, setOtp] = useState<string>()
+    const [otp, setOtp] = useState<string>()
 
     const [initialResendShow, setInitialResendShow] = useState(false)
     const [countdown, setCountdown] = useState(60)
     const [isResendDisabled, setIsResendDisabled] = useState(true)
+    const [loading, setLoading] = useState(false)
+    const [verifyOtpError, setVerifyOtpError] = useState<TxKeyPath>()
 
     useEffect(() => {
       if (countdown > 0) {
@@ -41,18 +48,72 @@ export const OnboardingVerifyOtpScreen: FC<OnboardingStackScreenProps<"Onboardin
       return undefined // Explicitly return undefined for all paths
     }, [countdown])
 
-    const handleResendOtp = () => {
+    const { setProgress } = useProgress()
+    useFocusEffect(
+      useCallback(() => {
+        setProgress(0.2)
+      }, []),
+    )
+
+    const handleResendOtp = async () => {
       setCountdown(60) // Reset countdown
       setIsResendDisabled(true)
+      if (!userPhoneNumber) {
+        return
+      }
+      const phoneNumber = userCountryPhoneCode + userPhoneNumber
+      // validate phone number
+      const phoneUtil = PhoneNumberUtil.getInstance()
+      const parsedNumber = phoneUtil.parse(phoneNumber, "")
+      const isValid = phoneUtil.isValidNumber(parsedNumber)
+
+      if (!isValid) {
+        setVerifyOtpError("onboardingRegisterMobileScreen:invalid_number")
+        return
+      }
+      const phone_number_e164 = phoneUtil.format(parsedNumber, PhoneNumberFormat.E164)
+      const response = await userStore.requestOtp(phone_number_e164)
+      if (typeof response === "boolean") {
+        // do nothing
+      } else {
+        // handle general api error
+        setVerifyOtpError(`generalApiProblem:${response.kind}`)
+      }
+      setVerifyOtpError(undefined)
     }
 
-    const handleOtpVerify = () => {
-      _props.navigation.navigate("Core", {
-        screen: "CallLogs",
-        params: {
-          screen: "CallList",
-        },
-      })
+    const handleOtpVerify = async () => {
+      if (!otp || otp?.length !== 4) {
+        return
+      }
+      if (!userPhoneNumber) {
+        return
+      }
+      setLoading(true)
+      const phoneNumber = userCountryPhoneCode + userPhoneNumber
+      // validate phone number
+      const phoneUtil = PhoneNumberUtil.getInstance()
+      const parsedNumber = phoneUtil.parse(phoneNumber, "")
+      const isValid = phoneUtil.isValidNumber(parsedNumber)
+      if (!isValid) {
+        setVerifyOtpError("onboardingVerifyOtpScreen:invalid_number_issue")
+        setLoading(false)
+        return
+      }
+      const phone_number_e164 = phoneUtil.format(parsedNumber, PhoneNumberFormat.E164)
+      const response = await userStore.verifyOtp(otp, phone_number_e164)
+
+      if (typeof response === "boolean") {
+        if (response) {
+          _props.navigation.navigate("Onboarding", {
+            screen: "OnboardingCountry",
+          })
+          setVerifyOtpError(undefined)
+        }
+      } else {
+        setVerifyOtpError(`generalApiProblem:${response.kind}`)
+      }
+      setLoading(false)
     }
     // using methods
     useEffect(() => {
@@ -111,7 +172,7 @@ export const OnboardingVerifyOtpScreen: FC<OnboardingStackScreenProps<"Onboardin
             onFocus={() => console.log("Focused")}
             onBlur={() => console.log("Blurred")}
             onTextChange={(text) => console.log(text)}
-            onFilled={(text) => console.log(`OTP is ${text}`)}
+            onFilled={(text) => setOtp(text)}
             textInputProps={{
               accessibilityLabel: "One-Time Password",
             }}
@@ -158,7 +219,14 @@ export const OnboardingVerifyOtpScreen: FC<OnboardingStackScreenProps<"Onboardin
             tx="onboardingVerifyOtpScreen:confirm_otp"
             style={themed($getOtpBtn)}
             onPress={handleOtpVerify}
+            loading={loading}
           />
+          {verifyOtpError && (
+            <View style={[$styles.row, themed($errorContainer)]}>
+              <Icon icon="infoCircle" color={themed($errorStyle).color?.toString()} />
+              <Text tx={verifyOtpError} style={themed($errorStyle)} />
+            </View>
+          )}
         </View>
       </Screen>
     )
@@ -250,6 +318,17 @@ const $pinCodeTextStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.text,
 })
 
-/**
- * OTP Styling
- */
+const $errorContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  width: "100%",
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: spacing.md,
+  gap: spacing.sm,
+})
+
+const $errorStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
+  // alignItems: "center",
+  // justifyContent: "center",
+  textAlign: "center",
+  color: colors.error,
+})

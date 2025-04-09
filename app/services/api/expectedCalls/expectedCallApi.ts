@@ -5,6 +5,8 @@ import type { ApiConfig, NestResponse } from "../api.types"
 
 import { getClerkInstance } from "@clerk/clerk-expo"
 import { IExpectedCall } from "./types"
+import { SnapshotIn } from "mobx-state-tree"
+import { ExpectedCallSnapshotIn } from "@/models/ExpectedCallModel"
 
 /**
  * Configuring the apisauce instance.
@@ -46,6 +48,12 @@ export class ExpectedCallApi {
       const problem = getGeneralApiProblem(response)
       if (problem) return problem
     }
+    // const rawData = response.data
+    // if (!rawData) throw new Error("data not available")
+    //       const calls: ExpectedCallSnapshotIn[] =
+    //
+    //
+    // return { kind: "ok", calls }
     return { kind: "ok", calls: response.data?.data ?? [] }
   }
 
@@ -54,7 +62,7 @@ export class ExpectedCallApi {
     caller_reason: string
     caller_number: string
     user_id?: string
-  }): Promise<{ kind: "ok"; call: IExpectedCall } | GeneralApiProblem> {
+  }): Promise<{ kind: "ok"; call: ExpectedCallSnapshotIn } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()
     this.apisauce.setHeader("authorization", `Bearer ${token}`)
     callData.user_id = "4f492be9-9003-46f5-a621-fa9278a7097f"
@@ -71,14 +79,20 @@ export class ExpectedCallApi {
 
     const data = response.data
     if (!data) throw new Error("data not available")
-    return { kind: "ok", call: data.data }
+    const snapshotIn: ExpectedCallSnapshotIn = {
+      id: data.data.id,
+      caller_name: data.data.caller_name,
+      caller_reason: data.data.caller_reason,
+    }
+    return { kind: "ok", call: snapshotIn }
   }
 
   async updateExpectedCall(
     id: string,
     data: {
-      name: string
-      reason: string
+      caller_name: string
+      caller_reason: string
+      caller_number: string
     },
   ): Promise<{ kind: "ok" } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()

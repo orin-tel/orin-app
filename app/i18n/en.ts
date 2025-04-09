@@ -273,6 +273,8 @@ const en = {
       "Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.",
     add: "Add",
     modal_header: "Add expected call",
+    empty_state_title: "No calls found",
+    empty_state_content: "You're not expecting to be called",
   },
   whitelistBlacklistScreen: {
     connect_google: "Connect Google Phonebook",

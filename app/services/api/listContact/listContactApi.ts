@@ -2,16 +2,15 @@ import { ApiResponse, ApisauceInstance, create } from "apisauce"
 import Config from "../../../config"
 import { GeneralApiProblem, getGeneralApiProblem } from "../apiProblem"
 import type { ApiConfig, NestResponse } from "../api.types"
-
 import { getClerkInstance } from "@clerk/clerk-expo"
-import { IExpectedCall } from "./types"
-import { ExpectedCallSnapshotIn } from "@/models/ExpectedCallModel"
+import { SnapshotIn } from "mobx-state-tree"
+import { ListContactSnapshotIn } from "@/models/ListContactModel"
 
 /**
  * Configuring the apisauce instance.
  */
-export const EXPECTED_CALL_API_CONFIG: ApiConfig = {
-  url: Config.API_BASE_URL + "/expecting-call",
+export const LIST_CONTACT_API_CONFIG: ApiConfig = {
+  url: Config.API_BASE_URL + "/list-contact",
   timeout: 10000,
 }
 
@@ -19,14 +18,14 @@ export const EXPECTED_CALL_API_CONFIG: ApiConfig = {
  * Manages all requests to the API. You can use this class to build out
  * various requests that you need to call from your backend API.
  */
-export class ExpectedCallApi {
+export class ListContactApi {
   apisauce: ApisauceInstance
   config: ApiConfig
 
   /**
    * Set up our API instance. Keep this lightweight!
    */
-  constructor(config: ApiConfig = EXPECTED_CALL_API_CONFIG) {
+  constructor(config: ApiConfig = LIST_CONTACT_API_CONFIG) {
     this.config = config
     this.apisauce = create({
       baseURL: this.config.url,
@@ -39,78 +38,73 @@ export class ExpectedCallApi {
 
   // expected calls
 
-  async getExpectedCalls(): Promise<{ kind: "ok"; calls: IExpectedCall[] } | GeneralApiProblem> {
+  async getListContacts(): Promise<{ kind: "ok"; calls: IListContact[] } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()
     this.apisauce.setHeader("authorization", `Bearer ${token}`)
 
-    const response: ApiResponse<NestResponse<IExpectedCall[]>> = await this.apisauce.get("")
-
+    const response: ApiResponse<NestResponse<IListContact[]>> = await this.apisauce.get("")
     if (!response.ok) {
       const problem = getGeneralApiProblem(response)
       if (problem) return problem
     }
-
     return { kind: "ok", calls: response.data?.data ?? [] }
   }
 
-  async createExpectedCall(callData: {
-    caller_name: string
-    caller_reason: string
-  }): Promise<{ kind: "ok"; call: ExpectedCallSnapshotIn } | GeneralApiProblem> {
+  async createListContact(contactData: {
+    name: string
+    phone_number_e164: string
+    list_type: string
+  }): Promise<{ kind: "ok"; contact: ListContactSnapshotIn } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()
     this.apisauce.setHeader("authorization", `Bearer ${token}`)
-
-    const response: ApiResponse<NestResponse<IExpectedCall>> = await this.apisauce.post(
+    const response: ApiResponse<NestResponse<IListContact>> = await this.apisauce.post(
       "",
-      callData,
+      contactData,
     )
-
     if (!response.ok) {
       const problem = getGeneralApiProblem(response)
       if (problem) return problem
     }
-
     const data = response.data
     if (!data) throw new Error("data not available")
-    const snapshotIn: ExpectedCallSnapshotIn = {
+    const snapshotIn: ListContactSnapshotIn = {
       id: data.data.id,
-      caller_name: data.data.caller_name,
-      caller_reason: data.data.caller_reason,
+      name: data.data.name,
+      phone_number_e164: data.data.phone_number_e164,
+      list_type: data.data.list_type,
     }
-    return { kind: "ok", call: snapshotIn }
+    return { kind: "ok", contact: snapshotIn }
   }
 
-  async updateExpectedCall(
+  async updateListContact(
     id: string,
     data: {
       caller_name: string
       caller_reason: string
+      caller_number: string
     },
   ): Promise<{ kind: "ok" } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()
     this.apisauce.setHeader("authorization", `Bearer ${token}`)
-
     const response = await this.apisauce.put(`${id}`, data)
 
     if (!response.ok) {
       const problem = getGeneralApiProblem(response)
       if (problem) return problem
     }
+
     return { kind: "ok" }
   }
 
-  async deleteExpectedCall(id: string): Promise<{ kind: "ok" } | GeneralApiProblem> {
+  async deleteListContact(id: string): Promise<{ kind: "ok" } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()
     this.apisauce.setHeader("authorization", `Bearer ${token}`)
-
     const response = await this.apisauce.delete(`${id}`)
-
     if (!response.ok) {
       const problem = getGeneralApiProblem(response)
       if (problem) return problem
     }
-
     return { kind: "ok" }
   }
 }
-export const expectedCallApi = new ExpectedCallApi()
+export const listContactApi = new ListContactApi()

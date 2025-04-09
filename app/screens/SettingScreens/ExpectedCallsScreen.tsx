@@ -179,11 +179,11 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                     />
                   )
                 }
-                ListFooterComponent={
-                  isLoading ? (
-                    <ActivityIndicator size="large" style={themed($activityIndicatorFooter)} />
-                  ) : null
-                }
+                // ListFooterComponent={
+                //   isLoading ? (
+                //     <ActivityIndicator size="large" style={themed($activityIndicatorFooter)} />
+                //   ) : null
+                // }
                 renderItem={({ item }) => (
                   <View key={item.id} style={themed($expectingCall)}>
                     <TouchableOpacity
@@ -468,7 +468,7 @@ const $addBtnModal: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
 })
 
 const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginTop: spacing.xxl,
+  marginTop: spacing.xxl + spacing.xxl,
 })
 const $activityIndicatorFooter: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginVertical: spacing.lg,

@@ -5,7 +5,7 @@ import {
   BottomSheetModal,
 } from "@gorhom/bottom-sheet"
 import { forwardRef, Ref, useImperativeHandle, useRef } from "react"
-import { TouchableOpacity, View, ViewStyle } from "react-native"
+import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { spacing, typography, type ThemedStyle } from "app/theme"
 import { useAppTheme } from "app/utils/useAppTheme"
@@ -88,7 +88,7 @@ export const CountrySelect = forwardRef(function CountrySelect(
           <TextField
             {...TextFieldProps}
             value={valueString}
-          // style={}
+            // style={}
           />
         </View>
       </TouchableOpacity>
@@ -107,21 +107,21 @@ export const CountrySelect = forwardRef(function CountrySelect(
           !multiple
             ? undefined
             : (props) => (
-              <BottomSheetFooter
-                {...props}
-                style={themed($bottomSheetFooter)}
-                bottomInset={bottom}
-              >
-                <Button text="Dismiss" preset="reversed" onPress={dismissOptions} />
-              </BottomSheetFooter>
-            )
+                <BottomSheetFooter
+                  {...props}
+                  style={themed($bottomSheetFooter)}
+                  bottomInset={bottom}
+                >
+                  <Button text="Dismiss" preset="reversed" onPress={dismissOptions} />
+                </BottomSheetFooter>
+              )
         }
       >
         <BottomSheetFlatList
           style={{ marginBottom: bottom + (multiple ? spacing.xl * 2 : 0) }}
           data={options}
           keyExtractor={(o) => o.value}
-          contentContainerStyle={{ paddingTop: 12 }}
+          contentContainerStyle={themed($bottomSheetContentContainerStyle)}
           renderItem={({ item, index }) => {
             const isSelected = value.includes(item.value)
 
@@ -129,7 +129,10 @@ export const CountrySelect = forwardRef(function CountrySelect(
               <ListItem
                 text={`${item.code} - ${item.label}`}
                 style={[themed($listItem), isSelected && themed($selectedItem)]}
-                textStyle={isSelected ? { fontFamily: typography.primary.bold } : undefined}
+                textStyle={[
+                  themed($listItemTextStyle),
+                  isSelected && themed($listItemTextSelectedStyle),
+                ]}
                 onPress={() => updateValue(item.value)}
                 height={48}
                 LeftComponent={
@@ -140,7 +143,7 @@ export const CountrySelect = forwardRef(function CountrySelect(
                 RightComponent={
                   isSelected ? (
                     <View style={themed($checkIcon)}>
-                      <Icon icon="check" size={16} />
+                      <Icon icon="check" size={16} color={colors.text} />
                     </View>
                   ) : undefined
                 }
@@ -156,6 +159,18 @@ export const CountrySelect = forwardRef(function CountrySelect(
 const $bottomSheetFooter: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.lg,
   paddingBottom: spacing.xs,
+})
+
+const $bottomSheetContentContainerStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  paddingTop: spacing.sm,
+})
+
+const $listItemTextStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.text,
+})
+
+const $listItemTextSelectedStyle: ThemedStyle<TextStyle> = ({ colors, typography }) => ({
+  fontFamily: typography.primary.bold,
 })
 
 const $modalBgStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({

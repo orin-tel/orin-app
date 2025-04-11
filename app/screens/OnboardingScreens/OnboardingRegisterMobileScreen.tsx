@@ -47,7 +47,7 @@ export const OnboardingRegisterMobileScreen: FC<
       return
     }
     setLoading(true)
-    const phoneNumber = userCountryPhoneCode + userPhoneNumber
+    const phoneNumber = (userCountryPhoneCode ?? "+1") + userPhoneNumber
     // validate phone number
     const phoneUtil = PhoneNumberUtil.getInstance()
     const parsedNumber = phoneUtil.parse(phoneNumber, "")
@@ -64,7 +64,7 @@ export const OnboardingRegisterMobileScreen: FC<
       if (response) {
         // Handle API for otp generation
         navigation.navigate("Onboarding", {
-          screen: "OnboardingVerifyOtp",
+          screen: "OnboardingCountry",
         })
         setOtpError(undefined)
       } else {
@@ -96,7 +96,7 @@ export const OnboardingRegisterMobileScreen: FC<
         <PhoneTextField
           value={userPhoneNumber ?? ""}
           setValue={setUserPhoneNumber}
-          countryPhoneCode={userCountryPhoneCode ?? countryPhoneCode ?? "+91"}
+          countryPhoneCode={userCountryPhoneCode ?? countryPhoneCode ?? "+1"}
           setCountryPhoneCode={setUserCountryPhoneCode}
           placeholder="000-000-000"
         />

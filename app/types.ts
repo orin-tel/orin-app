@@ -13,9 +13,9 @@ export enum CALL_TYPE {
 }
 
 export enum TAG {
-  SPAM = "spam",
-  AI = "ai",
-  CALLBACK = "callback",
+  SPAM = "SPAM",
+  AI = "AI",
+  CALLBACK = "CALLBACK",
 }
 
 export type CallLog = {

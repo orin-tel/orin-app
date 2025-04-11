@@ -36,11 +36,7 @@ export const AuthReconcileScreen: FC<AppStackScreenProps<"AuthReconcile">> = obs
     }, [])
 
     useEffect(() => {}, [])
-    return (
-      <Screen style={$root} contentContainerStyle={$contentContainer} preset="scroll">
-        <ActivityIndicator color={colors.primary} />
-      </Screen>
-    )
+    return <Screen style={$root} contentContainerStyle={$contentContainer} preset="scroll"></Screen>
   },
 )
 

@@ -70,6 +70,12 @@ export const ActiveCallScreen: FC<AppStackScreenProps<"ActiveCall">> = observer(
     const handleHangUp = () => {
       if (activeCall && typeof activeCall.disconnect === "function") {
         activeCall.disconnect()
+        setTimeout(() => {
+          if (_props.navigation.canGoBack()) _props.navigation.goBack()
+          else {
+            _props.navigation.navigate("AuthReconcile")
+          }
+        }, 1000)
       }
     }
 

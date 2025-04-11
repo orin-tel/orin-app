@@ -13,6 +13,7 @@ import { getClerkInstance } from "@clerk/clerk-expo"
 import { CallSnapshotIn } from "@/models/Call"
 import { ICallPaginated } from "./types"
 import { convertICallToSnapshotIn } from "@/utils/convertICallToCallSnapshotIn"
+import { ICall } from "@/types"
 
 /**
  * Configuring the apisauce instance.
@@ -102,7 +103,6 @@ export class TelephonyApi {
       }
 
       const calls = data.data.calls
-      console.log("CALL DATA RECEIVED", calls)
       const callSnapshotIn = calls.map(convertICallToSnapshotIn)
       return {
         kind: "ok",
@@ -142,7 +142,6 @@ export class TelephonyApi {
       }
 
       const calls = data.data
-      console.log("CALL DATA RECEIVED  2", calls)
 
       const callSnapshotIn = calls.map(convertICallToSnapshotIn)
       return {

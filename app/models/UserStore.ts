@@ -149,7 +149,6 @@ export const UserStore = types
         self.setProp("userName", user.first_name + " " + user.last_name)
         self.setProp("userPrimaryEmail", user.primary_email)
         self.setProp("userProfilePicture", user.profile_picture_url)
-        console.log("USER RETRIEVED IS", user)
         if (user.is_onboarding_complete) return true
         return false
       } else {
@@ -161,8 +160,6 @@ export const UserStore = types
      * Request otp, returns false if there's no error
      */
     async requestOtp(phone_number_e164: string): Promise<GeneralApiProblem | boolean> {
-      // test
-      return true
       const response = await userApi.requestOtp(phone_number_e164)
       if (response.kind === "ok") {
         console.log("successfully requested otp")
@@ -180,8 +177,6 @@ export const UserStore = types
         console.log("successfully requested otp")
         return true
       } else {
-        // for testing
-        return true
         return response
       }
     },

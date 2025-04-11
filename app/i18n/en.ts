@@ -308,6 +308,13 @@ const en = {
     empty_state_content: "wow so empty",
     unknown: "Unknown",
   },
+  call: {
+    status: "Status",
+    connected: "Connected",
+    tags: "Tags",
+    ai_summary: "AI Summary",
+    no_tags_found: "No tags found",
+  },
   /**
    * CORE
    */

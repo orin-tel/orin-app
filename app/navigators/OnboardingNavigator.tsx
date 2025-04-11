@@ -91,7 +91,6 @@ export const OnboardingNavigator = () => {
         initialRouteName="OnboardingRegisterMobile"
       >
         <Stack.Screen name="OnboardingRegisterMobile" component={OnboardingRegisterMobileScreen} />
-        <Stack.Screen name="OnboardingVerifyOtp" component={OnboardingVerifyOtpScreen} />
         <Stack.Screen name="OnboardingCountry" component={OnboardingCountryScreen} />
         <Stack.Screen name="OnboardingNumber" component={OnboardingNumberScreen} />
         <Stack.Screen name="OnboardingValidate" component={OnboardingValidateScreen} />

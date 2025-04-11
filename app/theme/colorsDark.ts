@@ -72,6 +72,7 @@ export const colors = {
   textPlaceholder: palette.neutral300,
   defaultPrimary: palette.primary600,
   background: palette.neutral100,
+  backgroundDim: palette.neutral200,
   shadowPrimary: palette.shadow,
   border: palette.neutral400,
   tint: palette.primary500,

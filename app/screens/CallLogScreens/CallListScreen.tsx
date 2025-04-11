@@ -20,7 +20,7 @@ import { delay } from "@/utils/delay"
 // import { useStores } from "@/models"
 
 export const CallListScreen: FC<CallLogStackScreenProps<"CallList">> = observer(
-  function CallListScreen() {
+  function CallListScreen(_props) {
     // Pull in one of our MST stores
     const { callStore } = useStores()
     const [refreshing, setRefreshing] = useState(false)
@@ -85,7 +85,7 @@ export const CallListScreen: FC<CallLogStackScreenProps<"CallList">> = observer(
                     <View style={themed($dividerStyle)}></View>
                   </View>
                 )}
-                <CallCard callLog={item} />
+                <CallCard callLog={item} parentProps={_props} />
               </>
             )
           }}
@@ -102,11 +102,21 @@ const formatDate = (datetime: string) => {
   return format(date, "dd MMMM") // Example: 15 March
 }
 
-const CallCard = observer(function CallCard({ callLog }: { callLog: Call }) {
+const CallCard = observer(function CallCard({
+  callLog,
+  parentProps,
+}: {
+  callLog: Call
+  parentProps: CallLogStackScreenProps<"CallList">
+}) {
   const {
     theme: { colors },
     themed,
   } = useAppTheme()
+
+  const handleCallNavigation = () => {
+    parentProps.navigation.navigate("Call", callLog)
+  }
 
   const CallStateColor = useMemo(
     () => ({
@@ -169,23 +179,37 @@ const CallCard = observer(function CallCard({ callLog }: { callLog: Call }) {
       ContentComponent={
         <View style={themed([$styles.row, $contentContainerStyle])}>
           <Text text={callLog.fromPhoneNumber} />
-          <View
-            style={themed([
-              {
-                backgroundColor: CallStateColor[callLog.tags?.[0] ?? "AI"].background,
-                borderColor: CallStateColor[callLog.tags?.[0] ?? "AI"].border,
-              },
-              $tagStyle,
-            ])}
-          >
-            <Text
-              text={callLog.tags?.[0]?.toLocaleLowerCase() ?? "ai"}
+          {(callLog?.tags ?? []).length > 0 && (
+            <View
               style={themed([
-                { color: CallStateColor[callLog.tags?.[0] ?? "AI"].text },
-                $tagTextStyle,
+                {
+                  backgroundColor:
+                    CallStateColor[(callLog.tags?.[0] as keyof typeof CallStateColor) ?? "AI"]
+                      ?.background ?? colors.warningBackground,
+                  borderColor:
+                    CallStateColor[(callLog.tags?.[0] as keyof typeof CallStateColor) ?? "AI"]
+                      ?.border,
+                },
+                $tagStyle,
               ])}
-            />
-          </View>
+            >
+              <Text
+                text={
+                  (callLog?.tags ?? []).length > 0
+                    ? (callLog.tags?.[0]?.toLocaleLowerCase() ?? "ai")
+                    : ""
+                }
+                style={themed([
+                  {
+                    color:
+                      CallStateColor[(callLog.tags?.[0] as keyof typeof CallStateColor) ?? "AI"]
+                        ?.text ?? colors.warning,
+                  },
+                  $tagTextStyle,
+                ])}
+              />
+            </View>
+          )}
         </View>
       }
       RightComponent={
@@ -194,6 +218,7 @@ const CallCard = observer(function CallCard({ callLog }: { callLog: Call }) {
           <Text text={format(new Date(callLog.createdAt), "hh:mm a")} />
         </View>
       }
+      onPress={handleCallNavigation}
     />
   )
 })

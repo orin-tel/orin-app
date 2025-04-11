@@ -4,7 +4,7 @@ import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
 import { OnboardingStackScreenProps } from "@/navigators"
 import { Button, Icon, Screen, Text, TextField } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
-import { $styles, colors, spacing, ThemedStyle } from "@/theme"
+import { $styles, ThemedStyle } from "@/theme"
 import { useProgress } from "@/context/ProgressProvider"
 import { useFocusEffect } from "@react-navigation/native"
 import { LanguageSelect } from "@/components/LanguageSelect"
@@ -17,7 +17,10 @@ import { IUser } from "@/services/api/user/types"
 
 export const OnboardingAgentScreen: FC<OnboardingStackScreenProps<"OnboardingAgent">> = observer(
   function OnboardingAgentScreen(_props) {
-    const { themed } = useAppTheme()
+    const {
+      themed,
+      theme: { colors },
+    } = useAppTheme()
     const [selectedOption, setSelectedOption] = useState<"one" | "two" | "three">("one")
     const [loading, setLoading] = useState<boolean>(false)
     const [onboardingError, setOnboardingError] = useState<TxKeyPath>()
@@ -383,7 +386,7 @@ const $nameInputBox: ThemedStyle<TextStyle> = ({ colors }) => ({
   width: 321,
 })
 
-const $btnValidate: ThemedStyle<TextStyle> = () => ({
+const $btnValidate: ThemedStyle<TextStyle> = ({ spacing }) => ({
   width: 260,
   gap: spacing.xs,
 })

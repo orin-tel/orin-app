@@ -75,6 +75,7 @@ export class UserApi {
   async requestOtp(phone_number_e164: string): Promise<{ kind: "ok" } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()
     this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    console.log("OTP BEING REQUESTED")
     const response: ApiResponse<NestResponse<string>> = await this.apisauce.post(`/request-otp`, {
       phone_number_e164,
     })

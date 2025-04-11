@@ -4,10 +4,11 @@ import { CompositeScreenProps } from "@react-navigation/native"
 import { CoreTabNavigatorParamList, CoreTabScreenProps } from "."
 import { useAppTheme } from "@/utils/useAppTheme"
 import { translate } from "@/i18n"
+import { Call } from "@/models/Call"
 
 export type CallLogNavigatorParamList = {
   CallList: undefined
-  Call: undefined
+  Call: Call
 }
 
 /**

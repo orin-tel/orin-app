@@ -99,6 +99,10 @@ export const colors = {
    */
   background: palette.neutral100,
   /**
+   * The dimmer color of the screen background.
+   */
+  backgroundDim: palette.neutral200,
+  /**
    * The default border color.
    */
   border: palette.neutral400,

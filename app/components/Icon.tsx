@@ -138,6 +138,8 @@ export const iconRegistry = {
   checkOutCircle: require("../../assets/icons/checkOutCircle.png"),
   micOff: require("../../assets/icons/mic-off.png"),
   speaker: require("../../assets/icons/speaker.png"),
+  message: require("../../assets/icons/message.png"),
+  email: require("../../assets/icons/email.png"),
 }
 
 const $imageStyleBase: ImageStyle = {

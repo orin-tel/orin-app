@@ -46,8 +46,6 @@ export const CallStoreModel = types
     },
     async updateCallListFromNotification(call: ICall) {
       const existingIndex = store.calls.findIndex((c) => c.id === call.id)
-      console.log("DATA AFTER NOTIF", call)
-      console.log("STORE DATA FIRST", store.calls.length)
       // convert call to CallSnapshotIn
       const newCall = convertICallToSnapshotIn(call)
       if (existingIndex !== -1) {
@@ -56,12 +54,8 @@ export const CallStoreModel = types
         updatedCalls[existingIndex] = callCreated
         store.setProp("calls", updatedCalls)
       } else {
-        console.log("BIHARI AGAYI")
-        console.log("NEW CALL", newCall)
         store.setProp("calls", [newCall, ...store.calls])
-        console.log("BIHARI CHALI GAYI")
       }
-      console.log("STORE DATA LAST", store.calls.length)
     },
   }))
 

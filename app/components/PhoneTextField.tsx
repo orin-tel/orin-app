@@ -150,7 +150,7 @@ const $leftAccessoryStyle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 const $countryCodeButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.transparent,
   borderColor: colors.transparent,
-  marginTop: spacing.xxs,
+  // marginTop: spacing.xxs,
 })
 
 const $countryCodeButtonText: ThemedStyle<TextStyle> = ({ spacing, typography, colors }) => ({

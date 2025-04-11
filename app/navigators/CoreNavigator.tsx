@@ -36,18 +36,18 @@ const AVAILABLE_TABS: CoreTabNavigatorTab[] = [
     label: "tabs:call_logs.tab",
     icon: "call",
   },
-  {
-    name: "Dialing",
-    component: DialingNavigator,
-    label: "tabs:dialer.tab",
-    icon: "dialer",
-  },
-  {
-    name: "Contacts",
-    component: ContactsNavigator,
-    label: "tabs:contacts.tab",
-    icon: "contacts",
-  },
+  // {
+  //   name: "Dialing",
+  //   component: DialingNavigator,
+  //   label: "tabs:dialer.tab",
+  //   icon: "dialer",
+  // },
+  // {
+  //   name: "Contacts",
+  //   component: ContactsNavigator,
+  //   label: "tabs:contacts.tab",
+  //   icon: "contacts",
+  // },
   {
     name: "Settings",
     component: SettingsNavigator,
@@ -84,7 +84,6 @@ export const CoreNavigator = () => {
     themed,
     theme: { colors },
   } = useAppTheme()
-  console.log("CallLogNavigator", CallLogNavigator)
   return (
     <Tab.Navigator
       screenOptions={{

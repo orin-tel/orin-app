@@ -26,10 +26,10 @@ export const CallModel = types.model("Call").props({
   metadata: types.maybe(types.frozen()),
 
   callType: types.maybe(CallTypeEnum),
-  tags: types.maybe(types.array(TagEnum)),
+  tags: types.maybe(types.array(types.string)),
   summary: types.maybe(types.string),
-  transcription: types.frozen(),
-  notes: types.frozen(),
+  transcription: types.maybe(types.frozen()),
+  notes: types.maybe(types.frozen()),
 
   createdAt: types.string,
   updatedAt: types.string,

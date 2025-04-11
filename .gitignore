@@ -31,6 +31,8 @@ local.properties
 *.iml
 *.hprof
 .cxx/
+*.apk
+*.aab
 
 # node.js
 #
@@ -85,9 +87,9 @@ web-build/
 
 # Configurations
 !env.js
-
+.env
 /coverage
+credentials.json
 
 # Yarn
 .yarn/*
-.env

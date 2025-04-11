@@ -40,7 +40,7 @@ import { ProgressProvider } from "./context/ProgressProvider"
 import { AppServices } from "./app-services"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
-const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
+const CLERK_PUBLISHABLE_KEY = Config.CLERK_PUBLISHABLE_KEY
 
 // Web linking configuration
 const prefix = Linking.createURL("/")

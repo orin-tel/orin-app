@@ -3,12 +3,15 @@
   "displayName": "Orin",
   "expo": {
     "name": "Orin",
-    "slug": "Orin",
+    "slug": "orin",
     "scheme": "orinapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/images/app-icon-all.png",
+    "androidStatusBar": {
+      "translucent": true
+    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -54,7 +57,13 @@
     ],
     "experiments": {
       "tsconfigPaths": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "889931dc-5fb4-4878-a952-824521c0f789"
+      }
+    },
+    "owner": "tirth0"
   },
   "ignite": {
     "version": "10.1.6"

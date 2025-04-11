@@ -1,17 +1,33 @@
-import { FC, useEffect, useRef, useState } from "react"
+import { FC, useEffect, useMemo, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { Keyboard, TextStyle, View, ViewStyle } from "react-native"
+import { Keyboard, SectionList, TextStyle, View, ViewStyle } from "react-native"
 import { SettingStackScreenProps } from "@/navigators"
 import { Button, Icon, Screen, Text, TextField } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
-import { spacing, ThemedStyle } from "@/theme"
+import { colors, spacing, ThemedStyle } from "@/theme"
 import { BottomSheetBackdrop, BottomSheetFooter, BottomSheetModal } from "@gorhom/bottom-sheet"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { PhoneVerify } from "@/components/PhoneVerify"
-import { ContactsSectionList } from "@/components/ContactList"
+import { useStores } from "@/models"
+
+interface Contact {
+  id: string
+  name: string
+  number: string
+}
+
+export interface ContactListProps {
+  list: string
+}
+
+interface Section {
+  title: string
+  data: Contact[]
+}
 
 export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observer(
   function WhitelistScreen(_props) {
+    const { listContactStore } = useStores()
     const [searchQuery, setSearchQuery] = useState("")
     const [snapIndex, setSnapIndex] = useState(0)
     const [nameModal, setNameModal] = useState("")
@@ -21,6 +37,7 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
     const addSheet = useRef<BottomSheetModal>(null)
     const removeSheet = useRef<BottomSheetModal>(null)
     const moveSheet = useRef<BottomSheetModal>(null)
+    const [contactToDeleteId, setContactToDeleteId] = useState<string | null>(null)
     const { bottom } = useSafeAreaInsets()
 
     function presentAdd() {
@@ -44,6 +61,24 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
       moveSheet.current?.dismiss()
     }
 
+    const addContact = async () => {
+      await listContactStore.createListContact(
+        nameModal,
+        `${phoneCodeModal}${numberModal}`,
+        "WHITELIST",
+      )
+      setNameModal("")
+      setNumberModal("")
+      dismissAdd()
+    }
+
+    const deleteContact = async () => {
+      if (contactToDeleteId) {
+        await listContactStore.deleteListContact(contactToDeleteId)
+        dismissRemove()
+      }
+    }
+
     useEffect(() => {
       const showSub = Keyboard.addListener("keyboardDidShow", () => {
         setSnapIndex(1)
@@ -58,6 +93,48 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
         hideSub.remove()
       }
     }, [])
+
+    useEffect(() => {
+      listContactStore.fetchWhitelist(24, 0)
+    }, [])
+
+    const contacts: Section[] = useMemo(() => {
+      return listContactStore.groupedWhitelist.map((section) => ({
+        title: section.title,
+        data: section.data.map((c) => ({
+          id: c.id,
+          name: c.name,
+          number: c.phone_number_e164,
+        })),
+      }))
+    }, [listContactStore.groupedWhitelist])
+
+    // const contacts: Section[] = [
+    //   { title: "A", data: [{ name: "Aaron Johnson", number: "+917622365663" }] },
+    //   {
+    //     title: "D",
+    //     data: [
+    //       { name: "David Attenborough", number: "+917622365663" },
+    //       { name: "Daisy Richards", number: "+917622365663" },
+    //     ],
+    //   },
+    //   {
+    //     title: "S",
+    //     data: [{ name: "Sanando", number: "+917622365663" }],
+    //   },
+    //   {
+    //     title: "U",
+    //     data: [
+    //       { name: "Unknown", number: "+917622365663" },
+    //       { name: "Unknown", number: "+917622365663" },
+    //       { name: "Unknown", number: "+917622365663" },
+    //       { name: "Unknown", number: "+917622365663" },
+    //       { name: "Unknown", number: "+917622365663" },
+    //       { name: "Unknown", number: "+917622365663" },
+    //       { name: "Unknown", number: "+917622365663" },
+    //     ],
+    //   },
+    // ]
 
     return (
       <>
@@ -74,7 +151,58 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
               />
             </View>
             <View style={themed($contactsSection)}>
-              <ContactsSectionList />
+              {/* Contact List Section --------------- */}
+              <SectionList
+                sections={contacts}
+                renderItem={({ item }) => {
+                  return (
+                    <>
+                      <View style={themed($contactContainer)}>
+                        <View style={themed($left)}>
+                          <View style={themed($profilePicture)}>
+                            <Text
+                              text={`${item.name?.charAt(0).toUpperCase()}`}
+                              size={"sm"}
+                              style={themed($profilePictureText)}
+                            />
+                          </View>
+                          <View style={themed($nameNumber)}>
+                            <Text size="md" weight="semiBold">
+                              {item.name}
+                            </Text>
+                            <Text size="sm" weight="normal">
+                              {item.number}
+                            </Text>
+                          </View>
+                        </View>
+                        <View style={themed($right)}>
+                          <Icon icon="person" color={colors.error} onPress={presentMove} />
+                          <Icon
+                            icon="delete"
+                            color={colors.error}
+                            onPress={() => {
+                              presentRemove()
+                              setContactToDeleteId(item.id)
+                            }}
+                          />
+                        </View>
+                      </View>
+                    </>
+                  )
+                }}
+                renderSectionHeader={({ section: { title } }) => (
+                  <>
+                    <View>
+                      <Text style={themed($header)}>{title}</Text>
+                      <View>
+                        <View style={themed($horizontalLine)} />
+                      </View>
+                    </View>
+                  </>
+                )}
+              />
+              {/* <ContactsSectionList /> */}
+              {/* ---------------------------------------- */}
             </View>
           </View>
           <View style={themed($btnView)}>
@@ -108,11 +236,7 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
                 style={themed($addBtnModal)}
                 textStyle={themed($addBtnTextModal)}
                 preset="filled"
-                onPress={() => {
-                  dismissAdd()
-                  setNameModal("")
-                  setNumberModal("")
-                }}
+                onPress={addContact}
               />
             </BottomSheetFooter>
           )}
@@ -181,7 +305,8 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
                   textStyle={themed($addBtnTextModal)}
                   preset="filled"
                   onPress={() => {
-                    dismissRemove()
+                    deleteContact()
+                    setContactToDeleteId(null)
                   }}
                 />
                 <Button
@@ -260,7 +385,7 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
                 size="lg"
                 weight="semiBold"
               />
-              <Icon icon="x" onPress={dismissRemove} />
+              <Icon icon="x" onPress={dismissMove} />
             </View>
             {/** Description */}
             <Text
@@ -408,4 +533,62 @@ const $cancelBtnModal: ThemedStyle<ViewStyle> = ({ colors }) => ({
 })
 const $cancelBtnTextModal: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
   color: colors.defaultPrimary,
+})
+
+// //
+
+const $header: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  fontSize: spacing.md,
+  backgroundColor: colors.background,
+  color: colors.textDim,
+})
+
+const $contactContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  flexDirection: "row",
+  justifyContent: "space-between",
+})
+const $left: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  flexDirection: "row",
+  gap: spacing.sm,
+  paddingBottom: spacing.sm,
+  alignItems: "center",
+})
+const $right: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  flexDirection: "row",
+  gap: spacing.md,
+  alignSelf: "center",
+  paddingRight: spacing.md,
+  paddingBottom: spacing.xs,
+})
+const $profilePicture: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  width: 30,
+  height: 30,
+  borderRadius: 100,
+  backgroundColor: colors.defaultPrimary,
+  alignItems: "center",
+  justifyContent: "center",
+})
+const $profilePictureText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.background,
+  paddingBottom: 3,
+})
+
+const $nameNumber: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({})
+const $horizontalLine: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  paddingTop: spacing.xs,
+  marginBottom: spacing.xs,
+  borderBottomColor: colors.textPlaceholder,
+  borderBottomWidth: 1,
+})
+const $dividerStyle: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
+  height: spacing.xxxs * 0.2,
+  width: "100%",
+  backgroundColor: colors.textDim,
+  alignSelf: "center",
+  marginTop: spacing.xxs + spacing.xxxs,
+  opacity: 0.4,
+})
+const $dividerTextStyle: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
+  color: colors.textDim,
+  marginRight: spacing.sm,
 })

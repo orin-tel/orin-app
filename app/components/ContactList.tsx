@@ -1,8 +1,9 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { SectionList, StyleSheet, TextStyle, View, ViewStyle } from "react-native"
 import { Icon, Text } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { colors, spacing, ThemedStyle } from "@/theme"
+import { useStores } from "@/models"
 
 interface Contact {
   name: string
@@ -18,35 +19,50 @@ interface Section {
   data: Contact[]
 }
 
-const contacts: Section[] = [
-  { title: "A", data: [{ name: "Aaron Johnson", number: "+917622365663" }] },
-  {
-    title: "D",
-    data: [
-      { name: "David Attenborough", number: "+917622365663" },
-      { name: "Daisy Richards", number: "+917622365663" },
-    ],
-  },
-  {
-    title: "S",
-    data: [{ name: "Sanando", number: "+917622365663" }],
-  },
-  {
-    title: "U",
-    data: [
-      { name: "Unknown", number: "+917622365663" },
-      { name: "Unknown", number: "+917622365663" },
-      { name: "Unknown", number: "+917622365663" },
-      { name: "Unknown", number: "+917622365663" },
-      { name: "Unknown", number: "+917622365663" },
-      { name: "Unknown", number: "+917622365663" },
-      { name: "Unknown", number: "+917622365663" },
-    ],
-  },
-]
+// const contacts: Section[] = [
+//   { title: "A", data: [{ name: "Aaron Johnson", number: "+917622365663" }] },
+//   {
+//     title: "D",
+//     data: [
+//       { name: "David Attenborough", number: "+917622365663" },
+//       { name: "Daisy Richards", number: "+917622365663" },
+//     ],
+//   },
+//   {
+//     title: "S",
+//     data: [{ name: "Sanando", number: "+917622365663" }],
+//   },
+//   {
+//     title: "U",
+//     data: [
+//       { name: "Unknown", number: "+917622365663" },
+//       { name: "Unknown", number: "+917622365663" },
+//       { name: "Unknown", number: "+917622365663" },
+//       { name: "Unknown", number: "+917622365663" },
+//       { name: "Unknown", number: "+917622365663" },
+//       { name: "Unknown", number: "+917622365663" },
+//       { name: "Unknown", number: "+917622365663" },
+//     ],
+//   },
+// ]
 
 export const ContactsSectionList = () => {
   const { themed } = useAppTheme()
+
+  const { listContactStore } = useStores()
+
+  useEffect(() => {
+    listContactStore.fetchWhitelist()
+  }, [])
+
+  const contacts: Section[] = listContactStore.groupedWhitelist.map((section) => ({
+    title: section.title,
+    data: section.data.map((c) => ({
+      name: c.name,
+      number: c.phone_number_e164,
+    })),
+  }))
+
   return (
     <SectionList
       sections={contacts}
@@ -81,8 +97,8 @@ export const ContactsSectionList = () => {
       }}
       renderSectionHeader={({ section: { title } }) => (
         <>
-          <View style={themed($header)}>
-            <Text style={styles.header}>{title}</Text>
+          <View>
+            <Text style={themed($header)}>{title}</Text>
             <View>
               <View style={themed($horizontalLine)} />
             </View>
@@ -102,8 +118,9 @@ const styles = StyleSheet.create({
 })
 
 const $header: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  // marginTop: spacing.sm,
-  // flexDirection: "row",
+  fontSize: spacing.md,
+  backgroundColor: colors.background,
+  color: colors.textDim,
 })
 
 const $contactContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
@@ -136,9 +153,7 @@ const $profilePictureText: ThemedStyle<TextStyle> = ({ colors }) => ({
   paddingBottom: 3,
 })
 
-const $nameNumber: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  // marginTop: spacing.sm,
-})
+const $nameNumber: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({})
 const $horizontalLine: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   paddingTop: spacing.xs,
   marginBottom: spacing.xs,

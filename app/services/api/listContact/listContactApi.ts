@@ -38,16 +38,20 @@ export class ListContactApi {
 
   // expected calls
 
-  async getListContacts(): Promise<{ kind: "ok"; calls: IListContact[] } | GeneralApiProblem> {
+  async getListContacts(params: {
+    list_type: string
+    limit: number
+    offset: number
+  }): Promise<{ kind: "ok"; contacts: IListContact[] } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()
     this.apisauce.setHeader("authorization", `Bearer ${token}`)
 
-    const response: ApiResponse<NestResponse<IListContact[]>> = await this.apisauce.get("")
+    const response: ApiResponse<NestResponse<IListContact[]>> = await this.apisauce.get("", params)
     if (!response.ok) {
       const problem = getGeneralApiProblem(response)
       if (problem) return problem
     }
-    return { kind: "ok", calls: response.data?.data ?? [] }
+    return { kind: "ok", contacts: response.data?.data ?? [] }
   }
 
   async createListContact(contactData: {
@@ -79,9 +83,7 @@ export class ListContactApi {
   async updateListContact(
     id: string,
     data: {
-      caller_name: string
-      caller_reason: string
-      caller_number: string
+      list_type: string
     },
   ): Promise<{ kind: "ok" } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()

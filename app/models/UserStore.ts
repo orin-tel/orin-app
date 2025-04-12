@@ -194,6 +194,43 @@ export const UserStore = types
         return response
       }
     },
+
+    async fetchUserDetails(): Promise<void> {
+      console.log("Fetching user details...")
+      const response = await userApi.getUserDetails()
+      if (response.kind === "ok") {
+        const user = response.user
+        console.log("User details fetched:", user)
+        self.setProp("userAgentName", user.agent_name)
+        self.setProp("userAgentVoice", user.agent_voice)
+        self.setProp("userCountry", user.location)
+        self.setProp("userLanguage", user.language)
+        self.setProp("userName", user.first_name + " " + user.last_name)
+        self.setProp("userPhoneNumber", user.phone_number)
+        self.setProp("userPrimaryEmail", user.primary_email)
+        self.setProp("userProfilePicture", user.profile_picture_url)
+      } else {
+        console.error(`Failed to fetch user details: ${JSON.stringify(response)}`)
+      }
+    },
+
+    async updateUserProfile(name: string, about: string): Promise<boolean> {
+      const [first_name, ...lastNameParts] = name.trim().split(" ")
+      const last_name = lastNameParts.join(" ")
+      const result = await userApi.updateUserDetails({
+        first_name,
+        last_name,
+        user_description: about,
+      })
+      if (result.kind === "ok") {
+        self.setProp("userName", name)
+        self.setProp("userAbout", about)
+        return true
+      }
+      console.error("Failed to update user profile", result)
+      return false
+    },
+
     // ------ Call related -------
     resetStore() {
       applySnapshot(self, {})

@@ -196,5 +196,46 @@ export class UserApi {
   }
 }
 
+  async getUserDetails(): Promise<{ kind: "ok"; user: IUser } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response: ApiResponse<NestResponse<IUser>> = await this.apisauce.get("")
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    try {
+      const data = response.data
+      if (!data) throw new Error("data not available")
+
+      return {
+        kind: "ok",
+        user: data.data,
+      }
+    } catch (e) {
+      if (__DEV__ && e instanceof Error) {
+        console.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
+      }
+      return { kind: "bad-data" }
+    }
+  }
+
+  async updateUserDetails(data: {
+    first_name: string
+    last_name: string
+    user_description: string
+  }): Promise<{ kind: "ok" } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response = await this.apisauce.put("", data)
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    return { kind: "ok" }
+  }
+}
 // Singleton instance of the API for convenience
 export const userApi = new UserApi()

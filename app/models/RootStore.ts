@@ -4,6 +4,8 @@ import { EpisodeStoreModel } from "./EpisodeStore"
 import { LocationStore } from "./LocationStore"
 import { UserStore } from "./UserStore"
 import { CallStoreModel } from "./CallStore"
+import { ExpectedCallStore } from "./ExpectedCallStore"
+import { ListContactStore } from "./ListContactStore"
 
 /**
  * A RootStore model.
@@ -16,6 +18,8 @@ export const RootStoreModel = types.model("RootStore").props({
   callStore: types.optional(CallStoreModel, {
     calls: [],
   }),
+  expectedCallStore: types.optional(ExpectedCallStore, {}),
+  listContactStore: types.optional(ListContactStore, {}),
 })
 
 /**

@@ -272,6 +272,9 @@ const en = {
     reason_example:
       "Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.",
     add: "Add",
+    modal_header: "Add expected call",
+    empty_state_title: "No calls found",
+    empty_state_content: "You're not expecting to be called",
   },
   whitelistBlacklistScreen: {
     connect_google: "Connect Google Phonebook",
@@ -285,6 +288,16 @@ const en = {
   whitelistScreen: {
     search: "Search name or number",
     add: "Add",
+    move: "Move",
+    remove: "Remove",
+    cancel: "Cancel",
+    modal_header: "Add whitelist number",
+    modal_name: "Name",
+    modal_number: "Number",
+    modal_header_remove: "Remove number",
+    modal_desc_remove: "Do you want to remove this number from the Whitelist?",
+    modal_header_move: "Move number",
+    modal_desc_move: "Do you want to move this number to the Blacklist?",
   },
 
   /**

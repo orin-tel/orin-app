@@ -6,20 +6,18 @@ import { Button, Icon, Screen, Text } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { ThemedStyle } from "@/theme"
 
-
 export const WhitelistBlacklistScreen: FC<SettingStackScreenProps<"WhitelistBlacklist">> = observer(
   function WhitelistBlacklistScreen(_props) {
-
-    const { navigation } = _props;
+    const { navigation } = _props
 
     const gotoWhitelist = () => {
-      navigation.navigate("Whitelist");
+      navigation.navigate("Whitelist")
     }
     const gotoBlacklist = () => {
-      navigation.navigate("Whitelist");
+      navigation.navigate("Whitelist")
     }
 
-    const { themed } = useAppTheme();
+    const { themed } = useAppTheme()
     return (
       <Screen style={themed($contentContainer)} preset="scroll">
         <View style={themed($container)}>
@@ -30,14 +28,16 @@ export const WhitelistBlacklistScreen: FC<SettingStackScreenProps<"WhitelistBlac
               tx="whitelistBlacklistScreen:connect_google"
               LeftAccessory={(props) => (
                 <Icon icon="google" size={20} containerStyle={props.style} />
-              )} />
+              )}
+            />
             <Button
               style={themed($connectBtn)}
               textStyle={themed($connectBtnText)}
               tx="whitelistBlacklistScreen:connect_apple"
               LeftAccessory={(props) => (
                 <Icon icon="apple" size={20} containerStyle={props.style} />
-              )} />
+              )}
+            />
             <Text style={themed($or)} tx="whitelistBlacklistScreen:or" weight="bold" />
           </View>
           <View style={themed($manualSection)}>
@@ -49,22 +49,21 @@ export const WhitelistBlacklistScreen: FC<SettingStackScreenProps<"WhitelistBlac
               style={themed($manualBtn1)}
               tx="whitelistBlacklistScreen:whitelist_numbers"
               textStyle={themed($manualBtnText)}
-              RightAccessory={(props) => (
-                <Icon icon="caretRight" style={props.style} />
-              )} />
+              RightAccessory={(props) => <Icon icon="caretRight" style={props.style} />}
+            />
             <Button
               onPress={gotoBlacklist}
               style={themed($manualBtn2)}
               tx="whitelistBlacklistScreen:blacklist_numbers"
               textStyle={themed($manualBtnText)}
-              RightAccessory={(props) => (
-                <Icon icon="caretRight" style={props.style} />
-              )} />
+              RightAccessory={(props) => <Icon icon="caretRight" style={props.style} />}
+            />
           </View>
         </View>
       </Screen>
-    );
-  })
+    )
+  },
+)
 
 const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flex: 1,
@@ -73,16 +72,13 @@ const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingBottom: spacing.md + spacing.xxs,
-
 })
 const $connectSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   gap: spacing.md,
   paddingBottom: spacing.sm,
-
 })
 const $or: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   alignSelf: "center",
-
 })
 const $connectBtn: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   backgroundColor: colors.background,
@@ -95,7 +91,6 @@ const $connectBtnText: ThemedStyle<TextStyle> = ({ spacing, colors, typography }
   paddingLeft: spacing.sm,
   alignSelf: "center",
 })
-
 
 const $manualSection: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.inputBackground,
@@ -126,5 +121,4 @@ const $manualBtn2: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
 })
 const $manualBtnText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   color: colors.text,
-
 })

@@ -38,6 +38,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { ProgressProvider } from "./context/ProgressProvider"
 import { AppServices } from "./app-services"
+import "react-native-keyboard-controller"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 const CLERK_PUBLISHABLE_KEY = Config.CLERK_PUBLISHABLE_KEY

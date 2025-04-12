@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useEffect } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
 import { SettingStackScreenProps } from "@/navigators"
@@ -16,8 +16,20 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
     const {
       userStore: { userName, userPhoneNumber, userCountryPhoneCode },
     } = useStores()
+
+    useEffect(() => {
+      ;(async () => {
+        try {
+          await fetchUserDetails()
+        } catch (err) {
+          console.error("Error loading user details:", err)
+        }
+      })()
+    }, [])
+
     const { signOut } = useAuth()
     const { navigation } = _props
+
     const gotoProfile = () => {
       navigation.navigate("Profile")
     }

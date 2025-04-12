@@ -195,8 +195,6 @@ export class UserApi {
       return { kind: "bad-data" }
     }
   }
-}
-
   async getUserDetails(): Promise<{ kind: "ok"; user: IUser } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()
     this.apisauce.setHeader("authorization", `Bearer ${token}`)
@@ -238,5 +236,6 @@ export class UserApi {
     return { kind: "ok" }
   }
 }
+
 // Singleton instance of the API for convenience
 export const userApi = new UserApi()

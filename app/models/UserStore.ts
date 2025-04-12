@@ -199,7 +199,7 @@ export const UserStore = types
         self.setProp("userAgentName", user.agent_name)
         self.setProp("userAgentVoice", user.agent_voice)
         self.setProp("userCountry", user.location)
-        self.setProp("userLanguage", user.language)
+        self.setProp("agentLanguage", user.language)
         self.setProp("userName", user.first_name + " " + user.last_name)
         self.setProp("userPhoneNumber", user.phone_number)
         self.setProp("userPrimaryEmail", user.primary_email)

@@ -14,7 +14,7 @@ import { useAuth } from "@clerk/clerk-expo"
 export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
   function OverviewScreen(_props) {
     const {
-      userStore: { userName, userPhoneNumber, userCountryPhoneCode },
+      userStore: { fetchUserDetails, userName, userPhoneNumber, userCountryPhoneCode },
     } = useStores()
 
     useEffect(() => {

@@ -99,7 +99,8 @@ export const OnboardingNavigator = () => {
           component={OnboardingCongratulationsScreen}
         />
         <Stack.Screen name="OnboardingAbout" component={OnboardingAboutScreen} />
-        <Stack.Screen name="OnboardingAgent" component={OnboardingAgentScreen} />
+        {/* <Stack.Screen name="OnboardingAgent" component={OnboardingAgentScreen} /> */}
+        {/* <Stack.Screen name="OnboardingVerifyOtp" component={OnboardingVerifyOtpScreen} /> */}
       </Stack.Navigator>
     </SafeAreaView>
   )

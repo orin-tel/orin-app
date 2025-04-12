@@ -1,15 +1,87 @@
-import { types, Instance, SnapshotIn, SnapshotOut, applySnapshot, cast } from "mobx-state-tree"
+import {
+  types,
+  Instance,
+  SnapshotIn,
+  SnapshotOut,
+  applySnapshot,
+  cast,
+  getSnapshot,
+} from "mobx-state-tree"
 import { withSetPropAction } from "./helpers/withSetPropAction"
-import { ListContact, ListContactModel, SectionListModel } from "./ListContactModel"
+import {
+  ListContact,
+  ListContactModel,
+  ListContactSnapshotIn,
+  ListContactSnapshotOut,
+  SectionListModel,
+  SectionListSnapshotIn,
+  SectionListSnapshotOut,
+  SectionListType,
+} from "./ListContactModel"
 import { listContactApi } from "@/services/api/listContact/listContactApi"
+import { SectionList } from "react-native"
+import { IListContact } from "@/services/api/listContact/types"
+
+// util functions
+export const removeFromGrouped = (
+  groupedArray: SectionListSnapshotOut[],
+  contactId: string,
+): SectionListSnapshotOut[] => {
+  return groupedArray.reduce<SectionListSnapshotOut[]>((acc, section) => {
+    const data = section.data ?? []
+    const filteredData = data.filter((contact) => contact.id !== contactId)
+
+    if (filteredData.length > 0) {
+      acc.push({ ...section, data: filteredData })
+    }
+
+    return acc
+  }, [])
+}
+
+export const insertIntoGrouped = (
+  groupedArray: SectionListSnapshotOut[],
+  contact: ListContactSnapshotIn,
+): SectionListSnapshotOut[] => {
+  const letter = (contact.name?.[0] || "#").toUpperCase()
+  const sectionIndex = groupedArray.findIndex((sec) => sec.title === letter)
+
+  if (sectionIndex !== -1) {
+    const existingSection = groupedArray[sectionIndex]
+    const updatedData = [...existingSection.data, contact].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    )
+
+    const updatedSection = { ...existingSection, data: updatedData }
+
+    const newGroupedArray = [...groupedArray]
+    newGroupedArray[sectionIndex] = updatedSection
+
+    return newGroupedArray.sort((a, b) => a.title.localeCompare(b.title))
+  } else {
+    return [...groupedArray, { title: letter, data: [contact] }].sort((a, b) =>
+      a.title.localeCompare(b.title),
+    )
+  }
+}
+
+export const moveBetweenGrouped = (
+  from: SectionListSnapshotOut[],
+  to: SectionListSnapshotOut[],
+  contact: ListContactSnapshotOut,
+) => {
+  removeFromGrouped(from, contact.id)
+  insertIntoGrouped(to, contact)
+}
 
 export const ListContactStore = types
   .model("ListContactStore")
   .props({
     whitelist: types.array(ListContactModel),
     blacklist: types.array(ListContactModel),
-    groupedWhitelist: types.array(SectionListModel),
-    groupedBlacklist: types.array(SectionListModel),
+    groupedWhitelist: types.frozen<SectionListSnapshotOut[]>(),
+    groupedBlacklist: types.frozen<SectionListSnapshotOut[]>(),
+    page: 0,
   })
   .actions(withSetPropAction)
   // .views((self) => ({
@@ -24,96 +96,64 @@ export const ListContactStore = types
   //   },
   // }))
   .actions((store) => ({
-    insertIntoGrouped(
-      groupedArray: { title: string; data: ListContact[] }[],
-      contact: ListContact,
-    ) {
-      const letter = contact.name[0].toUpperCase()
-      const section = groupedArray.find((sec) => sec.title === letter)
-
-      if (section) {
-        section.data.push(contact)
-        section.data.sort((a, b) => a.name.localeCompare(b.name))
-      } else {
-        groupedArray.push({
-          title: letter,
-          data: [contact],
-        })
-        groupedArray.sort((a, b) => a.title.localeCompare(b.title))
-      }
-    },
-
-    removeFromGrouped(groupedArray: { title: string; data: ListContact[] }[], contactId: string) {
-      for (let i = 0; i < groupedArray.length; i++) {
-        const section = groupedArray[i]
-        const index = section.data.findIndex((c) => c.id === contactId)
-
-        if (index !== -1) {
-          section.data.splice(index, 1)
-          // Remove the section if it's now empty
-          if (section.data.length === 0) {
-            groupedArray.splice(i, 1)
-          }
-          break
-        }
-      }
-    },
-
-    moveBetweenGrouped(
-      from: { title: string; data: ListContact[] }[],
-      to: { title: string; data: ListContact[] }[],
-      contact: ListContact,
-    ) {
-      this.removeFromGrouped(from, contact.id)
-      this.insertIntoGrouped(to, contact)
-    },
-
-    async fetchWhitelist(limit: number, offset: number) {
+    async fetchWhitelist() {
+      store.setProp("whitelist", [])
+      store.setProp("groupedWhitelist", [])
+      store.setProp("page", 0)
       const response = await listContactApi.getListContacts({
         list_type: "WHITELIST",
-        limit,
-        offset,
+        limit: 30,
+        offset: store.page * 30,
       })
 
       if (response.kind === "ok") {
         const whitelist = response.contacts
         store.setProp("whitelist", whitelist)
-
+        if (whitelist.length === 0) store.setProp("page", 0)
         console.log("basic whitelist" + response.contacts) //------------
 
-        const grouped = cast<typeof store.groupedWhitelist>([])
-        whitelist.forEach((contact) => {
-          this.insertIntoGrouped(grouped, contact)
+        let grouped = store.groupedWhitelist
+        whitelist.forEach((item) => {
+          grouped = insertIntoGrouped(grouped, item)
         })
-        applySnapshot(store.groupedWhitelist, grouped)
 
+        store.setProp("groupedWhitelist", grouped)
+        store.setProp("page", store.page + 1)
         console.log("grouped whitelist" + store.groupedWhitelist) //-----------
       } else {
         console.error("Failed to fetch whitelist:", response)
+        return response
       }
+      return
     },
 
-    async fetchBlacklist(limit: number, offset: number) {
+    async fetchBlacklist() {
+      store.setProp("blacklist", [])
+      store.setProp("groupedBlacklist", [])
+      store.setProp("page", 0)
       const response = await listContactApi.getListContacts({
         list_type: "BLACKLIST",
-        limit,
-        offset,
+        limit: 30,
+        offset: store.page * 30,
       })
       if (response.kind === "ok") {
         const blacklist = response.contacts
         store.setProp("blacklist", blacklist)
-
+        if (blacklist.length === 0) store.setProp("page", 0)
         console.log("basic blacklist" + response.contacts) // -------------------
 
-        const grouped = cast<typeof store.groupedBlacklist>([])
+        let grouped = store.groupedBlacklist
         blacklist.forEach((contact) => {
-          this.insertIntoGrouped(grouped, contact)
+          grouped = insertIntoGrouped(grouped, contact)
         })
-        applySnapshot(store.groupedBlacklist, grouped)
+        store.setProp("groupedBlacklist", grouped)
+        store.setProp("page", store.page + 1)
         console.log("grouped blacklist" + store.groupedBlacklist) // ----------------
       } else {
         console.error("Failed to fetch blacklist:", response)
+        return response
       }
+      return
     },
 
     async createListContact(name: string, phone: string, list_type: string) {
@@ -125,92 +165,111 @@ export const ListContactStore = types
 
       if (response.kind === "ok") {
         const contact = response.contact
-
+        console.log("CONTACT IS", contact)
         if (contact.list_type === "WHITELIST") {
-          store.whitelist.push(contact)
-          this.insertIntoGrouped(store.groupedWhitelist, contact)
-          // const updated = [...store.groupedWhitelist]
-          // this.insertIntoGrouped(updated, contact)
-          // applySnapshot(store.groupedWhitelist, updated)
-
+          const grouped = insertIntoGrouped(store.groupedWhitelist, contact)
+          store.setProp("groupedWhitelist", grouped)
           console.log(store.groupedWhitelist)
+          store.setProp("whitelist", [...store.whitelist, contact])
         }
-
         if (contact.list_type === "BLACKLIST") {
-          store.blacklist.push(contact)
-          this.insertIntoGrouped(store.groupedBlacklist, contact)
-          // const updated = [...store.groupedBlacklist]
-          // this.insertIntoGrouped(updated, contact)
-          // applySnapshot(store.groupedBlacklist, updated)
-
+          const grouped = insertIntoGrouped(store.groupedBlacklist, contact)
+          store.setProp("groupedBlacklist", grouped)
           console.log(store.groupedBlacklist)
+          store.setProp("whitelist", [...store.blacklist, contact])
         }
       } else {
         console.error("Failed to create contact:", response)
+        return response
       }
+      return
     },
 
     async deleteListContact(id: string) {
       const response = await listContactApi.deleteListContact(id)
       if (response.kind === "ok") {
         if (store.whitelist.some((contact) => contact.id === id)) {
-          const updatedList = store.whitelist.filter((contact) => contact.id !== id)
-          applySnapshot(store.whitelist, updatedList)
-          this.removeFromGrouped(store.groupedWhitelist, id)
+          const group = removeFromGrouped(store.groupedWhitelist, id)
+          store.setProp("groupedWhitelist", group)
+          store.setProp(
+            "whitelist",
+            store.whitelist.filter((item) => item.id !== id),
+          )
         } else if (store.blacklist.some((contact) => contact.id === id)) {
-          const updatedList = store.blacklist.filter((contact) => contact.id !== id)
-          applySnapshot(store.blacklist, updatedList)
-          this.removeFromGrouped(store.groupedBlacklist, id)
+          const group = removeFromGrouped(store.groupedBlacklist, id)
+          store.setProp("groupedBlacklist", group)
+          store.setProp(
+            "blacklist",
+            store.blacklist.filter((item) => item.id !== id),
+          )
         }
       } else {
         console.error("Failed to delete contact:", response)
+        return response
       }
+      return
     },
 
-    // async deleteListContact(id: string) {
-    //   const response = await listContactApi.deleteListContact(id)
-    //   if (response.kind === "ok") {
-    //     const isInWhitelist = store.whitelist.some((contact) => contact.id === id)
-    //     const isInBlacklist = store.blacklist.some((contact) => contact.id === id)
+    async moveListContact(id: string, list_type: string) {
+      // get from list
+      let movedItem
+      if (list_type === "BLACKLIST") {
+        movedItem = store.whitelist.find((contact) => contact.id === id)
+      } else if (list_type === "WHITELIST") {
+        movedItem = store.blacklist.find((contact) => contact.id === id)
+      }
+      if (!movedItem) return
+      const response = await listContactApi.updateListContact(id, { list_type: list_type })
 
-    //     if (isInWhitelist) {
-    //       const updatedList = store.whitelist.filter((contact) => contact.id !== id)
-    //       applySnapshot(store.whitelist, updatedList)
-    //     }
-    //     if (isInBlacklist) {
-    //       const updatedList = store.blacklist.filter((contact) => contact.id !== id)
-    //       applySnapshot(store.blacklist, updatedList)
-    //     }
-    //   } else {
-    //     console.error("Failed to delete expected call:", response)
-    //   }
-    // },
-
-    // async moveListContact(id: string, list_type: string) {
-    //   const response = await listContactApi.updateListContact(id, { list_type: list_type })
-
-    //   if (response.kind === "ok") {
-    //     const updatedContact = response.contact
-
-    //     const fromList = updatedContact.list_type === "WHITELIST" ? store.blacklist : store.whitelist
-    //     const toList = updatedContact.list_type === "WHITELIST" ? store.whitelist : store.blacklist
-
-    //     const fromGrouped = updatedContact.list_type === "WHITELIST" ? store.groupedBlacklist : store.groupedWhitelist
-    //     const toGrouped = updatedContact.list_type === "WHITELIST" ? store.groupedWhitelist : store.groupedBlacklist
-
-    //     // Remove from old list
-    //     const newFromList = fromList.filter((c) => c.id !== id)
-    //     applySnapshot(fromList, newFromList)
-
-    //     // Add to new list
-    //     toList.push(updatedContact)
-
-    //     // Update grouped arrays
-    //     moveBetweenGrouped(fromGrouped, toGrouped, updatedContact)
-    //   } else {
-    //     console.error("Failed to move contact:", response)
-    //   }
-    // }
+      if (response.kind === "ok") {
+        // item is being added to blacklist
+        if (list_type === "BLACKLIST") {
+          const whitelistGroup = removeFromGrouped(store.groupedWhitelist, id)
+          // validate moved item
+          const movedItemSnapshot: ListContactSnapshotIn = {
+            name: movedItem.name,
+            id: movedItem.id,
+            phone_number_e164: movedItem.phone_number_e164,
+            list_type: "BLACKLIST",
+          }
+          const blacklistGroup = insertIntoGrouped(store.groupedBlacklist, movedItemSnapshot)
+          // assign to groups
+          store.setProp("groupedWhitelist", whitelistGroup)
+          store.setProp("groupedBlacklist", blacklistGroup)
+          // assign to list
+          store.setProp(
+            "whitelist",
+            store.whitelist.filter((item) => item.id !== id),
+          )
+          store.setProp("blacklist", [...store.blacklist, movedItemSnapshot])
+        }
+        // Item is being moved to whitelist
+        else if (list_type === "WHITELIST") {
+          const blacklistGroup = removeFromGrouped(store.groupedBlacklist, id)
+          // validate moved item
+          const movedItemSnapshot: ListContactSnapshotIn = {
+            name: movedItem.name,
+            id: movedItem.id,
+            phone_number_e164: movedItem.phone_number_e164,
+            list_type: "WHITELIST",
+          }
+          const whitelistGroup = insertIntoGrouped(store.groupedWhitelist, movedItemSnapshot)
+          // assign to groups
+          store.setProp("groupedWhitelist", whitelistGroup)
+          store.setProp("groupedBlacklist", blacklistGroup)
+          // assign to list
+          store.setProp(
+            "blacklist",
+            store.blacklist.filter((item) => item.id !== id),
+          )
+          store.setProp("whitelist", [...store.whitelist, movedItemSnapshot])
+        }
+      } else {
+        console.error("Failed to move contact:", response)
+        return response
+      }
+      return
+    },
   }))
 
 // Types for strict mode

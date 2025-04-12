@@ -1,7 +1,7 @@
 import { types, Instance, SnapshotIn, SnapshotOut, applySnapshot, cast } from "mobx-state-tree"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 import { expectedCallApi } from "@/services/api/expectedCalls/expectedCallApi"
-import { ExpectedCallModel } from "./ExpectedCallModel"
+import { ExpectedCallModel, ExpectedCallSnapshotIn } from "./ExpectedCallModel"
 
 export const ExpectedCallStore = types
   .model("ExpectedCallStore")
@@ -28,26 +28,37 @@ export const ExpectedCallStore = types
         store.setProp("expectedCalls", [...store.expectedCalls, response.call])
       } else {
         console.error("Failed to create expected call:", response)
+        return response
       }
+      return
     },
 
     async updateExpectedCall(id: string, caller_name: string, caller_reason: string) {
-      const callToUpdate = store.expectedCalls.find((call) => call.id === id)
-      if (!callToUpdate) {
+      const callToUpdateIndex = store.expectedCalls.findIndex((call) => call.id === id)
+      if (callToUpdateIndex === -1) {
         console.warn("Call to update not found")
         return
       }
-
+      const updatedCall: ExpectedCallSnapshotIn = {
+        id: id,
+        caller_name: caller_name,
+        caller_reason: caller_reason,
+      }
+      const newStore = store.expectedCalls.slice()
+      newStore[callToUpdateIndex] = updatedCall
+      store.setProp("expectedCalls", newStore)
       const response = await expectedCallApi.updateExpectedCall(id, {
         caller_name,
         caller_reason,
       })
       if (response.kind === "ok") {
-        callToUpdate.caller_name = caller_name
-        callToUpdate.caller_reason = caller_reason
+        // do nothing
       } else {
+        // in the next refresh it'll return to original state
         console.error("Failed to update expected call:", response)
+        return response
       }
+      return
     },
 
     async deleteExpectedCall(id: string) {
@@ -58,7 +69,9 @@ export const ExpectedCallStore = types
         applySnapshot(store.expectedCalls, updatedCalls)
       } else {
         console.error("Failed to delete expected call:", response)
+        return response
       }
+      return
     },
 
     // resetStore() {

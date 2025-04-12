@@ -1,21 +1,22 @@
-import { FC, useCallback } from "react"
+import { FC, useCallback, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, View, ViewStyle } from "react-native"
 import { OnboardingStackScreenProps } from "@/navigators"
 import { Button, Icon, Screen, Text, TextField } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
-import { colors, spacing, ThemedStyle } from "@/theme"
+import { $styles, colors, spacing, ThemedStyle } from "@/theme"
 import { useProgress } from "@/context/ProgressProvider"
 import { useFocusEffect } from "@react-navigation/native"
 import { useStores } from "@/models"
+import { IUser } from "@/services/api/user/types"
+import { TxKeyPath } from "@/i18n"
 
 export const OnboardingAboutScreen: FC<OnboardingStackScreenProps<"OnboardingAbout">> = observer(
   function OnboardingAboutScreen(_props) {
     const { themed } = useAppTheme()
-
-    const {
-      userStore: { userName, userAbout, setUserName, setUserAbout },
-    } = useStores()
+    const [loading, setLoading] = useState(false)
+    const [onboardingError, setOnboardingError] = useState<TxKeyPath>()
+    const { userStore } = useStores()
 
     // progress bar
     const { navigation } = _props
@@ -26,6 +27,46 @@ export const OnboardingAboutScreen: FC<OnboardingStackScreenProps<"OnboardingAbo
         setProgress(0.8)
       }, []),
     )
+
+    const finishOnboarding = async () => {
+      setLoading(true)
+      const user_name_list = userStore.userName?.split(" ")
+      const user_first_name = user_name_list?.[0]
+      const user_last_name = user_name_list?.slice(1)?.join(" ")
+
+      const user_location = userStore.userCountry
+      const user_description = userStore.userAbout
+      const agent_voice = userStore.userAgentVoice
+      const agent_name = userStore.userAgentName
+      const agent_language = userStore.agentLanguage
+
+      const user: IUser = {
+        first_name: user_first_name,
+        last_name: user_last_name,
+        user_description: user_description ?? "",
+        location: user_location ?? "",
+        agent_voice: agent_voice ?? "",
+        agent_name: agent_name ?? "",
+        agent_language: agent_language ?? "",
+      }
+
+      console.log("USER IS HERE", user)
+      const response = await userStore.completeOnboarding(user)
+      if (typeof response === "boolean") {
+        if (response) {
+          _props.navigation.navigate("Core", {
+            screen: "CallLogs",
+            params: {
+              screen: "CallList",
+            },
+          })
+          setOnboardingError(undefined)
+        }
+      } else {
+        setOnboardingError(`generalApiProblem:${response.kind}`)
+      }
+      setLoading(false)
+    }
 
     const handleNext = () => {
       navigation.navigate("OnboardingAgent")
@@ -60,8 +101,8 @@ export const OnboardingAboutScreen: FC<OnboardingStackScreenProps<"OnboardingAbo
                 <TextField
                   inputWrapperStyle={themed($nameInputBox)}
                   placeholderTx="onboardingAboutScreen:example_name"
-                  value={userName ?? ""}
-                  onChangeText={setUserName}
+                  value={userStore.userName ?? ""}
+                  onChangeText={userStore.setUserName}
                   LeftAccessory={(props) => (
                     <Icon icon="person" size={20} containerStyle={props.style} />
                   )}
@@ -72,8 +113,8 @@ export const OnboardingAboutScreen: FC<OnboardingStackScreenProps<"OnboardingAbo
                 <Text tx="onboardingAboutScreen:label_two" style={themed($label)} weight="medium" />
                 <TextField
                   multiline
-                  onChangeText={setUserAbout}
-                  value={userAbout ?? ""}
+                  onChangeText={userStore.setUserAbout}
+                  value={userStore.userAbout ?? ""}
                   style={themed($infoInput)}
                   inputWrapperStyle={themed($infoInputWrapper)}
                   placeholderTx="onboardingAboutScreen:example_info"
@@ -84,9 +125,16 @@ export const OnboardingAboutScreen: FC<OnboardingStackScreenProps<"OnboardingAbo
           <Button
             tx="onboardingAboutScreen:next"
             style={themed($btnValidate)}
-            onPress={handleNext}
-            disabled={!!!userAbout || !!!userName}
+            loading={loading}
+            onPress={finishOnboarding}
+            disabled={!!!userStore.userAbout || !!!userStore.userName}
           />
+          {onboardingError && (
+            <View style={[$styles.row, themed($errorContainer)]}>
+              <Icon icon="infoCircle" color={themed($errorStyle).color?.toString()} />
+              <Text tx={onboardingError} style={themed($errorStyle)} />
+            </View>
+          )}
         </View>
       </Screen>
     )
@@ -155,4 +203,17 @@ const $infoInput: ThemedStyle<TextStyle> = ({ colors }) => ({
 
 const $btnValidate: ThemedStyle<TextStyle> = () => ({
   width: 260,
+})
+
+const $errorContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  width: "100%",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: spacing.sm,
+  marginTop: -spacing.xl,
+})
+
+const $errorStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
+  textAlign: "center",
+  color: colors.error,
 })

@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useRef, useState } from "react"
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
 import {
   ActivityIndicator,
@@ -11,14 +11,15 @@ import {
 } from "react-native"
 import { SettingStackScreenProps } from "@/navigators"
 import { Button, EmptyState, Icon, ListView, Screen, Switch, Text, TextField } from "@/components"
-import { colors, spacing, ThemedStyle } from "@/theme"
+import { $styles, ThemedStyle } from "@/theme"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { BottomSheetBackdrop, BottomSheetFooter, BottomSheetModal } from "@gorhom/bottom-sheet"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useStores } from "@/models"
 import { ExpectedCall } from "./../../models/ExpectedCallModel"
 import { delay } from "@/utils/delay"
-import { isRTL } from "@/i18n"
+import { isRTL, TxKeyPath } from "@/i18n"
+import { debounce } from "lodash"
 
 interface ExpectedCallModified extends ExpectedCall {
   number: number
@@ -27,7 +28,10 @@ interface ExpectedCallModified extends ExpectedCall {
 
 export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> = observer(
   function ExpectedCallsScreen(_props) {
-    const { themed } = useAppTheme()
+    const {
+      themed,
+      theme: { colors, spacing },
+    } = useAppTheme()
     const sheet = useRef<BottomSheetModal>(null)
     const { bottom } = useSafeAreaInsets()
     function presentOptions() {
@@ -48,6 +52,11 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
     // fetch calls and load
     const [refreshing, setRefreshing] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [expectedCallError, setExpectedCallError] = useState<TxKeyPath>()
+
+    const [isAdding, setIsAdding] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const [callToBeDeletedId, setCallToBeDeletedId] = useState<string>()
 
     // initially, kick off a background refresh without the refreshing UI
     useEffect(() => {
@@ -68,11 +77,18 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
 
     // add call
     const handleAddCall = async () => {
-      await expectedCallStore.createExpectedCall(nameModal, reasonModal)
+      setIsAdding(true)
+      const response = await expectedCallStore.createExpectedCall(nameModal, reasonModal)
+      if (response) {
+        setExpectedCallError(`generalApiProblem:${response.kind}`)
+      } else {
+        dismissOptions()
+        setNameModal("")
+        setReasonModal("")
+      }
+      setIsAdding(false)
     }
-
     // edit call
-
     // const handleEditCall = async (id: string, field: "name" | "reason", value: string) => {
     //   const call = expectedCallStore.expectedCalls.find((c) => c.id === id)
     //   if (!call) return
@@ -84,18 +100,15 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
 
     const editBuffer: Record<string, { name: string; reason: string }> = {}
 
-    const handleEditCall = async (id: string, field: "name" | "reason", value: string) => {
-      if (!editBuffer[id]) {
-        const call = expectedCallStore.expectedCalls.find((c) => c.id === id)
-        if (!call) return
-        editBuffer[id] = {
-          name: call.caller_name,
-          reason: call.caller_reason,
-        }
+    async function handleEditCall(id: string, name: string, reason: string) {
+      const response = await expectedCallStore.updateExpectedCall(id, name, reason)
+      if (response) {
+        setExpectedCallError(`generalApiProblem:${response.kind}`)
       }
-      editBuffer[id][field] = value
-      await expectedCallStore.updateExpectedCall(id, editBuffer[id].name, editBuffer[id].reason)
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debouncedHandleEditCall = useMemo(() => debounce(handleEditCall, 1000), [])
 
     // toggle expanded call
     const [expandedCalls, setExpandedCalls] = useState<Record<string, boolean>>({})
@@ -107,13 +120,21 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
     }
 
     // delete call
-    const deleteCall = (id: string) => {
-      expectedCallStore.deleteExpectedCall(id)
+    const deleteCall = async (id: string) => {
+      setCallToBeDeletedId(id)
+      setIsDeleting(true)
+      const response = await expectedCallStore.deleteExpectedCall(id)
+      if (response) {
+        setExpectedCallError(`generalApiProblem:${response.kind}`)
+        return
+      }
       setExpandedCalls((prev) => {
         const updated = { ...prev }
         delete updated[id]
         return updated
       })
+      setIsDeleting(false)
+      setCallToBeDeletedId(undefined)
     }
 
     useEffect(() => {
@@ -138,18 +159,16 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
       expanded: expandedCalls[Number(call.id)] ?? false,
     }))
 
-    console.log("from Screen", expectedCallStore.getExpectedCalls)
-    console.log("from Screen", callsWithExpansion)
-
     return (
       <>
-        <Screen style={themed($contentContainer)} preset="scroll">
+        <Screen style={themed($contentContainer)} preset="fixed">
           <View style={themed($container)}>
             <View style={themed($searchSection)}>
               <TextField
                 style={themed($searchBox)}
                 inputWrapperStyle={themed($searchBoxWrapper)}
                 placeholderTx="expectedCallsScreen:search"
+                placeholderTextColor={colors.textPlaceholder}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 LeftAccessory={() => <Icon icon="search" containerStyle={themed($searchIcon)} />}
@@ -199,9 +218,13 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                           value={!!expandedCalls[item.id]}
                           onValueChange={() => toggleCallExpansion(item.id)}
                         />
-                        <TouchableOpacity onPress={() => deleteCall(item.id)}>
-                          <Icon icon="delete" color="error" />
-                        </TouchableOpacity>
+                        {isDeleting && callToBeDeletedId === item.id ? (
+                          <ActivityIndicator color={colors.error} />
+                        ) : (
+                          <TouchableOpacity onPress={() => deleteCall(item.id)}>
+                            <Icon icon="delete" color="error" />
+                          </TouchableOpacity>
+                        )}
                         {expandedCalls[item.id] ? (
                           <Icon
                             icon="caretLeft"
@@ -214,7 +237,7 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                       </View>
                     </TouchableOpacity>
                     {/** ---- Name and reason inputs */}
-                    {expandedCalls[item.id] && (
+                    {expandedCalls?.[item?.id] && (
                       <View style={themed($inputFields)}>
                         <Text
                           style={themed($label)}
@@ -224,12 +247,14 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                         />
                         <TextField
                           style={themed($nameTextStyle)}
-                          // value={item.caller_name}
-                          onChangeText={(text) => handleEditCall(item.id, "name", text)}
+                          value={item.caller_name}
+                          onChangeText={(text) =>
+                            debouncedHandleEditCall(item.id, text, item.caller_reason)
+                          }
                           inputWrapperStyle={themed($nameTextWrapperStyle)}
-                          // placeholderTx="expectedCallsScreen:caller_name_example"
-                          placeholder={item.caller_name}
-                          placeholderTextColor={colors.text}
+                          placeholderTx="expectedCallsScreen:caller_name_example"
+                          // placeholder={item.caller_name}
+                          placeholderTextColor={colors.textPlaceholder}
                         />
                         <Text
                           style={themed($label)}
@@ -240,12 +265,12 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                         <TextField
                           style={themed($reasonTextStyle)}
                           multiline
-                          // value={item.caller_reason}
-                          onChangeText={(text) => handleEditCall(item.id, "reason", text)}
+                          value={item.caller_reason}
+                          onChangeText={(text) => handleEditCall(item.id, item.caller_name, text)}
                           inputWrapperStyle={themed($reasonTextWrapperStyle)}
-                          // placeholderTx="expectedCallsScreen:reason_example"
-                          placeholder={item.caller_reason}
-                          placeholderTextColor={colors.text}
+                          placeholderTx="expectedCallsScreen:reason_example"
+                          // placeholder={item.caller_reason}
+                          placeholderTextColor={colors.textPlaceholder}
                         />
                       </View>
                     )}
@@ -279,13 +304,10 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
             <BottomSheetFooter {...props} style={themed($bottomSheetFooter)} bottomInset={bottom}>
               <Button
                 tx="expectedCallsScreen:add"
-                style={themed($addBtnModal)}
-                preset="reversed"
+                preset="filled"
+                loading={isAdding}
                 onPress={() => {
                   handleAddCall()
-                  dismissOptions()
-                  setNameModal("")
-                  setReasonModal("")
                 }}
               />
             </BottomSheetFooter>
@@ -313,6 +335,7 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
               onChangeText={setNameModal}
               inputWrapperStyle={themed($nameTextWrapperStyleModal)}
               placeholderTx="expectedCallsScreen:caller_name_example"
+              placeholderTextColor={colors.textPlaceholder}
             />
             <Text
               style={themed($label)}
@@ -327,7 +350,14 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
               onChangeText={setReasonModal}
               inputWrapperStyle={themed($reasonTextWrapperStyleModal)}
               placeholderTx="expectedCallsScreen:reason_example"
+              placeholderTextColor={colors.textPlaceholder}
             />
+            {expectedCallError && (
+              <View style={[$styles.row, themed($errorContainer)]}>
+                <Icon icon="infoCircle" color={themed($errorStyle).color?.toString()} />
+                <Text tx={expectedCallError} style={themed($errorStyle)} />
+              </View>
+            )}
           </View>
         </BottomSheetModal>
       </>
@@ -338,10 +368,13 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
 const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flex: 1,
   padding: spacing.md,
+  height: "100%",
 })
 
-const $container: ThemedStyle<ViewStyle> = () => ({
+const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingBottom: spacing.md + spacing.xxs,
+  position: "relative",
+  height: "100%",
 })
 
 const $searchSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({})
@@ -356,8 +389,9 @@ const $searchBoxWrapper: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   height: 48,
 })
 
-const $itemsContainer: ThemedStyle<ViewStyle> = () => ({
+const $itemsContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   gap: spacing.md + spacing.xxs,
+  height: "100%",
 })
 
 const $textContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
@@ -368,24 +402,28 @@ const $toggleContainer: ThemedStyle<ViewStyle> = () => ({
   flexDirection: "row",
   gap: 20,
 })
-const $label: ThemedStyle<ViewStyle> = () => ({
+const $label: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   paddingBottom: spacing.sm,
   paddingTop: spacing.xs,
+  color: colors.text,
 })
-const $nameTextStyle: ThemedStyle<ViewStyle> = () => ({})
+const $nameTextStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.text,
+})
 
-const $nameTextWrapperStyle: ThemedStyle<ViewStyle> = () => ({
+const $nameTextWrapperStyle: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.background,
   height: 46,
   marginBottom: spacing.xs,
 })
-const $reasonTextStyle: ThemedStyle<ViewStyle> = () => ({
+const $reasonTextStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   alignSelf: "flex-start",
   textAlignVertical: "top",
   height: 150,
+  color: colors.text,
 })
 
-const $reasonTextWrapperStyle: ThemedStyle<ViewStyle> = () => ({
+const $reasonTextWrapperStyle: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.background,
   height: 150,
   borderRadius: 20,
@@ -423,6 +461,8 @@ const $addBtn: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   shadowRadius: 12,
   elevation: 4,
   marginTop: spacing.md + spacing.xxs,
+  position: "absolute",
+  bottom: 10,
 })
 
 const $addBtnText: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
@@ -439,32 +479,38 @@ const $modalBgStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderTopLeftRadius: 20,
   borderTopRightRadius: 20,
   backgroundColor: colors.background,
+  elevation: 10,
+  shadowColor: colors.shadowPrimary,
 })
 
-const $modalHeading: ThemedStyle<ViewStyle> = () => ({
+const $modalHeading: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingTop: spacing.sm,
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
 })
-const $inputFieldsModal: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
+const $inputFieldsModal: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   padding: spacing.lg,
   paddingTop: 0,
 })
-const $nameTextWrapperStyleModal: ThemedStyle<ViewStyle> = () => ({
+const $nameTextWrapperStyleModal: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.inputBackground,
   height: 46,
   marginBottom: spacing.xs,
 })
 
-const $reasonTextWrapperStyleModal: ThemedStyle<ViewStyle> = () => ({
+const $reasonTextWrapperStyleModal: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.inputBackground,
   height: 150,
   borderRadius: 20,
   marginBottom: spacing.xs,
 })
-const $addBtnModal: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
+const $addBtnModal: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.defaultPrimary,
+})
+
+const $addBtnModalText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.text,
 })
 
 const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({
@@ -477,3 +523,18 @@ const $activityIndicatorFooter: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 const $emptyStateImage: ImageStyle = {
   transform: [{ scaleX: isRTL ? -1 : 1 }],
 }
+
+const $errorContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  width: "100%",
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: spacing.md,
+  gap: spacing.sm,
+})
+
+const $errorStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
+  // alignItems: "center",
+  // justifyContent: "center",
+  textAlign: "center",
+  color: colors.error,
+})

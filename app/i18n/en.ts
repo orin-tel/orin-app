@@ -149,7 +149,7 @@ const en = {
   onboardingRegisterMobileScreen: {
     register: "REGISTER",
     enter_your_mobile_number: "Enter your mobile number",
-    get_otp: "Get OTP",
+    get_otp: "Next",
     invalid_number: "Invalid mobile number",
   },
   onboardingVerifyOtpScreen: {
@@ -224,6 +224,8 @@ const en = {
     calendar_settings_desc: "Google calendar",
     contact_orin: "Contact ORiN",
     contact_orin_desc: "Contact ORiN team",
+    logout: "Logout",
+    logout_desc: "Logout from your account",
   },
   settingsProfileScreen: {
     label_one: "Your name",
@@ -296,8 +298,10 @@ const en = {
     modal_number: "Number",
     modal_header_remove: "Remove number",
     modal_desc_remove: "Do you want to remove this number from the Whitelist?",
+    modal_desc_remove_blacklist: "Do you want to remove this number from the Blakclist?",
     modal_header_move: "Move number",
     modal_desc_move: "Do you want to move this number to the Blacklist?",
+    modal_desc_move_blacklist: "Do you want to move this number to the Whitelist?",
   },
 
   /**

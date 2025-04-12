@@ -122,7 +122,6 @@ export const UserStore = types
      */
     async signInUser(): Promise<boolean> {
       const response = await userApi.signInUser()
-
       if (response.kind === "ok") {
         const user = response.user
         if (user.phone_number && user.phone_number.length > 0) {
@@ -195,13 +194,27 @@ export const UserStore = types
       const response = await userApi.getUserDetails()
       if (response.kind === "ok") {
         const user = response.user
+        if (user.phone_number && user.phone_number.length > 0) {
+          const phoneUtil = PhoneNumberUtil.getInstance()
+          const parsedNumber = phoneUtil.parse(user.phone_number, "")
+          const isValid = phoneUtil.isValidNumber(parsedNumber)
+          if (!isValid) {
+            self.setProp("userPhoneNumber", "")
+            self.setProp("userCountryPhoneCode", "")
+          } else {
+            const nationalNumber = parsedNumber.getNationalNumber()?.toString()
+            const countryCode = parsedNumber.getCountryCode()?.toString()
+
+            self.setProp("userPhoneNumber", nationalNumber)
+            self.setProp("userCountryPhoneCode", `+${countryCode}`)
+          }
+        }
         console.log("User details fetched:", user)
         self.setProp("userAgentName", user.agent_name)
         self.setProp("userAgentVoice", user.agent_voice)
         self.setProp("userCountry", user.location)
         self.setProp("agentLanguage", user.language)
         self.setProp("userName", user.first_name + " " + user.last_name)
-        self.setProp("userPhoneNumber", user.phone_number)
         self.setProp("userPrimaryEmail", user.primary_email)
         self.setProp("userProfilePicture", user.profile_picture_url)
       } else {

@@ -14,7 +14,7 @@ export const WhitelistBlacklistScreen: FC<SettingStackScreenProps<"WhitelistBlac
       navigation.navigate("Whitelist")
     }
     const gotoBlacklist = () => {
-      navigation.navigate("Whitelist")
+      navigation.navigate("Blacklist")
     }
 
     const { themed } = useAppTheme()

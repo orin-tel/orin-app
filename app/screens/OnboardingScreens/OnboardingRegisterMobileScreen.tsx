@@ -22,7 +22,7 @@ export const OnboardingRegisterMobileScreen: FC<
   const [loading, setLoading] = useState<boolean>(false)
   const [otpError, setOtpError] = useState<TxKeyPath>()
   const {
-    locationStore: { countryPhoneCode },
+    locationStore,
 
     userStore: {
       userPhoneNumber,
@@ -52,7 +52,7 @@ export const OnboardingRegisterMobileScreen: FC<
     const phoneUtil = PhoneNumberUtil.getInstance()
     const parsedNumber = phoneUtil.parse(phoneNumber, "")
     const isValid = phoneUtil.isValidNumber(parsedNumber)
-
+    console.log("userPhoneNumber", parsedNumber)
     if (!isValid) {
       setOtpError("onboardingRegisterMobileScreen:invalid_number")
       setLoading(false)
@@ -96,7 +96,7 @@ export const OnboardingRegisterMobileScreen: FC<
         <PhoneTextField
           value={userPhoneNumber ?? ""}
           setValue={setUserPhoneNumber}
-          countryPhoneCode={userCountryPhoneCode ?? countryPhoneCode ?? "+1"}
+          countryPhoneCode={userCountryPhoneCode ?? locationStore.countryPhoneCode ?? "+1"}
           setCountryPhoneCode={setUserCountryPhoneCode}
           placeholder="000-000-000"
         />

@@ -2,35 +2,30 @@ import { FC, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { TextStyle, View, ViewStyle } from "react-native"
 import { SettingStackScreenProps } from "@/navigators"
-import { Button, Icon, Screen, Text, TextField } from "@/components"
+import { Button, Icon, PhoneTextField, Screen, Text, TextField } from "@/components"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { colors, spacing, ThemedStyle } from "@/theme"
 import { useStores } from "@/models"
 
 export const ProfileScreen: FC<SettingStackScreenProps<"Profile">> = observer(
   function ProfileScreen(_props) {
-    const {
-      userStore: {
-        userName,
-        userAbout,
-        userPhoneNumber,
-        setUserName,
-        setUserAbout,
-        updateUserProfile,
-      },
-    } = useStores()
+    const { userStore } = useStores()
 
-    const [editedName, setEditedName] = useState(userName || "")
-    const [editedInfo, setEditedInfo] = useState(userAbout || "")
+    const [editedName, setEditedName] = useState(userStore.userName ?? "")
+    const [editedInfo, setEditedInfo] = useState(userStore.userAbout ?? "")
+    const [editedPhoneNumber, setEditedPhoneNumber] = useState(userStore.userPhoneNumber ?? "")
+    const [editedPhoneNumberCode, setEditedPhoneNumberCode] = useState(
+      userStore.userCountryPhoneCode ?? "",
+    )
 
     const updateChanges = async () => {
       if (
         editedName.trim().length > 0 &&
         editedInfo.trim().length > 0 &&
-        (editedName.trim() !== (userName ?? "").trim() ||
-          editedInfo.trim() !== (userAbout ?? "").trim())
+        (editedName.trim() !== (userStore.userName ?? "").trim() ||
+          editedInfo.trim() !== (userStore.userAbout ?? "").trim())
       ) {
-        const success = await updateUserProfile(editedName.trim(), editedInfo.trim())
+        const success = await userStore.updateUserProfile(editedName.trim(), editedInfo.trim())
         if (success) {
           console.log("Profile updated successfully")
         }
@@ -46,18 +41,20 @@ export const ProfileScreen: FC<SettingStackScreenProps<"Profile">> = observer(
               <View style={themed($pictureContainer)}>
                 <View style={themed($profilePicture)}>
                   <Text
-                    text={`${userName?.charAt(0).toUpperCase()}`}
+                    text={`${userStore.userName?.charAt(0).toUpperCase()}`}
                     size={"xl"}
                     style={themed($profilePictureText)}
                   />
                 </View>
               </View>
-              <View style={themed($nameNumber)}>
-                {/* <Text text={`Sanando Chanda`} size="lg" weight="semiBold" /> */}
-                <Text text={`${userName}`} size="lg" weight="semiBold" />
-                {/* <Text text={`+91 7679384799`} size="sm" weight="medium" /> */}
-                <Text text={`${userPhoneNumber}`} size="sm" weight="medium" />
-              </View>
+              <Text text={userStore.userName ?? ""} />
+              <Text
+                text={(
+                  (userStore.userCountryPhoneCode ?? "") +
+                  " " +
+                  (userStore.userPhoneNumber ?? "")
+                )?.trim()}
+              />
             </View>
           </View>
           <View style={themed($userDetails)}>
@@ -66,8 +63,8 @@ export const ProfileScreen: FC<SettingStackScreenProps<"Profile">> = observer(
               <Text tx="settingsProfileScreen:label_one" style={themed($label)} weight="medium" />
               <TextField
                 inputWrapperStyle={themed($nameInputBox)}
-                // placeholderTx={"onboardingAboutScreen:example_name"}
-                placeholder={`${userName}`}
+                placeholderTx={"onboardingAboutScreen:example_name"}
+                value={editedName ?? ""}
                 // placeholder={`${editedName}`}
                 onChangeText={setEditedName}
               />
@@ -76,7 +73,13 @@ export const ProfileScreen: FC<SettingStackScreenProps<"Profile">> = observer(
               <Text tx="settingsProfileScreen:label_two" style={themed($label)} weight="medium" />
               <View style={themed($phoneNumberContainer)}>
                 {/* <Text style={themed($phoneNumber)} text="+91 7679384799" size="md" /> */}
-                <Text style={themed($phoneNumber)} text={`${userPhoneNumber}`} size="md" />
+                <PhoneTextField
+                  countryPhoneCode={editedPhoneNumberCode}
+                  setCountryPhoneCode={setEditedPhoneNumberCode}
+                  value={editedPhoneNumber}
+                  setValue={() => {}}
+                  inputWrapperStyle={themed($phoneNumber)}
+                />
               </View>
             </View>
             <View>
@@ -86,8 +89,8 @@ export const ProfileScreen: FC<SettingStackScreenProps<"Profile">> = observer(
                 multiline
                 inputWrapperStyle={themed($infoInputWrapper)}
                 style={themed($infoInput)}
-                // placeholderTx="onboardingAboutScreen:example_info"
-                placeholder={`${userAbout}`}
+                placeholderTx="onboardingAboutScreen:example_info"
+                value={editedInfo ?? ""}
                 // placeholder={`${editedInfo}`}
                 onChangeText={setEditedInfo}
               />
@@ -156,29 +159,17 @@ const $userDetails: ThemedStyle<TextStyle> = ({ spacing, colors }) => ({
   borderRadius: 20,
   padding: spacing.md,
   paddingTop: 0,
+  marginTop: spacing.sm,
 })
 const $label: ThemedStyle<TextStyle> = ({ spacing }) => ({
   gap: spacing.xxs,
   paddingBottom: spacing.sm - spacing.xxxs,
   paddingTop: spacing.sm,
 })
-const $phoneNumberContainer: ThemedStyle<TextStyle> = ({ spacing, typography }) => ({
-  width: 321,
-  backgroundColor: colors.inputBackground,
-  borderWidth: 0.5,
-  borderRadius: 100,
-  borderColor: colors.textPlaceholder,
-  overflow: "hidden",
-  fontFamily: typography.primary.normal,
-  color: colors.text,
-  fontSize: 16,
-  height: spacing.xxl + spacing.xxs,
-  textAlignVertical: "center",
-  alignSelf: "center",
-  justifyContent: "center",
-  paddingLeft: spacing.md,
+const $phoneNumberContainer: ThemedStyle<TextStyle> = ({ spacing, typography }) => ({})
+const $phoneNumber: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.background,
 })
-const $phoneNumber: ThemedStyle<TextStyle> = ({ spacing }) => ({})
 
 const $nameInputBox: ThemedStyle<TextStyle> = ({ colors }) => ({
   width: 321,
@@ -205,7 +196,7 @@ const $infoInput: ThemedStyle<TextStyle> = ({ colors }) => ({
 const $saveBtn: ThemedStyle<TextStyle> = ({ colors }) => ({
   width: 120,
   alignSelf: "center",
-  marginTop: spacing.lg,
+  marginTop: spacing.md,
   marginBottom: spacing.lg,
   backgroundColor: colors.background,
   borderColor: colors.defaultPrimary,

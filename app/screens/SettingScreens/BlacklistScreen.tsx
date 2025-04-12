@@ -25,17 +25,13 @@ interface Contact {
   number: string
 }
 
-export interface ContactListProps {
-  list: string
-}
-
 interface Section {
   title: string
   data: Contact[]
 }
 
-export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observer(
-  function WhitelistScreen(_props) {
+export const BlacklistScreen: FC<SettingStackScreenProps<"Blacklist">> = observer(
+  function BlacklistScreen(_props) {
     const { listContactStore } = useStores()
     const [searchQuery, setSearchQuery] = useState("")
     const [snapIndex, setSnapIndex] = useState(0)
@@ -89,7 +85,7 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
       const response = await listContactStore.createListContact(
         nameModal,
         `${phoneCodeModal}${numberModal}`,
-        "WHITELIST",
+        "BLACKLIST",
       )
       if (response) {
         setListError(`generalApiProblem:${response.kind}`)
@@ -125,32 +121,34 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
     }, [])
 
     const moveContact = async () => {
-      setIsBeingMoved(true)
       console.log("CONTACT TO BE MOVED ID", contactToBeMovedId)
+      setIsBeingMoved(true)
       if (!contactToBeMovedId) return
-      await listContactStore.moveListContact(contactToBeMovedId, "BLACKLIST")
-      dismissMove()
-      setContactToBeMovedId(null)
+      await listContactStore.moveListContact(contactToBeMovedId, "WHITELIST")
       setIsBeingMoved(false)
+      console.log("CONTACT TO BE MOVED ID 2", contactToBeMovedId)
+      setContactToBeMovedId(null)
+
+      dismissMove()
     }
 
     // initially, kick off a background refresh without the refreshing UI
     useEffect(() => {
       ;(async function load() {
         setIsLoading(true)
-        await listContactStore.fetchWhitelist()
+        await listContactStore.fetchBlacklist()
         setIsLoading(false)
       })()
     }, [listContactStore])
 
     async function manualRefresh() {
       setRefreshing(true)
-      await Promise.all([listContactStore.fetchWhitelist(), delay(750)])
+      await Promise.all([listContactStore.fetchBlacklist(), delay(750)])
       setRefreshing(false)
     }
 
     const contacts: Section[] = useMemo(() => {
-      return listContactStore.groupedWhitelist.map((section) => ({
+      return listContactStore.groupedBlacklist.map((section) => ({
         title: section.title,
         data: section.data.map((c) => ({
           id: c.id,
@@ -158,7 +156,7 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
           number: c.phone_number_e164,
         })),
       }))
-    }, [listContactStore.groupedWhitelist])
+    }, [listContactStore.groupedBlacklist])
 
     // const contacts: Section[] = [
     //   { title: "A", data: [{ name: "Aaron Johnson", number: "+917622365663" }] },
@@ -255,7 +253,7 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
                           </View>
                         </View>
                         <View style={themed($right)}>
-                          {isBeingMoved && contactToBeMovedId === item.id ? (
+                          {isBeingMoved ? (
                             <ActivityIndicator color={colors.error} />
                           ) : (
                             <Icon
@@ -267,7 +265,7 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
                               }}
                             />
                           )}
-                          {isDeleting && contactToDeleteId === item.id ? (
+                          {isDeleting ? (
                             <ActivityIndicator color={colors.error} />
                           ) : (
                             <Icon
@@ -406,7 +404,9 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
                   style={themed($cancelBtnModal)}
                   textStyle={themed($cancelBtnTextModal)}
                   preset="reversed"
-                  onPress={dismissRemove}
+                  onPress={() => {
+                    dismissRemove()
+                  }}
                 />
               </View>
             </BottomSheetFooter>
@@ -425,7 +425,7 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
             {/** Description */}
             <Text
               style={themed($descModalRemove)}
-              tx="whitelistScreen:modal_desc_remove"
+              tx="whitelistScreen:modal_desc_remove_blacklist"
               size="md"
               weight="normal"
             />
@@ -477,7 +477,7 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
             {/** Description */}
             <Text
               style={themed($descModalMove)}
-              tx="whitelistScreen:modal_desc_move"
+              tx="whitelistScreen:modal_desc_move_blacklist"
               size="md"
               weight="normal"
             />

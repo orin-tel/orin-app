@@ -26,7 +26,7 @@ export const SignUpScreen: FC<AppStackScreenProps<"SignUp">> = function SignUpSc
       setIsLoading(true)
       // Start the authentication process by calling `startSSOFlow()`
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { createdSessionId, setActive } = await startSSOFlow({
+      const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
         strategy: "oauth_google",
         // Defaults to current path
         redirectUrl: createURL("/onboarding/country", { scheme: "orinapp" }),
@@ -37,7 +37,6 @@ export const SignUpScreen: FC<AppStackScreenProps<"SignUp">> = function SignUpSc
         console.log("CREATE SESSION ID", createdSessionId)
         setActive!({ session: createdSessionId })
       } else {
-        console.log("NO CREATE SESSION ID")
         // If there is no `createdSessionId`,
         // there are missing requirements, such as MFA
         // Use the `signIn` or `signUp` returned from `startSSOFlow`

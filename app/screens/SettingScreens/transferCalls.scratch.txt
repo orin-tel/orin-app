@@ -1,0 +1,171 @@
+Insert this in the transfer calls section
+            <View style={themed($transfer)}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => setTransfer(!transfer)}
+                style={themed($transferInnerOne)}
+              >
+                <View style={themed($textContainer)}>
+                  <Text tx="connectCallsScreen:transfer" size="sm" weight="semiBold" />
+                  <Text tx="connectCallsScreen:transfer_desc" size="xs" />
+                </View>
+                <View style={themed($toggleContainer)}>
+                  <Switch value={transfer} onValueChange={setTransfer} />
+                </View>
+              </TouchableOpacity>
+              <View style={transfer ? themed($horizontalLine) : { display: "none" }} />
+              {/* Verify number -----------------*/}
+              <View style={transfer ? themed($transferInnerTwo) : { display: "none" }}>
+                <Text
+                  tx="connectCallsScreen:enter_personal"
+                  size="sm"
+                  weight="medium"
+                  style={themed($transferInnerText)}
+                />
+                <PhoneVerify
+                  style={themed($phoneComponent)}
+                  value={userTransferPhoneNumber ?? ""}
+                  setValue={setUserTransferPhoneNumber}
+                  countryPhoneCode={userTransferPhoneCode ?? "+91"}
+                  setCountryPhoneCode={setUserTransferPhoneCode}
+                  placeholder="000-000-000"
+                />
+              </View>
+              {/* Otp-------------- */}
+              <View
+                style={transfer && !otpVerified ? themed($transferInnerTwo) : { display: "none" }}
+              >
+                <View style={transfer ? themed($horizontalLineTemp) : { display: "none" }} />
+                <Text
+                  tx="connectCallsScreen:enter_otp"
+                  size="sm"
+                  weight="medium"
+                  style={themed($transferInnerText)}
+                />
+                {/* <View style={themed($phoneOtp)}> */}
+                <TextField
+                  value={value}
+                  onChangeText={setValue}
+                  maxLength={4}
+                  keyboardType="decimal-pad"
+                  style={themed($phoneOtp)}
+                />
+                {/* </View> */}
+                <Button
+                  style={themed($verifyBtn)}
+                  tx="connectCallsScreen:verify_number"
+                  onPress={() => verify()}
+                />
+              </View>
+              <View style={transfer ? themed($horizontalLine) : { display: "none" }} />
+              {/* Choose one option-------------- */}
+              <View
+                style={
+                  transfer
+                    ? otpVerified
+                      ? themed($transferOptionsUnfaded)
+                      : themed($transferOptionsFaded)
+                    : { display: "none" }
+                }
+              >
+                <Text
+                  tx="connectCallsScreen:choose"
+                  size="sm"
+                  weight="medium"
+                  style={themed($transferInnerText)}
+                />
+                <View style={themed($outerOptionContainer)}>
+                  {/**1--------------- */}
+                  <TouchableOpacity
+                    activeOpacity={selectedOption === "1" || !otpVerified ? 1 : 0.5}
+                    onPress={() => {
+                      if (otpVerified) setSelectedOption("1")
+                    }}
+                    style={themed([
+                      $optionContainer,
+                      selectedOption === "1" && $selectedOption,
+                      !otpVerified && $selectedOptionFaded,
+                    ])}
+                  >
+                    <View style={themed($optionTitle)}>
+                      <View
+                        style={
+                          selectedOption === "1"
+                            ? themed($checkIconSelected)
+                            : themed($checkIconNotSelected)
+                        }
+                      >
+                        {selectedOption === "1" && (
+                          <Icon icon="check" size={16} color={colors.background} />
+                        )}
+                      </View>
+                      <Text
+                        tx="connectCallsScreen:transfer_all"
+                        weight={selectedOption === "1" ? "semiBold" : "normal"}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  {/**2--------------- */}
+                  <TouchableOpacity
+                    activeOpacity={selectedOption === "2" || !otpVerified ? 1 : 0.5}
+                    onPress={() => {
+                      if (otpVerified) setSelectedOption("2")
+                    }}
+                    style={themed([
+                      $optionContainer,
+                      selectedOption === "2" && $selectedOption,
+                      !otpVerified && $selectedOptionFaded,
+                    ])}
+                  >
+                    <View style={themed($optionTitle)}>
+                      <View
+                        style={
+                          selectedOption === "2"
+                            ? themed($checkIconSelected)
+                            : themed($checkIconNotSelected)
+                        }
+                      >
+                        {selectedOption === "2" && (
+                          <Icon icon="check" size={16} color={colors.background} />
+                        )}
+                      </View>
+                      <Text
+                        tx="connectCallsScreen:transfer_genuine"
+                        weight={selectedOption === "2" ? "semiBold" : "normal"}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                  {/**3--------------- */}
+                  <TouchableOpacity
+                    activeOpacity={selectedOption === "3" || !otpVerified ? 1 : 0.5}
+                    onPress={() => {
+                      if (otpVerified) setSelectedOption("3")
+                      return null
+                    }}
+                    style={themed([
+                      $optionContainer,
+                      selectedOption === "3" && $selectedOption,
+                      !otpVerified && $selectedOptionFaded,
+                    ])}
+                  >
+                    <View style={themed($optionTitle)}>
+                      <View
+                        style={
+                          selectedOption === "3"
+                            ? themed($checkIconSelected)
+                            : themed($checkIconNotSelected)
+                        }
+                      >
+                        {selectedOption === "3" && (
+                          <Icon icon="check" size={16} color={colors.background} />
+                        )}
+                      </View>
+                      <Text
+                        tx="connectCallsScreen:transfer_whitelisted"
+                        weight={selectedOption === "3" ? "semiBold" : "normal"}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>

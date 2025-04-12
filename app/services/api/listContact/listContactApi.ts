@@ -5,6 +5,7 @@ import type { ApiConfig, NestResponse } from "../api.types"
 import { getClerkInstance } from "@clerk/clerk-expo"
 import { SnapshotIn } from "mobx-state-tree"
 import { ListContactSnapshotIn } from "@/models/ListContactModel"
+import { IListContact } from "./types"
 
 /**
  * Configuring the apisauce instance.
@@ -42,7 +43,7 @@ export class ListContactApi {
     list_type: string
     limit: number
     offset: number
-  }): Promise<{ kind: "ok"; contacts: IListContact[] } | GeneralApiProblem> {
+  }): Promise<{ kind: "ok"; contacts: ListContactSnapshotIn[] } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()
     this.apisauce.setHeader("authorization", `Bearer ${token}`)
 
@@ -51,7 +52,15 @@ export class ListContactApi {
       const problem = getGeneralApiProblem(response)
       if (problem) return problem
     }
-    return { kind: "ok", contacts: response.data?.data ?? [] }
+    const data = response.data
+    if (!data) throw new Error("data not available")
+    const snapshotIn: ListContactSnapshotIn[] = data.data.map((contact) => ({
+      id: contact.id,
+      name: contact.name,
+      phone_number_e164: contact.phone_number_e164,
+      list_type: contact.list_type,
+    }))
+    return { kind: "ok", contacts: snapshotIn ?? [] }
   }
 
   async createListContact(contactData: {

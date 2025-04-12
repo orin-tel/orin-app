@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import {
   AgentConfigScreen,
@@ -13,6 +14,7 @@ import { CompositeScreenProps } from "@react-navigation/native"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { TouchableOpacity } from "react-native"
 import { Icon } from "@/components"
+import { BlacklistScreen } from "@/screens/SettingScreens/BlacklistScreen"
 
 export type SettingsNavigatorParamList = {
   Overview: undefined
@@ -21,6 +23,7 @@ export type SettingsNavigatorParamList = {
   ConnectCalls: undefined
   WhitelistBlacklist: undefined
   Whitelist: undefined
+  Blacklist: undefined
   ExpectedCalls: undefined
 }
 
@@ -100,6 +103,13 @@ export const SettingsNavigator = () => {
         component={WhitelistScreen}
         options={{
           title: "Whitelist numbers",
+        }}
+      />
+      <Stack.Screen
+        name="Blacklist"
+        component={BlacklistScreen}
+        options={{
+          title: "Blacklist numbers",
         }}
       />
     </Stack.Navigator>

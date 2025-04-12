@@ -16,6 +16,6 @@ export interface ListContact extends Instance<typeof ListContactModel> {}
 export interface ListContactSnapshotOut extends SnapshotOut<typeof ListContactModel> {}
 export interface ListContactSnapshotIn extends SnapshotIn<typeof ListContactModel> {}
 
-export interface SectionList extends Instance<typeof SectionListModel> {}
+export interface SectionListType extends Instance<typeof SectionListModel> {}
 export interface SectionListSnapshotOut extends SnapshotOut<typeof SectionListModel> {}
 export interface SectionListSnapshotIn extends SnapshotIn<typeof SectionListModel> {}

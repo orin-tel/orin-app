@@ -14,12 +14,17 @@ export const RootStoreModel = types.model("RootStore").props({
   authenticationStore: types.optional(AuthenticationStoreModel, {}),
   episodeStore: types.optional(EpisodeStoreModel, {}),
   locationStore: types.optional(LocationStore, {}),
-  userStore: types.optional(UserStore, {}),
+  userStore: types.optional(UserStore, {
+    userCountryPhoneCode: "+1",
+  }),
   callStore: types.optional(CallStoreModel, {
     calls: [],
   }),
   expectedCallStore: types.optional(ExpectedCallStore, {}),
-  listContactStore: types.optional(ListContactStore, {}),
+  listContactStore: types.optional(ListContactStore, {
+    groupedBlacklist: [],
+    groupedWhitelist: [],
+  }),
 })
 
 /**

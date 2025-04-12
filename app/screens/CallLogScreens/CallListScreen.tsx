@@ -45,51 +45,53 @@ export const CallListScreen: FC<CallLogStackScreenProps<"CallList">> = observer(
     }
 
     return (
-      <Screen style={$root} preset="scroll">
-        <ListView<Call>
-          data={callStore.calls.slice()}
-          contentContainerStyle={themed([$listContentContainer])}
-          refreshing={refreshing}
-          onRefresh={manualRefresh}
-          keyExtractor={(item) => item?.callId}
-          estimatedItemSize={100}
-          onEndReached={() => callStore.fetchCallsBefore()}
-          onEndReachedThreshold={0.6}
-          ListEmptyComponent={
-            isLoading ? (
-              <ActivityIndicator />
-            ) : (
-              <EmptyState
-                preset="generic"
-                style={themed($emptyState)}
-                headingTx={"call_list:empty_state_title"}
-                contentTx={"call_list:empty_state_content"}
-                buttonOnPress={manualRefresh}
-                imageStyle={$emptyStateImage}
-                ImageProps={{ resizeMode: "contain" }}
-              />
-            )
-          }
-          // renderItem={({ item }) => <CallCard callLog={item} />}
-          renderItem={({ item, index }) => {
-            const previousItem = index > 0 ? callStore.calls[index - 1] : null
-            const currentDateLabel = formatDate(item.createdAt)
-            const previousDateLabel = previousItem ? formatDate(previousItem.createdAt) : null
-            const showDivider = currentDateLabel !== previousDateLabel
+      <Screen style={$root} preset="fixed">
+        <View style={themed($listContainer)}>
+          <ListView<Call>
+            data={callStore.calls.slice()}
+            contentContainerStyle={themed([$listContentContainer])}
+            refreshing={refreshing}
+            onRefresh={manualRefresh}
+            keyExtractor={(item) => item?.callId}
+            estimatedItemSize={100}
+            onEndReached={() => callStore.fetchCallsBefore()}
+            onEndReachedThreshold={0.6}
+            ListEmptyComponent={
+              isLoading ? (
+                <ActivityIndicator />
+              ) : (
+                <EmptyState
+                  preset="generic"
+                  style={themed($emptyState)}
+                  headingTx={"call_list:empty_state_title"}
+                  contentTx={"call_list:empty_state_content"}
+                  buttonOnPress={manualRefresh}
+                  imageStyle={$emptyStateImage}
+                  ImageProps={{ resizeMode: "contain" }}
+                />
+              )
+            }
+            // renderItem={({ item }) => <CallCard callLog={item} />}
+            renderItem={({ item, index }) => {
+              const previousItem = index > 0 ? callStore.calls[index - 1] : null
+              const currentDateLabel = formatDate(item.createdAt)
+              const previousDateLabel = previousItem ? formatDate(previousItem.createdAt) : null
+              const showDivider = currentDateLabel !== previousDateLabel
 
-            return (
-              <>
-                {showDivider && (
-                  <View style={$styles.row}>
-                    <Text style={themed($dividerTextStyle)}>{currentDateLabel}</Text>
-                    <View style={themed($dividerStyle)}></View>
-                  </View>
-                )}
-                <CallCard callLog={item} parentProps={_props} />
-              </>
-            )
-          }}
-        />
+              return (
+                <>
+                  {showDivider && (
+                    <View style={$styles.row}>
+                      <Text style={themed($dividerTextStyle)}>{currentDateLabel}</Text>
+                      <View style={themed($dividerStyle)}></View>
+                    </View>
+                  )}
+                  <CallCard callLog={item} parentProps={_props} />
+                </>
+              )
+            }}
+          />
+        </View>
       </Screen>
     )
   },
@@ -232,6 +234,10 @@ const $listContentContainer: ThemedStyle<ContentStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.xs,
   paddingTop: spacing.md,
   paddingBottom: spacing.lg,
+})
+
+const $listContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  height: "100%",
 })
 
 const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({

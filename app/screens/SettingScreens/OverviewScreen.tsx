@@ -75,7 +75,7 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
           </TouchableOpacity>
           <View style={themed($horizontalLine)} />
           <View style={themed($settingsNav)}>
-            <TouchableOpacity activeOpacity={0.8} onPress={gotoAgentConfig} style={themed($item)}>
+            {/* <TouchableOpacity activeOpacity={0.8} onPress={gotoAgentConfig} style={themed($item)}>
               <View style={themed($iconContainer)}>
                 <Icon icon="person" size={spacing.md + spacing.xxs} />
               </View>
@@ -83,7 +83,7 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
                 <Text tx="overviewScreen:agent_config" size="sm" weight="semiBold" />
                 <Text tx="overviewScreen:agent_config_desc" size="xs" />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity activeOpacity={0.8} onPress={gotoConnectCalls} style={themed($item)}>
               <View style={themed($iconContainer)}>
                 <Icon icon="phoneOutgoing" />
@@ -106,7 +106,7 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
                 <Text tx="overviewScreen:whitelist_blacklist_desc" size="xs" />
               </View>
             </TouchableOpacity>
-            <View style={themed($item)}>
+            {/* <View style={themed($item)}>
               <View style={themed($iconContainer)}>
                 <Icon icon="calendar" />
               </View>
@@ -114,20 +114,19 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
                 <Text tx="overviewScreen:calendar_settings" size="sm" weight="semiBold" />
                 <Text tx="overviewScreen:calendar_settings_desc" size="xs" />
               </View>
-            </View>
+            </View> */}
             <TouchableOpacity
               style={themed($item)}
               onPress={() => {
-                console.log("THIS CRAZY")
                 signOut()
               }}
             >
               <View style={themed($iconContainer)}>
-                <Icon icon="calendar" />
+                <Icon icon="lock" />
               </View>
               <View style={themed($textContainer)}>
-                <Text tx="overviewScreen:contact_orin" size="sm" weight="semiBold" />
-                <Text tx="overviewScreen:contact_orin_desc" size="xs" />
+                <Text tx="overviewScreen:logout" size="sm" weight="semiBold" />
+                <Text tx="overviewScreen:logout_desc" size="xs" />
               </View>
             </TouchableOpacity>
           </View>

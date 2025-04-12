@@ -21,9 +21,9 @@ export interface PhoneTextFieldProps extends TextFieldProps {
   style?: StyleProp<ViewStyle>
   value: string
   setValue: (value: string) => void
-
   countryPhoneCode: CountryPhoneCode
   setCountryPhoneCode: (value: CountryPhoneCode) => void
+  dismissOnSelect?: boolean
 }
 
 export interface CountryCodeFieldRef {
@@ -44,9 +44,11 @@ export const PhoneTextField = observer(
       setValue,
       countryPhoneCode,
       setCountryPhoneCode,
+      dismissOnSelect,
     } = props
     const $styles = [$container, style]
-    const { themed } = useAppTheme()
+    const { themed, theme } = useAppTheme()
+    console.log("THEME IS", theme.isDark)
     const { bottom } = useSafeAreaInsets()
     const sheet = useRef<BottomSheetModal>(null)
     useImperativeHandle(ref, () => ({ presentOptions, dismissOptions }))
@@ -60,12 +62,14 @@ export const PhoneTextField = observer(
 
     function updateValue(optionValue: CountryPhoneCode) {
       setCountryPhoneCode(optionValue)
+      if (dismissOnSelect) dismissOptions()
     }
 
     return (
       <>
         <View style={$styles}>
           <TextField
+            {...props}
             style={themed($text)}
             value={value}
             onChangeText={setValue}

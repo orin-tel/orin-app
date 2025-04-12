@@ -145,7 +145,7 @@ export const UserStore = types
         self.setProp("userAgentVoice", user.agent_voice)
         self.setProp("userCountry", user.location)
         self.setProp("agentLanguage", user.agent_language)
-        self.setProp("userName", user.first_name + " " + user.last_name)
+        self.setProp("userName", (user.first_name ?? "") + " " + (user.last_name ?? "")?.trim())
         self.setProp("userPrimaryEmail", user.primary_email)
         self.setProp("userProfilePicture", user.profile_picture_url)
         if (user.is_onboarding_complete) return true

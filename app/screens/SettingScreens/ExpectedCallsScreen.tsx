@@ -225,7 +225,7 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                             <Icon icon="delete" color="error" />
                           </TouchableOpacity>
                         )}
-                        {expandedCalls[item.id] ? (
+                        {expandedCalls?.[item?.id] ? (
                           <Icon
                             icon="caretLeft"
                             size={20}

@@ -302,6 +302,7 @@ const en = {
     modal_header_move: "Move number",
     modal_desc_move: "Do you want to move this number to the Blacklist?",
     modal_desc_move_blacklist: "Do you want to move this number to the Whitelist?",
+    invalid_details: "Please provide valid details",
   },
 
   /**

@@ -77,9 +77,11 @@ export const BlacklistScreen: FC<SettingStackScreenProps<"Blacklist">> = observe
     }
 
     const addContact = async () => {
+      setListError(undefined)
       setIsAdding(true)
-      if (!phoneCodeModal || !numberModal) {
+      if (!phoneCodeModal || !numberModal || !nameModal) {
         setIsAdding(false)
+        setListError("whitelistScreen:invalid_details")
         return
       }
       const response = await listContactStore.createListContact(
@@ -121,12 +123,11 @@ export const BlacklistScreen: FC<SettingStackScreenProps<"Blacklist">> = observe
     }, [])
 
     const moveContact = async () => {
-      console.log("CONTACT TO BE MOVED ID", contactToBeMovedId)
       setIsBeingMoved(true)
       if (!contactToBeMovedId) return
       await listContactStore.moveListContact(contactToBeMovedId, "WHITELIST")
       setIsBeingMoved(false)
-      console.log("CONTACT TO BE MOVED ID 2", contactToBeMovedId)
+
       setContactToBeMovedId(null)
 
       dismissMove()
@@ -375,6 +376,12 @@ export const BlacklistScreen: FC<SettingStackScreenProps<"Blacklist">> = observe
               placeholder="000-000-000"
               dismissOnSelect
             />
+            {listError && (
+              <View style={[$styles.row, themed($errorContainer)]}>
+                <Icon icon="infoCircle" color={themed($errorStyle).color?.toString()} />
+                <Text tx={listError} style={themed($errorStyle)} />
+              </View>
+            )}
           </View>
         </BottomSheetModal>
         {/* --------------Remove sheet modal */}
@@ -481,12 +488,6 @@ export const BlacklistScreen: FC<SettingStackScreenProps<"Blacklist">> = observe
               size="md"
               weight="normal"
             />
-            {listError && (
-              <View style={[$styles.row, themed($errorContainer)]}>
-                <Icon icon="infoCircle" color={themed($errorStyle).color?.toString()} />
-                <Text tx={listError} style={themed($errorStyle)} />
-              </View>
-            )}
           </View>
         </BottomSheetModal>
       </>

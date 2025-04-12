@@ -81,9 +81,11 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
     }
 
     const addContact = async () => {
+      setListError(undefined)
       setIsAdding(true)
-      if (!phoneCodeModal || !numberModal) {
+      if (!phoneCodeModal || !numberModal || !nameModal) {
         setIsAdding(false)
+        setListError("whitelistScreen:invalid_details")
         return
       }
       const response = await listContactStore.createListContact(
@@ -126,7 +128,6 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
 
     const moveContact = async () => {
       setIsBeingMoved(true)
-      console.log("CONTACT TO BE MOVED ID", contactToBeMovedId)
       if (!contactToBeMovedId) return
       await listContactStore.moveListContact(contactToBeMovedId, "BLACKLIST")
       dismissMove()
@@ -377,6 +378,12 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
               placeholder="000-000-000"
               dismissOnSelect
             />
+            {listError && (
+              <View style={[$styles.row, themed($errorContainer)]}>
+                <Icon icon="infoCircle" color={themed($errorStyle).color?.toString()} />
+                <Text tx={listError} style={themed($errorStyle)} />
+              </View>
+            )}
           </View>
         </BottomSheetModal>
         {/* --------------Remove sheet modal */}
@@ -481,12 +488,6 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
               size="md"
               weight="normal"
             />
-            {listError && (
-              <View style={[$styles.row, themed($errorContainer)]}>
-                <Icon icon="infoCircle" color={themed($errorStyle).color?.toString()} />
-                <Text tx={listError} style={themed($errorStyle)} />
-              </View>
-            )}
           </View>
         </BottomSheetModal>
       </>

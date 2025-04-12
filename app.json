@@ -25,16 +25,25 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/app-icon-android-adaptive-foreground.png",
         "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
+      },
+      "splash": {
+        "backgroundColor": "#FFFFFF"
       }
     },
     "ios": {
       "icon": "./assets/images/app-icon-ios.png",
       "supportsTablet": true,
-      "bundleIdentifier": "com.orinapp"
+      "bundleIdentifier": "com.orinapp",
+      "splash": {
+        "backgroundColor": "#FFFFFF"
+      }
     },
     "web": {
       "favicon": "./assets/images/app-icon-web-favicon.png",
-      "bundler": "metro"
+      "bundler": "metro",
+      "splash": {
+        "backgroundColor": "#FFFFFF"
+      }
     },
     "plugins": [
       "expo-localization",
@@ -63,7 +72,10 @@
         "projectId": "889931dc-5fb4-4878-a952-824521c0f789"
       }
     },
-    "owner": "tirth0"
+    "owner": "tirth0",
+    "splash": {
+      "backgroundColor": "#FFFFFF"
+    }
   },
   "ignite": {
     "version": "10.1.6"

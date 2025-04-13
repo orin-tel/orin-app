@@ -93,3 +93,4 @@ credentials.json
 
 # Yarn
 .yarn/*
+.env.local

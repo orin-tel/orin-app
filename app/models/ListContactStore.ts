@@ -176,7 +176,7 @@ export const ListContactStore = types
           const grouped = insertIntoGrouped(store.groupedBlacklist, contact)
           store.setProp("groupedBlacklist", grouped)
           console.log(store.groupedBlacklist)
-          store.setProp("whitelist", [...store.blacklist, contact])
+          store.setProp("blacklist", [...store.blacklist, contact])
         }
       } else {
         console.error("Failed to create contact:", response)

@@ -33,7 +33,7 @@
       "ios": { "simulator": false }
     },
     "production": {
-      "android": { "buildType": "app-bundle" }
+      "android": { "buildType": "apk" }
     }
   },
   "submit": {

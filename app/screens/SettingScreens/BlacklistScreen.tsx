@@ -94,8 +94,9 @@ export const BlacklistScreen: FC<SettingStackScreenProps<"Blacklist">> = observe
       }
       setNameModal("")
       setNumberModal("")
-      dismissAdd()
+      console.log("CRAZY")
       setIsAdding(false)
+      dismissAdd()
     }
 
     const deleteContact = async () => {
@@ -337,7 +338,7 @@ export const BlacklistScreen: FC<SettingStackScreenProps<"Blacklist">> = observe
             <View style={themed($modalHeading)}>
               <Text
                 style={themed($label)}
-                tx="whitelistScreen:modal_header"
+                tx="whitelistScreen:modal_header_blacklist"
                 size="lg"
                 weight="semiBold"
               />

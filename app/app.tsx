@@ -38,6 +38,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { ProgressProvider } from "./context/ProgressProvider"
 import { AppServices } from "./app-services"
+import * as Sentry from "@sentry/react-native"
 import "react-native-keyboard-controller"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
@@ -109,7 +110,7 @@ const config = {
  * @param {AppProps} props - The props for the `App` component.
  * @returns {JSX.Element} The rendered `App` component.
  */
-export function App() {
+function BareApp() {
   const {
     initialNavigationState,
     onNavigationStateChange,
@@ -183,3 +184,5 @@ export function App() {
     </SafeAreaProvider>
   )
 }
+
+export const App = Sentry.wrap(BareApp)

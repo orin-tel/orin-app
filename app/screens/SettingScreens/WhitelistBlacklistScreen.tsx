@@ -21,7 +21,7 @@ export const WhitelistBlacklistScreen: FC<SettingStackScreenProps<"WhitelistBlac
     return (
       <Screen style={themed($contentContainer)} preset="scroll">
         <View style={themed($container)}>
-          <View style={themed($connectSection)}>
+          {/* <View style={themed($connectSection)}>
             <Button
               style={themed($connectBtn)}
               textStyle={themed($connectBtnText)}
@@ -39,7 +39,7 @@ export const WhitelistBlacklistScreen: FC<SettingStackScreenProps<"WhitelistBlac
               )}
             />
             <Text style={themed($or)} tx="whitelistBlacklistScreen:or" weight="bold" />
-          </View>
+          </View> */}
           <View style={themed($manualSection)}>
             <Text tx="whitelistBlacklistScreen:add_manually" size="sm" weight="semiBold" />
             <Text tx="whitelistBlacklistScreen:add_manually_desc" size="xs" weight="normal" />

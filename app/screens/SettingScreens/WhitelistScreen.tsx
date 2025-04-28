@@ -150,17 +150,6 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
       setRefreshing(false)
     }
 
-    const contacts: Section[] = useMemo(() => {
-      return listContactStore.groupedWhitelist.map((section) => ({
-        title: section.title,
-        data: section.data.map((c) => ({
-          id: c.id,
-          name: c.name,
-          number: c.phone_number_e164,
-        })),
-      }))
-    }, [listContactStore.groupedWhitelist])
-
     // const contacts: Section[] = [
     //   { title: "A", data: [{ name: "Aaron Johnson", number: "+917622365663" }] },
     //   {
@@ -187,7 +176,7 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
     //     ],
     //   },
     // ]
-
+    const filteredData = listContactStore.filteredAndGroupedWhitelist(searchQuery)
     return (
       <>
         <Screen style={themed($contentContainer)} preset="fixed">
@@ -225,15 +214,15 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
                     <EmptyState
                       preset="generic"
                       style={themed($emptyState)}
-                      headingTx={"expectedCallsScreen:empty_state_title"}
-                      contentTx={"expectedCallsScreen:empty_state_content"}
+                      headingTx={"whitelistBlacklistScreen:no_whitelisted_contact_found_title"}
+                      contentTx={"whitelistBlacklistScreen:no_whitelisted_contact_found_desc"}
                       buttonOnPress={manualRefresh}
                       imageStyle={$emptyStateImage}
                       ImageProps={{ resizeMode: "contain" }}
                     />
                   )
                 }
-                sections={contacts}
+                sections={filteredData}
                 renderItem={({ item }) => {
                   return (
                     <>

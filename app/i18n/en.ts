@@ -298,6 +298,10 @@ const en = {
     add_manually_desc: "Add numbers to Whitelist / Blacklist manually",
     whitelist_numbers: "Whitelist numbers ",
     blacklist_numbers: "Blacklist numbers ",
+    no_whitelisted_contact_found_title: "No whitelisted contacts found",
+    no_whitelisted_contact_found_desc: "Add numbers here to whitelist them from verification",
+    no_blacklisted_contact_found_title: "No blacklisted contacts found",
+    no_blacklisted_contact_found_desc: "Add numbers here to block their calls",
   },
   whitelistScreen: {
     search: "Search name or number",

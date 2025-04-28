@@ -68,6 +68,19 @@ export const insertIntoGrouped = (
   }
 }
 
+const deduplicateByPhoneNumber = <T extends Omit<IListContact, "id"> | ListContactSnapshotIn>(
+  contacts: T[],
+) => {
+  const seen = new Set() // To keep track of unique phone numbers
+  return contacts.filter((item) => {
+    if (!seen.has(item.phone_number_e164)) {
+      seen.add(item.phone_number_e164) // Add phone number to the Set
+      return true // Keep this item
+    }
+    return false // Skip duplicate items
+  })
+}
+
 export const moveBetweenGrouped = (
   from: SectionListSnapshotOut[],
   to: SectionListSnapshotOut[],
@@ -90,6 +103,8 @@ export const ListContactStore = types
   .actions((store) => ({
     // EXPO CONTACTS START
     fetchContacts: flow(function* fetchContacts() {
+      const { status }: Contacts.PermissionResponse = yield Contacts.requestPermissionsAsync()
+      if (status !== Contacts.PermissionStatus.GRANTED) return false
       let allContacts: Contacts.Contact[] = []
       let startPage = 0
       const pageSize = 10_000
@@ -109,25 +124,29 @@ export const ListContactStore = types
 
           // Append fetched contacts to the allContacts array
           allContacts = [...allContacts, ...data]
+          console.log("DATA FOR CONTACTS", data)
           // restructure data
           const creatableListContacts: Omit<IListContact, "id">[] = data.flatMap((contact) => {
             // Ensure there are phone numbers
             if (contact.phoneNumbers && contact.phoneNumbers?.length > 0) {
               return contact.phoneNumbers
-                .filter((phoneNumber) => phoneNumber.countryCode && phoneNumber.number)
+                .filter((phoneNumber) => !!phoneNumber.number)
                 .map((phoneNumber) => ({
                   name: contact.name,
-                  phone_number_e164: phoneNumber.countryCode + "" + phoneNumber?.number,
+                  phone_number_e164:
+                    phoneNumber?.number?.[0] !== "+"
+                      ? "+1" + phoneNumber.number?.replaceAll(/\s/g, "")
+                      : (phoneNumber.number?.replaceAll(/\s/g, "") ?? ""),
                   list_type: "WHITELIST",
                 }))
             }
             return [] // In case there are no phone numbers, return an empty array
           })
+          const dedupedContacts = deduplicateByPhoneNumber(creatableListContacts)
           const response: { kind: "ok"; contact: ListContactSnapshotIn } | GeneralApiProblem =
-            yield listContactApi.batchCreateListContact(creatableListContacts)
+            yield listContactApi.batchCreateListContact(dedupedContacts)
 
           if (response.kind === "ok") {
-            // do nothing
           } else {
             return response
           }
@@ -144,7 +163,7 @@ export const ListContactStore = types
     }),
     // EXPO CONTACTS END
     async fetchWhitelist() {
-      store.setProp("whitelist", [])
+      // store.setProp("whitelist", [])
       store.setProp("groupedWhitelist", [])
       store.setProp("page", 0)
       const response = await listContactApi.getListContacts({
@@ -155,18 +174,18 @@ export const ListContactStore = types
 
       if (response.kind === "ok") {
         const whitelist = response.contacts
-        store.setProp("whitelist", whitelist)
+        const dedupedWhitelist = deduplicateByPhoneNumber(whitelist)
+        console.log("DEDUPED WHITELIST", dedupedWhitelist)
+        store.setProp("whitelist", dedupedWhitelist)
         if (whitelist.length === 0) store.setProp("page", 0)
-        console.log("basic whitelist" + response.contacts) //------------
 
         let grouped = store.groupedWhitelist
-        whitelist.forEach((item) => {
+        dedupedWhitelist.forEach((item) => {
           grouped = insertIntoGrouped(grouped, item)
         })
 
         store.setProp("groupedWhitelist", grouped)
         store.setProp("page", store.page + 1)
-        console.log("grouped whitelist" + store.groupedWhitelist) //-----------
       } else {
         console.error("Failed to fetch whitelist:", response)
         return response
@@ -175,17 +194,20 @@ export const ListContactStore = types
     },
 
     async fetchBlacklist() {
-      store.setProp("blacklist", [])
+      // store.setProp("blacklist", [])
       store.setProp("groupedBlacklist", [])
       store.setProp("page", 0)
+
       const response = await listContactApi.getListContacts({
         list_type: "BLACKLIST",
         limit: 30,
         offset: store.page * 30,
       })
       if (response.kind === "ok") {
+        console.log("RESPONSE", response.kind)
         const blacklist = response.contacts
-        store.setProp("blacklist", blacklist)
+        const dedupedBlacklist = deduplicateByPhoneNumber(blacklist)
+        store.setProp("blacklist", dedupedBlacklist)
         if (blacklist.length === 0) store.setProp("page", 0)
         console.log("basic blacklist" + response.contacts) // -------------------
 
@@ -323,6 +345,37 @@ export const ListContactStore = types
         groupedBlacklist: [],
         groupedWhitelist: [],
       })
+    },
+  }))
+  .views((store) => ({
+    filteredAndGroupedWhitelist(searchQuery: string) {
+      const data = store.groupedWhitelist?.map((section) => ({
+        title: section.title,
+        data: section.data
+          ?.filter((data) => data.name?.includes(searchQuery))
+          ?.map((c) => ({
+            id: c.id,
+            name: c.name,
+            number: c.phone_number_e164,
+          })),
+      }))
+      const filteredData = data?.filter((section) => section.data.length > 0)
+      return filteredData
+    },
+
+    filteredAndGroupedBlacklist(searchQuery: string = "") {
+      const data = store.groupedBlacklist?.map((section) => ({
+        title: section.title,
+        data: section.data
+          ?.filter((data) => data.name?.includes(searchQuery))
+          ?.map((c) => ({
+            id: c.id,
+            name: c.name,
+            number: c.phone_number_e164,
+          })),
+      }))
+      const filteredData = data?.filter((section) => section.data.length > 0)
+      return filteredData
     },
   }))
 

@@ -1,12 +1,22 @@
 import { FC, useEffect, useMemo, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import {
+  ActivityIndicator,
+  AppRegistry,
+  Image,
+  ImageStyle,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native"
 import { AppStackScreenProps } from "@/navigators"
 import { Button, Icon, Screen, Text } from "@/components"
 import { $styles, ThemedStyle } from "@/theme"
 import { useAppTheme } from "@/utils/useAppTheme"
 import { activeCallCustomParamsFixture } from "@/fixtures/active-call.fixtures"
 import { Call, CallInvite } from "@twilio/voice-react-native-sdk"
+import { ACTIVE_CALL_SCREEN } from "@/constants"
+import { useStores } from "@/models"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "@/models"
 const avatar = require("../../assets/images/avatar.png")
@@ -33,150 +43,200 @@ export interface IActionItems {
 
 export const ActiveCallScreen: FC<AppStackScreenProps<"ActiveCall">> = observer(
   function ActiveCallScreen(_props) {
-    // Pull in one of our MST stores
-    // const { someStore, anotherStore } = useStores()
+    const { telephonyCallStore } = useStores()
+    const {
+      themed,
+      theme: { colors },
+    } = useAppTheme()
+    const telephonyCallId = _props.route.params.telephonyCallId
 
-    // Pull in navigation via hook
-    // const navigation = useNavigation()
-    const { themed } = useAppTheme()
-    const activeCallInvite = _props.route.params
-    const [activeCallInviteState, setActiveCallInviteState] = useState<CallInvite.State>(
-      CallInvite.State.Pending,
-    )
-    const [activeCall, setActiveCall] = useState<Call>()
+    const activeCallInvite = useMemo(() => {
+      console.log("ACTIVE CALLS HERE", telephonyCallStore.activeCalls.length)
+      console.log(
+        "ACTIVE CALLS TOP TOP",
+        telephonyCallStore.getActiveCall(telephonyCallId),
+        telephonyCallId,
+        _props.route.params,
+      )
+      if (telephonyCallStore.activeCalls.length > 0)
+        return telephonyCallStore.getActiveCall(telephonyCallId)
+      return null
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [telephonyCallStore, telephonyCallId, telephonyCallStore.activeCalls.length])
 
-    // let activeCallParams: IActiveCallCustomParams =
-    //   activeCall.getCustomParameters() as unknown as IActiveCallCustomParams
-    const activeCallParams = useMemo(() => {
-      if (typeof activeCallInvite.getCustomParameters === "function")
-        return activeCallInvite.getCustomParameters()
-      return activeCallCustomParamsFixture
-    }, [activeCallInvite])
-
-    const handleCallAccept = () => {
-      if (typeof activeCallInvite.accept === "function") activeCallInvite.accept()
-    }
-
-    const handleCallReject = () => {
-      if (typeof activeCallInvite.reject === "function") activeCallInvite.reject()
+    const handleDelayedGoBack = (screen: any) => {
+      console.log("DOING A DELAYED GO BACK AHAHAHAHAHAHAHA")
       setTimeout(() => {
         if (_props.navigation.canGoBack()) _props.navigation.goBack()
         else {
-          _props.navigation.navigate("AuthReconcile")
+          _props.navigation.navigate(screen)
         }
       }, 1000)
     }
 
-    const handleHangUp = () => {
-      if (activeCall && typeof activeCall.disconnect === "function") {
-        activeCall.disconnect()
-        setTimeout(() => {
-          if (_props.navigation.canGoBack()) _props.navigation.goBack()
-          else {
-            _props.navigation.navigate("AuthReconcile")
-          }
-        }, 1000)
-      }
-    }
-
-    useEffect(() => {
-      activeCallInvite.on(CallInvite.Event.Accepted, (call: Call) => {
-        setActiveCall(call)
-        setActiveCallInviteState(CallInvite.State.Accepted)
-      })
-
-      activeCallInvite.on(CallInvite.Event.Rejected, () => {
-        setActiveCall(undefined)
-        setActiveCallInviteState(CallInvite.State.Rejected)
-      })
-
-      activeCallInvite.on(CallInvite.Event.Cancelled, () => {
-        setActiveCall(undefined)
-        setActiveCallInviteState(CallInvite.State.Cancelled)
-      })
-
-      return () => {
-        activeCallInvite.off(CallInvite.Event.Accepted)
-        activeCallInvite.off(CallInvite.Event.Rejected)
-        activeCallInvite.off(CallInvite.Event.Cancelled)
-      }
-    }, [activeCallInvite])
-
-    useEffect(() => {
-      if (!activeCall) return
-      activeCall.on(Call.Event.Connected, (call: Call) => {
-        console.log("call connected successfully")
-      })
-
-      activeCall.on(Call.Event.Disconnected, (call: Call) => {
-        setActiveCall(undefined)
-        setActiveCallInviteState(CallInvite.State.Rejected)
-      })
-
-      activeCall.on(Call.Event.ConnectFailure, (call: Call, error: Error) => {
-        console.error("Call connection failed:", error)
-        setActiveCall(undefined)
-        setActiveCallInviteState(CallInvite.State.Rejected)
-      })
-
-      activeCall.on(Call.Event.Reconnecting, (call: Call, error: Error) => {
-        console.warn("Call reconnecting due to error:", error)
-      })
-
-      activeCall.on(Call.Event.Reconnected, (call: Call) => {
-        console.log("Call reconnected successfully")
-      })
-
-      return () => {
-        activeCall.off(Call.Event.Connected)
-        activeCall.off(Call.Event.Disconnected)
-        activeCall.off(Call.Event.ConnectFailure)
-        activeCall.off(Call.Event.Reconnecting)
-        activeCall.off(Call.Event.Reconnected)
-      }
-    }, [activeCall])
-
+    if (!activeCallInvite)
+      return (
+        <Screen
+          style={themed($root)}
+          contentContainerStyle={themed($container)}
+          preset="scroll"
+          safeAreaEdges={["top"]}
+        >
+          <ActivityIndicator color={colors.defaultPrimary} />
+        </Screen>
+      )
     return (
-      <Screen
-        style={themed($root)}
-        contentContainerStyle={themed($container)}
-        preset="scroll"
-        safeAreaEdges={["top"]}
-      >
-        <View style={[$styles.row, themed($notificationHeader)]}>
-          <Icon icon="incoming_call" />
-          <Text tx={"activeCall:incoming_call"} />
-        </View>
-        <View>
-          <Image source={avatar} style={themed($imageStyle)} />
-        </View>
-        <View style={themed($infoContainer)}>
-          {activeCallParams && activeCallParams.first_name && (
-            <Text preset="bold" size="xl">
-              {activeCallParams.first_name + " " + (activeCallParams?.last_name ?? "")}
-            </Text>
-          )}
-          {activeCallParams && activeCallParams.organization && (
-            <Text preset="default" size="lg">
-              {activeCallParams.organization}
-            </Text>
-          )}
-          {activeCallParams && activeCallParams.from_phone_number && (
-            <Text preset="default" size="xl" style={themed($fromPhoneNumber)}>
-              {activeCallParams.from_phone_number}
-            </Text>
-          )}
-        </View>
-        <ActionItems
-          callState={activeCallInviteState}
-          handleCallAccept={handleCallAccept}
-          handleCallReject={handleCallReject}
-          handleHangUp={handleHangUp}
-        />
-      </Screen>
+      <CallNotificationScreen
+        activeCallInvite={activeCallInvite}
+        handleDelayedGoBack={handleDelayedGoBack}
+      />
     )
   },
 )
+
+function CallNotificationScreen(_props: {
+  activeCallInvite: CallInvite
+  handleDelayedGoBack: (screen: any) => void
+}) {
+  // Pull in one of our MST stores
+  const { telephonyCallStore, userStore } = useStores()
+
+  // Pull in navigation via hook
+  // const navigation = useNavigation()
+  const { themed } = useAppTheme()
+  const activeCallInvite = _props.activeCallInvite
+  const [activeCallInviteState, setActiveCallInviteState] = useState<CallInvite.State>(
+    CallInvite.State.Pending,
+  )
+  const [activeCall, setActiveCall] = useState<Call>()
+
+  // let activeCallParams: IActiveCallCustomParams =
+  //   activeCall.getCustomParameters() as unknown as IActiveCallCustomParams
+  const activeCallParams = useMemo(() => {
+    if (typeof activeCallInvite.getCustomParameters === "function")
+      return activeCallInvite.getCustomParameters()
+    return activeCallCustomParamsFixture
+  }, [activeCallInvite])
+
+  const handleCallAccept = () => {
+    if (typeof activeCallInvite.accept === "function") activeCallInvite.accept()
+  }
+
+  const handleCallReject = () => {
+    if (typeof activeCallInvite.reject === "function") activeCallInvite.reject()
+    _props.handleDelayedGoBack("AuthReconcile")
+  }
+
+  const handleHangUp = () => {
+    if (activeCall && typeof activeCall.disconnect === "function") {
+      activeCall.disconnect()
+      _props.handleDelayedGoBack("AuthReconcile")
+    }
+  }
+
+  useEffect(() => {
+    activeCallInvite.on(CallInvite.Event.Accepted, (call: Call) => {
+      setActiveCall(call)
+      setActiveCallInviteState(CallInvite.State.Accepted)
+    })
+
+    activeCallInvite.on(CallInvite.Event.Rejected, () => {
+      setActiveCall(undefined)
+      setActiveCallInviteState(CallInvite.State.Rejected)
+    })
+
+    activeCallInvite.on(CallInvite.Event.Cancelled, () => {
+      setActiveCall(undefined)
+      setActiveCallInviteState(CallInvite.State.Cancelled)
+    })
+
+    return () => {
+      activeCallInvite.off(CallInvite.Event.Accepted)
+      activeCallInvite.off(CallInvite.Event.Rejected)
+      activeCallInvite.off(CallInvite.Event.Cancelled)
+    }
+  }, [activeCallInvite])
+
+  useEffect(() => {
+    if (!activeCall) return
+    activeCall.on(Call.Event.Connected, (call: Call) => {
+      console.log("call connected successfully")
+    })
+
+    activeCall.on(Call.Event.Disconnected, (call: Call) => {
+      setActiveCall(undefined)
+      setActiveCallInviteState(CallInvite.State.Rejected)
+      const callId = call.getSid()
+      if (!callId) return
+      telephonyCallStore.removeActiveCall(callId)
+    })
+
+    activeCall.on(Call.Event.ConnectFailure, (call: Call, error: Error) => {
+      console.error("Call connection failed:", error)
+      setActiveCall(undefined)
+      setActiveCallInviteState(CallInvite.State.Rejected)
+      const callId = call.getSid()
+      if (!callId) return
+      telephonyCallStore.removeActiveCall(callId)
+    })
+
+    activeCall.on(Call.Event.Reconnecting, (call: Call, error: Error) => {
+      console.warn("Call reconnecting due to error:", error)
+    })
+
+    activeCall.on(Call.Event.Reconnected, (call: Call) => {
+      console.log("Call reconnected successfully")
+    })
+
+    return () => {
+      activeCall.off(Call.Event.Connected)
+      activeCall.off(Call.Event.Disconnected)
+      activeCall.off(Call.Event.ConnectFailure)
+      activeCall.off(Call.Event.Reconnecting)
+      activeCall.off(Call.Event.Reconnected)
+    }
+  }, [activeCall, telephonyCallStore])
+
+  return (
+    <Screen
+      style={themed($root)}
+      contentContainerStyle={themed($container)}
+      preset="scroll"
+      safeAreaEdges={["top"]}
+    >
+      <View style={[$styles.row, themed($notificationHeader)]}>
+        <Icon icon="incoming_call" />
+        <Text tx={"activeCall:incoming_call"} />
+      </View>
+      <View>
+        <Image source={avatar} style={themed($imageStyle)} />
+      </View>
+      <View style={themed($infoContainer)}>
+        {activeCallParams && activeCallParams.first_name && (
+          <Text preset="bold" size="xl">
+            {activeCallParams.first_name + " " + (activeCallParams?.last_name ?? "")}
+          </Text>
+        )}
+        {activeCallParams && activeCallParams.organization && (
+          <Text preset="default" size="lg">
+            {activeCallParams.organization}
+          </Text>
+        )}
+        {activeCallParams && activeCallParams.from_phone_number && (
+          <Text preset="default" size="xl" style={themed($fromPhoneNumber)}>
+            {activeCallParams.from_phone_number}
+          </Text>
+        )}
+      </View>
+      <ActionItems
+        callState={activeCallInviteState}
+        handleCallAccept={handleCallAccept}
+        handleCallReject={handleCallReject}
+        handleHangUp={handleHangUp}
+      />
+    </Screen>
+  )
+}
 
 const ActionItems = (props: IActionItems) => {
   const { themed } = useAppTheme()
@@ -316,3 +376,5 @@ const $callInteractionButtons: ThemedStyle<ViewStyle> = ({ spacing, colors }) =>
 const $hangupContainer: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   justifyContent: "center",
 })
+
+AppRegistry.registerComponent(ACTIVE_CALL_SCREEN, () => ActiveCallScreen)

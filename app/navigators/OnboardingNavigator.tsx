@@ -8,6 +8,7 @@ import {
   OnboardingCongratulationsScreen,
   OnboardingAboutScreen,
   OnboardingAgentScreen,
+  OnboardingSyncContactsScreen,
 } from "@/screens"
 import { AppStackParamList, AppStackScreenProps } from "."
 import {
@@ -33,6 +34,7 @@ export type OnboardingNavigatorParamList = {
   OnboardingCongratulations: undefined
   OnboardingAbout: undefined
   OnboardingAgent: undefined
+  OnboardingSyncContacts: undefined
 }
 
 export type OnboardingStackScreenProps<T extends keyof OnboardingNavigatorParamList> =
@@ -98,6 +100,7 @@ export const OnboardingNavigator = () => {
           name="OnboardingCongratulations"
           component={OnboardingCongratulationsScreen}
         />
+        <Stack.Screen name="OnboardingSyncContacts" component={OnboardingSyncContactsScreen} />
         <Stack.Screen name="OnboardingAbout" component={OnboardingAboutScreen} />
         {/* <Stack.Screen name="OnboardingAgent" component={OnboardingAgentScreen} /> */}
         {/* <Stack.Screen name="OnboardingVerifyOtp" component={OnboardingVerifyOtpScreen} /> */}

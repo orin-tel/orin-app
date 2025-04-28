@@ -141,7 +141,7 @@ const $numberBox: ThemedStyle<TextStyle> = ({ colors }) => ({
 })
 
 const $infoBox: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  width: 321,
+  width: "100%",
   height: 164,
   borderRadius: 16,
   backgroundColor: colors.infoBackground,
@@ -151,7 +151,7 @@ const $infoBox: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
 })
 
 const $infoOuter: ThemedStyle<TextStyle> = ({ colors }) => ({
-  height: "100%",
+  // height: "100%",
   flexDirection: "row",
   alignItems: "center",
   gap: 12,

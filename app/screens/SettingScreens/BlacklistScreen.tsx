@@ -171,7 +171,7 @@ export const BlacklistScreen: FC<SettingStackScreenProps<"Blacklist">> = observe
     //   },
     //   {
     //     title: "S",
-    //     data: [{ name: "Sanando", number: "+917622365663" }],
+    //     data: [{ name: "Orin", number: "+917622365663" }],
     //   },
     //   {
     //     title: "U",
@@ -372,7 +372,7 @@ export const BlacklistScreen: FC<SettingStackScreenProps<"Blacklist">> = observe
             <PhoneTextField
               value={numberModal ?? ""}
               setValue={setNumberModal}
-              countryPhoneCode={phoneCodeModal ? phoneCodeModal : "+91"}
+              countryPhoneCode={phoneCodeModal ? phoneCodeModal : "+1"}
               setCountryPhoneCode={setPhoneCodeModal}
               placeholder="000-000-000"
               dismissOnSelect

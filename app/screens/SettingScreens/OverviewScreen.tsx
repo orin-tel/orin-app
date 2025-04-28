@@ -13,14 +13,12 @@ import { useAuth } from "@clerk/clerk-expo"
 
 export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
   function OverviewScreen(_props) {
-    const {
-      userStore: { fetchUserDetails, userName, userPhoneNumber, userCountryPhoneCode },
-    } = useStores()
+    const { userStore, callStore, expectedCallStore, listContactStore, locationStore } = useStores()
 
     useEffect(() => {
       ;(async () => {
         try {
-          await fetchUserDetails()
+          await userStore.fetchUserDetails()
         } catch (err) {
           console.error("Error loading user details:", err)
         }
@@ -36,8 +34,8 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
     const gotoAgentConfig = () => {
       navigation.navigate("AgentConfig")
     }
-    const gotoConnectCalls = () => {
-      navigation.navigate("ConnectCalls")
+    const gotoExpectedCalls = () => {
+      navigation.navigate("ExpectedCalls")
     }
     const gotoWhitelistBlacklist = () => {
       navigation.navigate("WhitelistBlacklist")
@@ -52,17 +50,17 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
               <View style={themed($pictureContainer)}>
                 <View style={themed($profilePicture)}>
                   <Text
-                    text={`${userName?.charAt(0).toUpperCase()}`}
+                    text={`${userStore.userName?.charAt(0).toUpperCase()}`}
                     size={"xl"}
                     style={themed($profilePictureText)}
                   />
                 </View>
               </View>
               <View style={themed($nameNumber)}>
-                {/* <Text text={`Sanando Chanda`} size="lg" weight="semiBold" /> */}
-                <Text text={`${userName}`} size="lg" weight="semiBold" />
+                {/* <Text text={`Orin Chanda`} size="lg" weight="semiBold" /> */}
+                <Text text={`${userStore.userName}`} size="lg" weight="semiBold" />
                 <Text
-                  text={userCountryPhoneCode + " " + userPhoneNumber}
+                  text={userStore.userCountryPhoneCode + " " + userStore.userPhoneNumber}
                   size="sm"
                   weight="medium"
                 />
@@ -84,13 +82,13 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
                 <Text tx="overviewScreen:agent_config_desc" size="xs" />
               </View>
             </TouchableOpacity> */}
-            <TouchableOpacity activeOpacity={0.8} onPress={gotoConnectCalls} style={themed($item)}>
+            <TouchableOpacity activeOpacity={0.8} onPress={gotoExpectedCalls} style={themed($item)}>
               <View style={themed($iconContainer)}>
                 <Icon icon="phoneOutgoing" />
               </View>
               <View style={themed($textContainer)}>
-                <Text tx="overviewScreen:connect_calls" size="sm" weight="semiBold" />
-                <Text tx="overviewScreen:connect_calls_desc" size="xs" />
+                <Text tx="overviewScreen:expected_calls" size="sm" weight="semiBold" />
+                <Text tx="overviewScreen:expected_calls_desc" size="xs" />
               </View>
             </TouchableOpacity>
             <TouchableOpacity
@@ -117,8 +115,13 @@ export const OverviewScreen: FC<SettingStackScreenProps<"Overview">> = observer(
             </View> */}
             <TouchableOpacity
               style={themed($item)}
-              onPress={() => {
-                signOut()
+              onPress={async () => {
+                await signOut()
+                userStore.reset()
+                locationStore.reset()
+                callStore.reset()
+                expectedCallStore.reset()
+                listContactStore.reset()
               }}
             >
               <View style={themed($iconContainer)}>

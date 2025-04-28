@@ -51,7 +51,9 @@ export type AppStackParamList = {
   OnboardingAbout: undefined
   OnboardingAgent: undefined
   AuthReconcile: undefined
-  ActiveCall: CallInvite
+  ActiveCall: {
+    telephonyCallId: string
+  }
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 /**
@@ -77,6 +79,7 @@ const AppStack = observer(function AppStack() {
 
   const {
     locationStore: { fetchLocation },
+    userStore,
   } = useStores()
 
   useEffect(() => {
@@ -101,8 +104,8 @@ const AppStack = observer(function AppStack() {
           <Stack.Screen name="AuthReconcile" component={Screens.AuthReconcileScreen} />
           <Stack.Screen name="Core" component={CoreNavigator} />
           <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
-          {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
           {/* <Stack.Screen name="Demo" component={DemoNavigator} /> */}
+          {/* <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} /> */}
         </>
       ) : (
         <>

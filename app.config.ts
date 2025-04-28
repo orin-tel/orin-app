@@ -21,6 +21,8 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
       require("./plugins/withSplashScreen").withSplashScreen,
       require("./plugins/withKotlinFiles").withKotlinFiles,
       require("./plugins/withTwilioMessagingDisabled").withTwilioMessagingDisabled,
+      require("./plugins/withLockedScreenActivity").withLockedScreenActivity,
+      require("./plugins/withNotifeeRepo").withNotifeeRepo,
     ],
   }
 }

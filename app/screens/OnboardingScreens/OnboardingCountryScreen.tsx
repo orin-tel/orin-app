@@ -131,14 +131,14 @@ const $sectionText: ThemedStyle<TextStyle> = () => ({
 })
 
 const $btnNext: ThemedStyle<TextStyle> = ({ colors }) => ({
-  width: 260,
+  width: "60%",
   backgroundColor: colors.defaultPrimary,
   color: colors.text,
   borderRadius: 100,
 })
 
 const $selectField: ThemedStyle<TextStyle> = ({}) => ({
-  width: 345,
+  width: "60%",
   borderRadius: 100,
   borderWidth: 0,
   justifyContent: "space-between",

@@ -6,6 +6,7 @@ import {
   applySnapshot,
   cast,
   getSnapshot,
+  flow,
 } from "mobx-state-tree"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 import {
@@ -21,6 +22,8 @@ import {
 import { listContactApi } from "@/services/api/listContact/listContactApi"
 import { SectionList } from "react-native"
 import { IListContact } from "@/services/api/listContact/types"
+import * as Contacts from "expo-contacts"
+import type { GeneralApiProblem } from "@/services/api/apiProblem"
 
 // util functions
 export const removeFromGrouped = (
@@ -84,18 +87,62 @@ export const ListContactStore = types
     page: 0,
   })
   .actions(withSetPropAction)
-  // .views((self) => ({
-  //   get groupedWhitelistView() {
-  //     return self.groupedWhitelist.map((section) => ({
-  //       title: section.title,
-  //       data: section.data.map((c) => ({
-  //         name: c.name,
-  //         number: c.phone_number_e164,
-  //       })),
-  //     }))
-  //   },
-  // }))
   .actions((store) => ({
+    // EXPO CONTACTS START
+    fetchContacts: flow(function* fetchContacts() {
+      let allContacts: Contacts.Contact[] = []
+      let startPage = 0
+      const pageSize = 10_000
+      let hasMore = true
+      try {
+        // Keep fetching until there are no more pages
+        while (hasMore) {
+          const contactQuery = {
+            pageSize: pageSize, // Number of contacts per page
+            pageStart: startPage, // The starting index for the query
+            sort: Contacts.SortTypes.FirstName, // Sort contacts alphabetically
+          }
+
+          // Fetch contacts for the current page
+          const { data, hasNextPage }: Contacts.ContactResponse =
+            yield Contacts.getPagedContactsAsync(contactQuery)
+
+          // Append fetched contacts to the allContacts array
+          allContacts = [...allContacts, ...data]
+          // restructure data
+          const creatableListContacts: Omit<IListContact, "id">[] = data.flatMap((contact) => {
+            // Ensure there are phone numbers
+            if (contact.phoneNumbers && contact.phoneNumbers?.length > 0) {
+              return contact.phoneNumbers
+                .filter((phoneNumber) => phoneNumber.countryCode && phoneNumber.number)
+                .map((phoneNumber) => ({
+                  name: contact.name,
+                  phone_number_e164: phoneNumber.countryCode + "" + phoneNumber?.number,
+                  list_type: "WHITELIST",
+                }))
+            }
+            return [] // In case there are no phone numbers, return an empty array
+          })
+          const response: { kind: "ok"; contact: ListContactSnapshotIn } | GeneralApiProblem =
+            yield listContactApi.batchCreateListContact(creatableListContacts)
+
+          if (response.kind === "ok") {
+            // do nothing
+          } else {
+            return response
+          }
+          // Update hasNextPage and pageStart for the next fetch
+          hasMore = hasNextPage
+          startPage += pageSize
+        }
+        return true
+        // Once all contacts are fetched, set the contacts in the store
+      } catch (error) {
+        console.log("an error occured", error)
+        return false
+      }
+    }),
+    // EXPO CONTACTS END
     async fetchWhitelist() {
       store.setProp("whitelist", [])
       store.setProp("groupedWhitelist", [])
@@ -269,6 +316,13 @@ export const ListContactStore = types
         return response
       }
       return
+    },
+
+    reset() {
+      applySnapshot(store, {
+        groupedBlacklist: [],
+        groupedWhitelist: [],
+      })
     },
   }))
 

@@ -16,6 +16,7 @@ export * from "./OnboardingScreens/OnboardingAboutScreen"
 export * from "./OnboardingScreens/OnboardingAgentScreen"
 export * from "./OnboardingScreens/OnboardingRegisterMobileScreen"
 export * from "./OnboardingScreens/OnboardingVerifyOtpScreen"
+export * from "./OnboardingScreens/OnboardingSyncContactsScreen"
 /**
  * Call Logs
  */

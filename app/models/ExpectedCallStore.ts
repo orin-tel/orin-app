@@ -74,9 +74,9 @@ export const ExpectedCallStore = types
       return
     },
 
-    // resetStore() {
-    //   applySnapshot(self, { expectedCalls: [] })
-    // },
+    reset() {
+      applySnapshot(store, { expectedCalls: [] })
+    },
   }))
   .views((store) => ({
     get getExpectedCalls() {

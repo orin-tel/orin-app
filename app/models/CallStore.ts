@@ -1,4 +1,4 @@
-import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import { applySnapshot, Instance, SnapshotOut, types } from "mobx-state-tree"
 import { api, telephonyApi } from "../services/api"
 import { CallModel, Call } from "./Call"
 import { withSetPropAction } from "./helpers/withSetPropAction"
@@ -56,6 +56,11 @@ export const CallStoreModel = types
       } else {
         store.setProp("calls", [newCall, ...store.calls])
       }
+    },
+    reset() {
+      applySnapshot(store, {
+        calls: [],
+      })
     },
   }))
 

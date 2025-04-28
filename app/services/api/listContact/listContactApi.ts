@@ -38,7 +38,6 @@ export class ListContactApi {
   }
 
   // expected calls
-
   async getListContacts(params: {
     list_type: string
     limit: number
@@ -63,15 +62,37 @@ export class ListContactApi {
     return { kind: "ok", contacts: snapshotIn ?? [] }
   }
 
-  async createListContact(contactData: {
-    name: string
-    phone_number_e164: string
-    list_type: string
-  }): Promise<{ kind: "ok"; contact: ListContactSnapshotIn } | GeneralApiProblem> {
+  async createListContact(
+    contactData: Omit<IListContact, "id">,
+  ): Promise<{ kind: "ok"; contact: ListContactSnapshotIn } | GeneralApiProblem> {
     const token = await getClerkInstance().session?.getToken()
     this.apisauce.setHeader("authorization", `Bearer ${token}`)
     const response: ApiResponse<NestResponse<IListContact>> = await this.apisauce.post(
       "",
+      contactData,
+    )
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+    const data = response.data
+    if (!data) throw new Error("data not available")
+    const snapshotIn: ListContactSnapshotIn = {
+      id: data.data.id,
+      name: data.data.name,
+      phone_number_e164: data.data.phone_number_e164,
+      list_type: data.data.list_type,
+    }
+    return { kind: "ok", contact: snapshotIn }
+  }
+
+  async batchCreateListContact(
+    contactData: Omit<IListContact, "id">[],
+  ): Promise<{ kind: "ok"; contact: ListContactSnapshotIn } | GeneralApiProblem> {
+    const token = await getClerkInstance().session?.getToken()
+    this.apisauce.setHeader("authorization", `Bearer ${token}`)
+    const response: ApiResponse<NestResponse<IListContact>> = await this.apisauce.post(
+      "/batch",
       contactData,
     )
     if (!response.ok) {

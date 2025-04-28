@@ -70,11 +70,7 @@ const Tab = createBottomTabNavigator<CoreTabNavigatorParamList>()
 
 export const CoreNavigator = () => {
   useEffect(() => {
-    async function getToken() {
-      const token = await getClerkInstance().session?.getToken()
-      console.log(token)
-    }
-    getToken()
+    console.log("NAVIGATED TO CORE NAVIGATOR")
   }, [])
   useTelephonyNotificationService()
   useFirebaseMessaging()

@@ -49,6 +49,12 @@
       "expo-localization",
       "expo-font",
       [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/images/app-icon-android-adaptive-foreground.png",

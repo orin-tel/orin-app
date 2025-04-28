@@ -10,8 +10,14 @@ import { useProgress } from "@/context/ProgressProvider"
 import { useFocusEffect } from "@react-navigation/native"
 import { userStore } from "@/models/UserStore"
 import { GeneralApiProblem } from "@/services/api/apiProblem"
-import { PhoneNumberUtil, PhoneNumber, PhoneNumberFormat } from "google-libphonenumber"
+import {
+  PhoneNumberUtil,
+  PhoneNumber,
+  PhoneNumberFormat,
+  AsYouTypeFormatter,
+} from "google-libphonenumber"
 import { TxKeyPath } from "@/i18n"
+import { PHONE_CODE_MAP } from "@/constants"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "@/models"
 
@@ -21,18 +27,7 @@ export const OnboardingRegisterMobileScreen: FC<
   // Pull in one of our MST stores
   const [loading, setLoading] = useState<boolean>(false)
   const [otpError, setOtpError] = useState<TxKeyPath>()
-  const {
-    locationStore,
-
-    userStore: {
-      userPhoneNumber,
-      userCountryPhoneCode,
-      setUserPhoneNumber,
-      setUserCountryPhoneCode,
-    },
-    episodeStore,
-  } = useStores()
-
+  const { locationStore, userStore, episodeStore } = useStores()
   const { setProgress } = useProgress()
   useFocusEffect(
     useCallback(() => {
@@ -43,11 +38,11 @@ export const OnboardingRegisterMobileScreen: FC<
   const { navigation } = _props
 
   const handleOTPGeneration = async () => {
-    if (!userPhoneNumber) {
+    if (!userStore.userPhoneNumber) {
       return
     }
     setLoading(true)
-    const phoneNumber = (userCountryPhoneCode ?? "+1") + userPhoneNumber
+    const phoneNumber = (userStore.userCountryPhoneCode ?? "+1") + userStore.userPhoneNumber
     // validate phone number
     const phoneUtil = PhoneNumberUtil.getInstance()
     const parsedNumber = phoneUtil.parse(phoneNumber, "")
@@ -77,6 +72,15 @@ export const OnboardingRegisterMobileScreen: FC<
     setLoading(false)
   }
 
+  const handleUserPhoneNumberEdit = useCallback(
+    (text: string) => {
+      const phoneUtil = PhoneNumberUtil.getInstance()
+      const countryCode = PHONE_CODE_MAP[userStore.userCountryPhoneCode ?? "US"]
+      const formatter = new AsYouTypeFormatter(countryCode)
+    },
+    [userStore.userCountryPhoneCode],
+  )
+
   const { themed } = useAppTheme()
   return (
     <Screen
@@ -94,10 +98,14 @@ export const OnboardingRegisterMobileScreen: FC<
           weight="medium"
         />
         <PhoneTextField
-          value={userPhoneNumber ?? ""}
-          setValue={setUserPhoneNumber}
-          countryPhoneCode={userCountryPhoneCode ?? locationStore.countryPhoneCode ?? "+1"}
-          setCountryPhoneCode={setUserCountryPhoneCode}
+          value={userStore.userPhoneNumber ?? ""}
+          onChangeText={handleUserPhoneNumberEdit}
+          setValue={userStore.setUserPhoneNumber}
+          countryPhoneCode={
+            userStore.userCountryPhoneCode ?? locationStore.countryPhoneCode ?? "+1"
+          }
+          dismissOnSelect
+          setCountryPhoneCode={userStore.setUserCountryPhoneCode}
           placeholder="000-000-000"
         />
         <Button

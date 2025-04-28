@@ -65,7 +65,6 @@ export function useFirebaseMessaging() {
                 const payload = JSON.parse(remoteMessage.data?.payload)
                 await callStore.updateCallListFromNotification(payload as ICall)
               } catch (err) {
-                console.log("PAYLOAD")
                 console.log("INVALID TYPE OF PAYLOAD", err)
               }
             }
@@ -83,7 +82,7 @@ export function useFirebaseMessaging() {
     }
 
     setupMessaging()
-  }, [])
+  }, [callStore])
 
   return { fcmToken }
 }

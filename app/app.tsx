@@ -40,9 +40,16 @@ import { ProgressProvider } from "./context/ProgressProvider"
 import { AppServices } from "./app-services"
 import * as Sentry from "@sentry/react-native"
 import "react-native-keyboard-controller"
+import { initCrashReporting } from "./utils/crashReporting"
+import messaging, { FirebaseMessagingTypes } from "@react-native-firebase/messaging"
+import { ISNSNotification, ISNSNotificationData, ITelephonyNotificationData } from "./types"
+import { isSNSNotification, isTelephonyNotification } from "./type.guards"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 const CLERK_PUBLISHABLE_KEY = Config.CLERK_PUBLISHABLE_KEY
+
+// SENTRY INITIALIZE CRASH REPORTING
+initCrashReporting()
 
 // Web linking configuration
 const prefix = Linking.createURL("/")
@@ -50,7 +57,7 @@ const config = {
   screens: {
     Signup: "signup",
     AuthReconcile: "auth-reconcile",
-    ActiveCall: "active-call",
+    ActiveCall: "active-call/:telephonyCallId?",
     Onboarding: {
       path: "onboarding",
       screens: {
@@ -104,13 +111,63 @@ const config = {
     },
   },
 }
+function buildDeepLinkFromNotificationData(data: any): string | null {
+  if (!data) return null
+  if (isTelephonyNotification(data)) {
+    // move to active call page
+    return Linking.createURL(`active-call/${data.twi_call_sid}`)
+  }
+  if (isSNSNotification(data)) {
+    // move to call logs page
+    return Linking.createURL(`core/call-logs/list`)
+  }
+  return null
+}
+
+const deepLinkUtils = {
+  async getInitialURL() {
+    const url = await Linking.getInitialURL()
+    console.log("INITIAL NOTIFICATION", url)
+    if (typeof url === "string") {
+      return url
+    }
+    //getInitialNotification: When the application is opened from a quit state.
+    const message = await messaging().getInitialNotification()
+    console.log("INITIAL NOTIFICATION 2", message)
+    const deeplinkURL = buildDeepLinkFromNotificationData(message?.data)
+    if (typeof deeplinkURL === "string") {
+      return deeplinkURL
+    }
+    return url
+  },
+  subscribe(listener: (url: string) => void) {
+    const onReceiveURL = ({ url }: { url: string }) => listener(url)
+
+    // Listen to incoming links from deep linking
+    const linkingSubscription = Linking.addEventListener("url", onReceiveURL)
+
+    //onNotificationOpenedApp: When the application is running, but in the background.
+    const unsubscribe = messaging().onNotificationOpenedApp((remoteMessage) => {
+      console.log("ON MESSAGE TAP", remoteMessage.data)
+      const url = buildDeepLinkFromNotificationData(remoteMessage.data)
+      if (typeof url === "string") {
+        listener(url)
+      }
+    })
+
+    return () => {
+      linkingSubscription.remove()
+      unsubscribe()
+    }
+  },
+}
 
 /**
  * This is the root component of our app.
  * @param {AppProps} props - The props for the `App` component.
  * @returns {JSX.Element} The rendered `App` component.
  */
-function BareApp() {
+function BareApp(): JSX.Element {
   const {
     initialNavigationState,
     onNavigationStateChange,
@@ -133,7 +190,6 @@ function BareApp() {
     // Slightly delaying splash screen hiding for better UX; can be customized or removed as needed,
     setTimeout(SplashScreen.hideAsync, 500)
   })
-
   // Before we show the app, we have to wait for our state to be ready.
   // In the meantime, don't render anything. This will be the background
   // color set in native by rootView's background color.
@@ -146,11 +202,11 @@ function BareApp() {
     !isI18nInitialized ||
     (!areFontsLoaded && !fontLoadError)
   ) {
-    return null
+    return <></>
   }
-
   const linking = {
     prefixes: [prefix],
+    ...deepLinkUtils,
     config,
   }
   if (!CLERK_PUBLISHABLE_KEY) {

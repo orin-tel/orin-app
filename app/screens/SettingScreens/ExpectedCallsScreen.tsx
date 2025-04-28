@@ -107,9 +107,6 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
       }
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const debouncedHandleEditCall = useMemo(() => debounce(handleEditCall, 1000), [])
-
     // toggle expanded call
     const [expandedCalls, setExpandedCalls] = useState<Record<string, boolean>>({})
     const toggleCallExpansion = (id: string) => {
@@ -248,9 +245,7 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                         <TextField
                           style={themed($nameTextStyle)}
                           value={item.caller_name}
-                          onChangeText={(text) =>
-                            debouncedHandleEditCall(item.id, text, item.caller_reason)
-                          }
+                          onChangeText={(text) => handleEditCall(item.id, text, item.caller_reason)}
                           inputWrapperStyle={themed($nameTextWrapperStyle)}
                           placeholderTx="expectedCallsScreen:caller_name_example"
                           // placeholder={item.caller_name}

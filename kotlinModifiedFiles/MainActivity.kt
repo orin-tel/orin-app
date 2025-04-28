@@ -12,6 +12,8 @@ import android.widget.Toast
 import com.twiliovoicereactnative.VoiceActivityProxy
 
 import expo.modules.ReactActivityDelegateWrapper
+// Import the NotifeeApiModule
+import io.invertase.notifee.NotifeeApiModule;
 
 class MainActivity : ReactActivity() {
 
@@ -50,7 +52,9 @@ override fun onCreate(savedInstanceState: Bundle?) {
   * Returns the name of the main component registered from JavaScript. This is used to schedule
   * rendering of the component.
   */
-override fun getMainComponentName(): String = "main"
+  override fun getMainComponentName(): String {
+      return NotifeeApiModule.getMainComponent("main")
+  }
 
   /**
    * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]

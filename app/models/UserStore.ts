@@ -240,7 +240,7 @@ export const UserStore = types
     },
 
     // ------ Call related -------
-    resetStore() {
+    reset() {
       applySnapshot(self, {})
     },
   }))

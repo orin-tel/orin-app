@@ -6,6 +6,7 @@ import { UserStore } from "./UserStore"
 import { CallStoreModel } from "./CallStore"
 import { ExpectedCallStore } from "./ExpectedCallStore"
 import { ListContactStore } from "./ListContactStore"
+import { TelephonyCallStoreModel } from "./TelephonyCallStore"
 
 /**
  * A RootStore model.
@@ -25,6 +26,7 @@ export const RootStoreModel = types.model("RootStore").props({
     groupedBlacklist: [],
     groupedWhitelist: [],
   }),
+  telephonyCallStore: types.optional(TelephonyCallStoreModel, {}),
 })
 
 /**

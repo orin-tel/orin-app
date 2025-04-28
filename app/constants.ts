@@ -1,3 +1,5 @@
+import { PhoneNumberType, PhoneNumberUtil } from "google-libphonenumber"
+
 export const COUNTRY_MAP = [
   { value: "US", label: "United States", code: "+1" },
   // Commenting canada because same code as USA
@@ -26,6 +28,34 @@ export const COUNTRY_MAP = [
   { value: "BD", label: "Bangladesh", code: "+880" },
   { value: "EG", label: "Egypt", code: "+20" },
 ]
+
+export const PHONE_CODE_MAP: Record<string, string> = {
+  "+1": "US", // CA is excluded
+  "+44": "GB",
+  "+61": "AU",
+  "+91": "IN",
+  "+49": "DE",
+  "+33": "FR",
+  "+39": "IT",
+  "+34": "ES",
+  "+55": "BR",
+  "+86": "CN",
+  "+81": "JP",
+  "+7": "RU",
+  "+27": "ZA",
+  "+52": "MX",
+  "+54": "AR",
+  "+234": "NG",
+  "+966": "SA",
+  "+82": "KR",
+  "+62": "ID",
+  "+90": "TR",
+  "+63": "PH",
+  "+92": "PK",
+  "+880": "BD",
+  "+20": "EG",
+}
+
 export const LANGUAGE_MAP = [
   { value: "EN", country: "GB", label: "English", code: "" },
 
@@ -34,3 +64,5 @@ export const LANGUAGE_MAP = [
 
   { value: "FR", country: "FR", label: "French", code: "" },
 ]
+
+export const ACTIVE_CALL_SCREEN = "active-call-screen"

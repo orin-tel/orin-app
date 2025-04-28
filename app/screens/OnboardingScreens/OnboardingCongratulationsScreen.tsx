@@ -28,7 +28,7 @@ export const OnboardingCongratulationsScreen: FC<
   const copyToClipboard = () => {}
 
   const handleNext = () => {
-    navigation.navigate("OnboardingAbout")
+    navigation.navigate("OnboardingSyncContacts")
   }
   //
   return (

@@ -5,14 +5,30 @@ import type { ThemedStyle } from "@/theme"
 import { TextField, TextFieldProps } from "./TextField"
 import { Icon } from "./Icon"
 import { Button } from "./Button"
-import { forwardRef, Ref, useImperativeHandle, useRef } from "react"
+import {
+  forwardRef,
+  Ref,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 import { BottomSheetBackdrop, BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { COUNTRY_MAP } from "@/constants"
+import { COUNTRY_MAP, PHONE_CODE_MAP } from "@/constants"
 import { ListItem } from "./ListItem"
 import CountryFlag from "react-native-country-flag"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { CountryPhoneCode } from "@/types"
+import { useAsYouTypeFormatter } from "@/utils/useAsYouTypeFormatter"
+import {
+  AsYouTypeFormatter,
+  PhoneNumberFormat,
+  PhoneNumberType,
+  PhoneNumberUtil,
+} from "google-libphonenumber"
 
 export interface PhoneTextFieldProps extends TextFieldProps {
   /**
@@ -46,11 +62,36 @@ export const PhoneTextField = observer(
       setCountryPhoneCode,
       dismissOnSelect,
     } = props
+
     const $styles = [$container, style]
     const { themed, theme } = useAppTheme()
-    console.log("THEME IS", theme.isDark)
     const { bottom } = useSafeAreaInsets()
     const sheet = useRef<BottomSheetModal>(null)
+    const [displayValue, setDisplayValue] = useState(value)
+    // Initialize formatter and phone number utility
+    const formatter = new AsYouTypeFormatter(PHONE_CODE_MAP[countryPhoneCode ?? "US"])
+
+    const maxLength = useMemo((): number => {
+      const phoneUtil = PhoneNumberUtil.getInstance()
+      const regionCode = PHONE_CODE_MAP[countryPhoneCode ?? "US"]
+      if (regionCode === "IN") return 11
+      if (!regionCode) return 15 // E.164 fallback
+
+      try {
+        const exampleNumber = phoneUtil.getExampleNumberForType(regionCode, PhoneNumberType.MOBILE)
+        if (!exampleNumber) return 15
+        const nationalNumber = exampleNumber?.getNationalNumber()?.toString()
+        if (!nationalNumber) return 15
+        const number = phoneUtil.parseAndKeepRawInput(nationalNumber, regionCode)
+        const formattedNumber = phoneUtil.format(number, PhoneNumberFormat.NATIONAL)
+        return formattedNumber.length ?? 15
+        // format it and find length
+      } catch (error) {
+        console.warn(`Could not get max digits for ${regionCode}:`, error)
+        return 15
+      }
+    }, [countryPhoneCode])
+
     useImperativeHandle(ref, () => ({ presentOptions, dismissOptions }))
     function presentOptions() {
       sheet.current?.present()
@@ -65,15 +106,35 @@ export const PhoneTextField = observer(
       if (dismissOnSelect) dismissOptions()
     }
 
+    const handlePhoneNumberChange = useCallback(
+      (text: string) => {
+        // Remove all non-digit characters
+        const digitsOnly = text.replace(/\D/g, "")
+
+        formatter.clear()
+        let formattedValue = ""
+        for (let i = 0; i < Math.min(digitsOnly.length, maxLength); i++) {
+          formattedValue = formatter.inputDigit(digitsOnly[i])
+        }
+        setDisplayValue(formattedValue)
+        setValue(digitsOnly) // keep raw for backend
+      },
+      [maxLength],
+    )
+
+    useEffect(() => {
+      handlePhoneNumberChange(value)
+    }, [countryPhoneCode])
+
     return (
       <>
         <View style={$styles}>
           <TextField
             {...props}
             style={themed($text)}
-            value={value}
-            onChangeText={setValue}
-            maxLength={10}
+            value={displayValue}
+            onChangeText={handlePhoneNumberChange}
+            maxLength={maxLength}
             keyboardType="decimal-pad"
             placeholderTx={placeholderTx}
             placeholder={placeholder}

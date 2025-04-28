@@ -6,6 +6,10 @@ const en = {
     cancel: "Cancel",
     back: "Back",
     logOut: "Log Out",
+    yes: "Yes",
+    no: "No",
+    recommended: "Recommended",
+    next: "Next",
   },
   tabs: {
     call_logs: {
@@ -161,7 +165,7 @@ const en = {
   },
   onboardingCountryScreen: {
     title: "Choose country",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+    description: "Select your country to help us decide your locale",
     select_country: "Select a country",
   },
   onboardingNumberScreen: {
@@ -192,9 +196,9 @@ const en = {
   },
   onboardingAboutScreen: {
     title: "Tell us a bit about you",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+    description: "Help Orin get to know you better",
     label_one: "Your name",
-    example_name: "Eg. Sanando",
+    example_name: "Eg. Orin",
     label_two: "Information about you for the AI to know you better",
     example_info:
       "Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.",
@@ -204,7 +208,7 @@ const en = {
     title: "Create your Orin agent",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
     label_one: "Agent name",
-    example_name: "Eg. Sanando",
+    example_name: "Eg. Orin",
     label_two: "Agent language",
     select_language: "Select a language",
     label_three: "Select a voice",
@@ -213,12 +217,19 @@ const en = {
     voice_three: "Voice 3",
     finish_setup: "Finish setup",
   },
+  onboardingSyncContactsScreen: {
+    title: "Whitelist phonebook numbers",
+    description:
+      "This will allow ORiN to directly connect all your saved contacts without any verification",
+  },
   overviewScreen: {
     agent_config: "ORiN agent config",
     agent_config_desc: "Agent name, Voice, Language",
     connect_calls: "Connect calls",
     connect_calls_desc: "Transfer calls, Block calls",
     whitelist_blacklist: "Whitelist/backlist numbers",
+    expected_calls: "Expected Calls",
+    expected_calls_desc: "Manage your expected calls",
     whitelist_blacklist_desc: "Connect phonebook, Whitelist, Blacklist",
     calendar_settings: "Calendar settings",
     calendar_settings_desc: "Google calendar",
@@ -229,7 +240,7 @@ const en = {
   },
   settingsProfileScreen: {
     label_one: "Your name",
-    // example_name:"Eg. Sanando",
+    // example_name:"Eg. Orin",
     label_two: "Your phone number",
     label_three: "Information about you for the AI to know you better",
     example_info:
@@ -275,8 +286,9 @@ const en = {
       "Eg. I am expecting a call from car dealership from BMW. I visited their Paris store last week and they said, they will get in touch with me.",
     add: "Add",
     modal_header: "Add expected call",
-    empty_state_title: "No calls found",
-    empty_state_content: "You're not expecting to be called",
+    empty_state_title: "No expected calls found",
+    empty_state_content:
+      "Please add your expected calls. Currently, you are not expecting to be called",
   },
   whitelistBlacklistScreen: {
     connect_google: "Connect Google Phonebook",

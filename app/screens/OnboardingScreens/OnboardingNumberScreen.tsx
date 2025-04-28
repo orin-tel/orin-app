@@ -24,7 +24,8 @@ export const OnboardingNumberScreen: FC<OnboardingStackScreenProps<"OnboardingNu
       }, []),
     )
     const handleNext = () => {
-      navigation.navigate("OnboardingValidate")
+      // navigation.navigate("OnboardingValidate")
+      navigation.navigate("OnboardingCongratulations")
     }
     //
     const { themed } = useAppTheme()
@@ -92,7 +93,7 @@ export const OnboardingNumberScreen: FC<OnboardingStackScreenProps<"OnboardingNu
                 </View>
               </TouchableOpacity>
               {/* Choose Your Own Number-------------*/}
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 activeOpacity={selectedOption === "yours" ? 1 : 0.5}
                 onPress={() => setSelectedOption("yours")}
                 style={themed([$optionContainer, selectedOption === "yours" && $selectedOptionTwo])}
@@ -114,7 +115,7 @@ export const OnboardingNumberScreen: FC<OnboardingStackScreenProps<"OnboardingNu
                     weight={selectedOption === "yours" ? "semiBold" : "normal"}
                   />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
 
@@ -211,8 +212,8 @@ const $selectedOptionOne: ThemedStyle<TextStyle> = ({ colors }) => ({
   elevation: 4,
 })
 const $infoBox: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  width: 289,
-  height: 133,
+  width: "100%",
+  // height: "80%",
   borderRadius: 16,
   backgroundColor: colors.infoBackground,
   padding: spacing.md,

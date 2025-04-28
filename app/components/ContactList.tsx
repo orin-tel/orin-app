@@ -30,7 +30,7 @@ interface Section {
 //   },
 //   {
 //     title: "S",
-//     data: [{ name: "Sanando", number: "+917622365663" }],
+//     data: [{ name: "Orin", number: "+917622365663" }],
 //   },
 //   {
 //     title: "U",

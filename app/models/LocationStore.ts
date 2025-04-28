@@ -81,9 +81,8 @@ export const LocationStore = types
     saveSnapshot() {
       return getSnapshot(self)
     },
-
-    loadSnapshot(snapshot: SnapshotIn<typeof LocationStore>) {
-      applySnapshot(self, snapshot)
+    reset() {
+      applySnapshot(self, {})
     },
   }))
 

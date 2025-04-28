@@ -85,7 +85,6 @@ export class TelephonyApi {
     | GeneralApiProblem
   > {
     const token = await getClerkInstance().session?.getToken()
-    console.log("TOKEN", token)
     this.apisauce.setHeader("authorization", `Bearer ${token}`)
     const response: ApiResponse<NestResponse<ICallPaginated>> = await this.apisauce.get(
       `?before=${before}`,

@@ -125,6 +125,151 @@ const fr: Translations = {
     },
   },
 
+  tabs: {
+    call_logs: {
+      tab: "Journaux d'appels",
+      call_list: "Journaux d'appels",
+      call: "Appel",
+    },
+    dialer: {
+      tab: "Composeur",
+    },
+    contacts: {
+      tab: "Contacts",
+    },
+    settings: {
+      tab: "Paramètres",
+    },
+  },
+  onboardingRegisterMobileScreen: {
+    register: "S'INSCRIRE",
+    enter_your_mobile_number: "Entrez votre numéro de mobile",
+    get_otp: "Obtenir un OTP",
+  },
+  onboardingVerifyOtpScreen: {
+    otp_verification: "Vérification OTP",
+    otp_successfully_sent_to: "OTP envoyé avec succès à",
+    resend_otp: "Renvoyer OTP",
+    confirm_otp: "Confirmer OTP",
+  },
+  onboardingValidateScreen: {
+    title: "Transférer et valider",
+    description:
+      "Vous devez d'abord terminer le processus de transfert, puis le valider pour confirmer la configuration réussie du transfert d'appel.",
+    number: "*#21# +91 8716239872",
+    info_one:
+      "Si vous avez un téléphone Android, copiez et collez simplement ceci dans votre composeur et appelez pour terminer le processus.",
+    info_two:
+      "Si vous avez un iPhone, allez dans Réglages > Téléphone > Renvoi d'appel, entrez le numéro et activez le renvoi.",
+    validate: "Valider",
+  },
+  onboardingAboutScreen: {
+    title: "Parlez-nous un peu de vous",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+    label_one: "Votre nom",
+    example_name: "Ex. Sanando",
+    label_two: "Informations sur vous pour que l'IA puisse mieux vous connaître",
+    example_info:
+      "Ex. J'attends un appel de la concession automobile BMW. J'ai visité leur magasin à Paris la semaine dernière et ils ont dit qu'ils me contacteraient.",
+    next: "Suivant",
+  },
+  onboardingAgentScreen: {
+    title: "Créez votre agent Orin",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+    label_one: "Nom de l'agent",
+    example_name: "Ex. Sanando",
+    label_two: "Langue de l'agent",
+    select_language: "Sélectionnez une langue",
+    label_three: "Sélectionnez une voix",
+    voice_one: "Voix 1",
+    voice_two: "Voix 2",
+    voice_three: "Voix 3",
+    finish_setup: "Terminer la configuration",
+  },
+  overviewScreen: {
+    agent_config: "Configuration de l'agent ORiN",
+    agent_config_desc: "Nom de l'agent, Voix, Langue",
+    connect_calls: "Connecter les appels",
+    connect_calls_desc: "Transférer les appels, Bloquer les appels",
+    whitelist_blacklist: "Liste blanche/noire des numéros",
+    whitelist_blacklist_desc: "Connecter le répertoire, Liste blanche, Liste noire",
+    calendar_settings: "Paramètres du calendrier",
+    calendar_settings_desc: "Calendrier Google",
+    contact_orin: "Contacter ORiN",
+    contact_orin_desc: "Contacter l'équipe ORiN",
+  },
+  settingsProfileScreen: {
+    label_one: "Votre nom",
+    label_two: "Votre numéro de téléphone",
+    label_three: "Informations sur vous pour que l'IA puisse mieux vous connaître",
+    example_info:
+      "Ex. J'attends un appel de la concession automobile BMW. J'ai visité leur magasin à Paris la semaine dernière et ils ont dit qu'ils me contacteraient.",
+    save: "Sauvegarder",
+  },
+  agentConfigScreen: {
+    label_one: "Nom de l'agent",
+    label_two: "Langue de l'agent",
+    select_language: "Sélectionnez une langue",
+    label_three: "Sélectionnez une voix",
+    voice_one: "Voix 1",
+    voice_two: "Voix 2",
+    voice_three: "Voix 3",
+    save: "Sauvegarder",
+  },
+  connectCallsScreen: {
+    transfer: "Transférer les appels",
+    transfer_desc: "Transférer les appels vers mon numéro personnel",
+    enter_personal: "Entrez le numéro personnel pour transférer l'appel :",
+    enter_otp: "Entrez l'OTP envoyé à ",
+    verify_number: "Vérifier le numéro",
+    choose: "Choisissez une option :",
+    transfer_all: "Transférer tous les appels",
+    transfer_genuine: "Transférer les appels authentiques",
+    transfer_whitelisted: "Transférer uniquement les appels de la liste blanche",
+    blockAI: "Bloquer les appels IA",
+    blockAI_desc: "Bloquer complètement tous les appels générés par l'IA",
+    blockSpam: "Bloquer les appels spam/promotionnels",
+    blockSpam_desc: "Bloquer complètement tous les appels spam/promotionnels",
+    expecting: "Appels attendus",
+    expecting_desc:
+      "Si vous attendez un appel d'un service ou d'une personne, veuillez fournir des détails.",
+    view_all: "Voir tout",
+  },
+  expectedCallsScreen: {
+    search: "Rechercher un appel attendu",
+    expected: "Appel attendu ",
+    caller_name: "Nom de l'appelant",
+    caller_name_example: "Ex. Appel BMW",
+    reason: "Raison",
+    reason_example:
+      "Ex. J'attends un appel de la concession automobile BMW. J'ai visité leur magasin à Paris la semaine dernière et ils ont dit qu'ils me contacteraient.",
+    add: "Ajouter",
+  },
+  whitelistBlacklistScreen: {
+    connect_google: "Connecter le répertoire Google",
+    connect_apple: "Connecter le répertoire Apple",
+    or: "ou",
+    add_manually: "Ajouter manuellement",
+    add_manually_desc: "Ajouter des numéros à la liste blanche/noire manuellement",
+    whitelist_numbers: "Numéros de la liste blanche ",
+    blacklist_numbers: "Numéros de la liste noire ",
+  },
+  whitelistScreen: {
+    search: "Rechercher un nom ou un numéro",
+    add: "Ajouter",
+  },
+  call_list: {
+    empty_state_title: "Aucun appel trouvé",
+    empty_state_content: "wow si vide",
+  },
+  signUpScreen: {
+    welcome: "Bienvenue à",
+    title: "ORiN",
+    intro_one: "Profitez d'une assistance téléphonique",
+    intro_two: "illimitée 24 x 7",
+    google_oauth: "Connexion avec Google",
+  },
+
   ...demoFr,
 }
 

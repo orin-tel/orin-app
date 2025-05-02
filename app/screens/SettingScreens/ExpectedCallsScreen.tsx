@@ -19,37 +19,34 @@ interface ExpectedCall {
 export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> = observer(
   function ExpectedCallsScreen(_props) {
     const { themed } = useAppTheme()
-    const sheet = useRef<BottomSheetModal>(null);
-    const { bottom } = useSafeAreaInsets();
+    const sheet = useRef<BottomSheetModal>(null)
+    const { bottom } = useSafeAreaInsets()
 
     function presentOptions() {
-      sheet.current?.present();
+      sheet.current?.present()
     }
 
     function dismissOptions() {
-      sheet.current?.dismiss();
+      sheet.current?.dismiss()
     }
-
 
     const [searchQuery, setSearchQuery] = useState("")
     const [expectedCalls, setExpectedCalls] = useState<ExpectedCall[]>([])
 
-
     const handleAddCall = () => {
-      setExpectedCalls([...expectedCalls, { id: Date.now(), number: expectedCalls.length + 1, name: "", reason: "", expanded: true }])
+      setExpectedCalls([
+        ...expectedCalls,
+        { id: Date.now(), number: expectedCalls.length + 1, name: "", reason: "", expanded: true },
+      ])
     }
     const handleEditCall = (id: number, field: "name" | "reason", value: string) => {
       setExpectedCalls((prev) =>
-        prev.map((call) =>
-          call.id === id ? { ...call, [field]: value } : call
-        )
+        prev.map((call) => (call.id === id ? { ...call, [field]: value } : call)),
       )
     }
     const toggleCallExpansion = (id: number) => {
       setExpectedCalls((prev) =>
-        prev.map((call) =>
-          call.id === id ? { ...call, expanded: !call.expanded } : call
-        )
+        prev.map((call) => (call.id === id ? { ...call, expanded: !call.expanded } : call)),
       )
     }
     const deleteCall = (id: number) => {
@@ -67,9 +64,7 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                 placeholderTx="expectedCallsScreen:search"
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                LeftAccessory={() => (
-                  <Icon icon="search" style={{ marginLeft: spacing.md }} />
-                )}
+                LeftAccessory={() => <Icon icon="search" style={{ marginLeft: spacing.md }} />}
               />
             </View>
             <View style={themed($itemsContainer)}>
@@ -83,7 +78,8 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                     <TouchableOpacity
                       activeOpacity={0.8}
                       onPress={() => toggleCallExpansion(item.id)}
-                      style={themed($transferInnerOne)}>
+                      style={themed($transferInnerOne)}
+                    >
                       <View style={themed($textContainer)}>
                         <Text text={`Expected call ${item.number}`} size="sm" weight="semiBold" />
                       </View>
@@ -95,17 +91,22 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                         <TouchableOpacity onPress={() => deleteCall(item.id)}>
                           <Icon icon="delete" color="error" />
                         </TouchableOpacity>
-                        {item.expanded ? (
+                        {/* {item.expanded ? (
                           <Icon icon="caretLeft" size={20} style={{ transform: [{ rotate: "90deg" }] }} />
                         ) : (
                           <Icon icon="dropdown" size={20} />
-                        )}
+                        )} */}
                       </View>
                     </TouchableOpacity>
                     {/** ---- Name and reason inputs */}
                     {item.expanded && (
                       <View style={themed($inputFields)}>
-                        <Text style={themed($label)} tx="expectedCallsScreen:caller_name" size="sm" weight="medium" />
+                        <Text
+                          style={themed($label)}
+                          tx="expectedCallsScreen:caller_name"
+                          size="sm"
+                          weight="medium"
+                        />
                         <TextField
                           style={themed($nameTextStyle)}
                           value={item.name}
@@ -113,7 +114,12 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
                           inputWrapperStyle={themed($nameTextWrapperStyle)}
                           placeholderTx="expectedCallsScreen:caller_name_example"
                         />
-                        <Text style={themed($label)} tx="expectedCallsScreen:reason" size="sm" weight="medium" />
+                        <Text
+                          style={themed($label)}
+                          tx="expectedCallsScreen:reason"
+                          size="sm"
+                          weight="medium"
+                        />
                         <TextField
                           style={themed($reasonTextStyle)}
                           multiline
@@ -138,7 +144,7 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
               )}
             />
           </View>
-        </Screen >
+        </Screen>
         <BottomSheetModal
           ref={sheet}
           snapPoints={["35%"]}
@@ -150,24 +156,17 @@ export const ExpectedCallsScreen: FC<SettingStackScreenProps<"ExpectedCalls">> =
           )}
           backgroundStyle={themed($modalBgStyle)}
           footerComponent={(props) => (
-            <BottomSheetFooter
-              {...props}
-              style={themed($bottomSheetFooter)}
-              bottomInset={bottom}
-            >
+            <BottomSheetFooter {...props} style={themed($bottomSheetFooter)} bottomInset={bottom}>
               <Button text="Dismiss" preset="reversed" onPress={dismissOptions} />
             </BottomSheetFooter>
           )}
-          >
-            <View>
-
-            </View>
-          </BottomSheetModal>
+        >
+          <View></View>
+        </BottomSheetModal>
       </>
     )
-  }
+  },
 )
-
 
 const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flex: 1,
@@ -176,7 +175,6 @@ const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $container: ThemedStyle<ViewStyle> = () => ({
   paddingBottom: spacing.md + spacing.xxs,
-
 })
 
 const $bottomSheetFooter: ThemedStyle<ViewStyle> = ({ spacing }) => ({
@@ -189,9 +187,7 @@ const $modalBgStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderTopRightRadius: 20,
   backgroundColor: colors.background,
 })
-const $searchSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-
-})
+const $searchSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({})
 const $searchBox: ThemedStyle<TextStyle> = ({ spacing }) => ({
   paddingLeft: spacing.xs,
 })
@@ -201,7 +197,6 @@ const $searchBoxWrapper: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $itemsContainer: ThemedStyle<ViewStyle> = () => ({
   gap: spacing.md + spacing.xxs,
-
 })
 
 const $textContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
@@ -216,9 +211,7 @@ const $label: ThemedStyle<ViewStyle> = () => ({
   paddingBottom: spacing.sm,
   paddingTop: spacing.xs,
 })
-const $nameTextStyle: ThemedStyle<ViewStyle> = () => ({
-
-})
+const $nameTextStyle: ThemedStyle<ViewStyle> = () => ({})
 
 const $nameTextWrapperStyle: ThemedStyle<ViewStyle> = () => ({
   backgroundColor: colors.background,
@@ -255,9 +248,7 @@ const $transferInnerOne: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   backgroundColor: colors.inputBackground,
 })
 
-const $inputFields: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
-
-})
+const $inputFields: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({})
 
 const $addBtn: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   width: 106,
@@ -274,6 +265,5 @@ const $addBtn: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
 
 const $addBtnText: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
   color: colors.defaultPrimary,
-  paddingLeft: spacing.sm
+  paddingLeft: spacing.sm,
 })
-

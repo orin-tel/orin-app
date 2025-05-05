@@ -18,9 +18,7 @@ export const AuthReconcileScreen: FC<AppStackScreenProps<"AuthReconcile">> = obs
       useCallback(() => {
         const signIn = async () => {
           const result = await userStore.signInUser()
-          console.log("AT SIGN IN USER OMG OMG")
-
-          if (!result) {
+          if (result) {
             _props.navigation.navigate("Core", {
               screen: "CallLogs",
               params: {
@@ -39,7 +37,6 @@ export const AuthReconcileScreen: FC<AppStackScreenProps<"AuthReconcile">> = obs
       }, [_props.navigation, userStore]),
     )
 
-    useEffect(() => {}, [])
     return <Screen style={$root} contentContainerStyle={$contentContainer} preset="scroll"></Screen>
   },
 )

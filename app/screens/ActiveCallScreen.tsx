@@ -130,6 +130,7 @@ function CallNotificationScreen(_props: {
   const handleHangUp = () => {
     if (activeCall && typeof activeCall.disconnect === "function") {
       activeCall.disconnect()
+      activeCall.removeAllListeners()
       _props.handleDelayedGoBack("AuthReconcile")
     }
   }

@@ -33,6 +33,9 @@
       "ios": { "simulator": false }
     },
     "production": {
+      "env": {
+        "EAS_BUILD_DISABLE_NPM_CACHE": "1"
+      },
       "android": { "buildType": "apk" }
     }
   },

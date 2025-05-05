@@ -41,7 +41,7 @@ export const WhitelistScreen: FC<SettingStackScreenProps<"Whitelist">> = observe
     const [snapIndex, setSnapIndex] = useState(0)
     const [nameModal, setNameModal] = useState("")
     const [numberModal, setNumberModal] = useState("")
-    const [phoneCodeModal, setPhoneCodeModal] = useState<string>("+91")
+    const [phoneCodeModal, setPhoneCodeModal] = useState<string>("+1")
     const {
       themed,
       theme: { colors, spacing, isDark },

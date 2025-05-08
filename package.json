@@ -27,7 +27,7 @@
     "serve:web": "npx serve dist",
     "prebuild:clean": "npx expo prebuild --clean",
     "prepare": "husky install",
-    "app-release": "cross-env SKIP_BRANCH_PROTECTION=true np --no-publish --no-cleanup --no-release-draft --yolo"
+    "app-release": "cross-env SKIP_BRANCH_PROTECTION=true np --no-publish --no-cleanup --no-release-draft"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,css,scss,md}": "prettier --write"

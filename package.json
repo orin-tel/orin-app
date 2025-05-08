@@ -26,7 +26,8 @@
     "bundle:web": "npx expo export --platform web",
     "serve:web": "npx serve dist",
     "prebuild:clean": "npx expo prebuild --clean",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "app-release": "cross-env SKIP_BRANCH_PROTECTION=true np --no-publish --no-cleanup --no-release-draft --yolo"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,css,scss,md}": "prettier --write"
@@ -57,9 +58,10 @@
     "@react-navigation/native-stack": "^6.0.2",
     "@sentry/react-native": "~6.3.0",
     "@shopify/flash-list": "^1.7.3",
-    "@twilio/voice-react-native-sdk": "github:tirth0/twilio-voice-react-native",
+    "@twilio/voice-react-native-sdk": "^1.5.0",
     "apisauce": "3.0.1",
     "babel-plugin-module-resolver": "^5.0.2",
+    "cross-env": "^7.0.3",
     "date-fns": "^4.1.0",
     "expo": "~52.0.7",
     "expo-application": "~6.0.1",
@@ -85,6 +87,8 @@
     "mobx": "6.10.2",
     "mobx-react-lite": "4.1.0",
     "mobx-state-tree": "5.3.0",
+    "np": "^10.2.0",
+    "postinstall-postinstall": "^2.1.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-i18next": "^15.0.1",
